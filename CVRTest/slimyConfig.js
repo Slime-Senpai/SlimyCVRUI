@@ -12,6 +12,6 @@ const slimyConfig = { // eslint-disable-line no-unused-vars
   slimyBackgroundDefaultGreen: 115,
   /* Default Background Blue (0 - 255) */
   slimyBackgroundDefaultBlue: 155,
-  /* Default Background Alpha (0 - 255) */
+  /* Default Background Alpha (0 - 100) */
   slimyBackgroundDefaultAlpha: 75 // NOTE There is no comma here
 };

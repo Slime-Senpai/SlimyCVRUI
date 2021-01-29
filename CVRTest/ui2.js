@@ -1,6 +1,5 @@
 /* globals slimyBackgroundClasslist, slimyConfig */
 
-/* esssslint no-unused-vars: ["error", { "varsIgnorePattern": "[displayHudAsFeed]" }] */
 /*
 const currFeed = [];
 
@@ -24,19 +23,6 @@ function displayHudAsFeed (_head, _title, _message, _important) {
 
   feeds.innerHTML = html;
 }
-*/
-/* NOTE This is only sent to the HUD so it's kinda useless here
-engine.on('DisplayHudMessage', function (_head, _title, _message, _fadeTime) {
-  displayHudAsFeed(_head, _title, _message, false);
-});
-
-engine.on('DisplayHudMessageImmediately', function (_head, _title, _message, _fadeTime) {
-  displayHudAsFeed(_head, _title, _message, true);
-});
-
-engine.on('*', function (name, _head, _title, _message, _fadeTime) {
-  if (name !== 'UpdateGameDebugInformation') displayHudAsFeed(name, _head, _title, true);
-});
 */
 
 function SlimyInpSlider (_obj) {
