@@ -6,7 +6,7 @@ This is a modification of the UI of ChilloutVR made by Slime-Senpai.
 ### Installers
 You can have your version installed by a little script made by [MilchZocker](https://github.com/MilchZocker) where you can choose between [his version](https://github.com/MilchZocker/ChillouVR-Dark-UI) and mine of the UI.
 
-[Github of the Installers](https://github.com/MilchZocker/ChillouVR-Dark-UI/tree/Auto-Installers)
+[Direct download link of Installer.bat](https://github.com/MilchZocker/ChillouVR-Dark-UI/releases/download/0.1/Installer.bat)
 
 ### Manual Installation
 To use this UI, simply drop the github into your UIResources folder(Steam\steamapps\common\ChilloutVR\ChilloutVR_Data\StreamingAssets\Cohtml\UIResources)
