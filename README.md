@@ -7,12 +7,17 @@ To use this UI, simply drop the github into your UIResources folder(Steam\steama
 and then override the files if needed.
 
 ## Version checking
-The UI will automatically check for updates everytime you start the game. If you see that your UI version is red, that means that there is a new update for your current build. Green means that it is up to date and no color means that the server had a problem.
+The UI will automatically check for updates everytime you start the game. The color of the version representing its current state:
+- Green: Up To Date
+- Red: Can be updated
+- Blue: UI Version doesn't exist in database, but is above all versions for that CVR Version
+- Violet: UI Version doesn't exist and there is a better version available
+- No Color: Problem with the server
 
 ## Saving Config
 You like some colors and would want to get them on startup instead of having to redo them all the time? Simply open slimyConfig.js with a text editor and change the default values.
 
-# Got a bug ?
+# Got a bug?
 Feel free to report any bug using the issue system of github or by contacting me.
 
 # Disclaimer
