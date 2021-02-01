@@ -7,40 +7,16 @@
     color:#AAAAAA;
 }
 
-.feed-wrapper {
-    border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
-}
-
-.feed-important {
-    border-color: #e43600;
-}
-
-.feed-head {
-	font-style: bold;
-    font-size: 0.5em;
-	color: #e43600;
-}
-.feed-title {
-    font-size: 0.7em;
-}
-.feed-message {
-    font-size: 0.6em;
-}
-
-.feed-btn {
-    border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
-    width: 200px;
-    text-align: center;
-}
-
 #settings .list-filter .scroll-content {
     position: absolute;
     width: 100.000000%;
     left: 5%;
     top: 4em;
-    bottom: 3em;
+    bottom: 5em;
+}
+
+#settings .list-filter .scroll-content .filter-option {
+    padding: 0.4em;
 }
 
 /* Inputs */
@@ -83,4 +59,81 @@
 
 .slimy_slider.slimyblue .valueBar {
     background: blue;
+}
+
+/* Online Friends */
+
+.content-friends .list-content {
+    width: 98%;
+    height: 95%;
+    padding-left: 1.5%;
+    border: none;
+}
+
+.online-friend .content-cell-formatter {
+    padding-top: 100%;
+    margin-top: 5em;
+}
+
+.online-friend.content-cell {
+    width: 32%;
+    margin-right: 2.5%;
+    margin-bottom: 2.5%;
+}
+.online-friend .content-cell-content {
+    left: 3.5%;
+}
+
+.online-friend .online-state {
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    border: 1px solid #FFF;
+    margin: 0.1em;
+
+    z-index: 1;
+
+    background: #00cc00;
+}
+
+.online-friend .content-name {
+    bottom: 3em;
+}
+
+.online-friend .content-image {
+    bottom: 5em;
+}
+
+/* Feed */
+
+.content-feed {
+    height: 36%;
+}
+
+.content-feed .feed-news {
+    height: 90%;
+    width: 98%;
+    word-wrap: break-word;
+    border: none;
+    white-space: normal;
+    overflow-x: visible;
+    overflow-y: scroll;
+}
+
+.content-emotes .action-btn {
+    padding: 40px 0;
+    text-align: center;
+}
+
+.content-emotes {
+    position: absolute;
+    top: 48%;   
+    width: 48%;
+    padding: 1%;
+    height: 20%;
+    left: 26%;
+
+    border-radius: 0.25em;
+    border: 3px solid #FFFFFF;
 }
