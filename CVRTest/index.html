@@ -21,12 +21,9 @@
                         <div onclick="toggleMic();" class="action-btn action-mute">
                             <img src="gfx/mute.svg">
                             Unmute</div>
-                        <div id="seatedPlayBtnHome" onclick="toogleSeatedPlay();" class="action-btn">
+                        <div onclick="toogleSeatedPlay();" class="action-btn">
                             <img src="gfx/seated-play.svg">
                             Seated</div>
-                        <!--<div id="recalibrateBtnHome" onclick="recalibrate();" class="action-btn">
-                            <img src="gfx/recalibrate.svg">
-                            Recalib</div>-->
                         <div onclick="toggleFlight();" class="action-btn">
                             <img src="gfx/jetpack.svg">
                             Flight</div>
@@ -80,17 +77,7 @@
                 </div>
 
                 <div class="content-feed">
-                    <div class="content-caption">Emotes</div>
-                    <div class="btn-row-wrapper actions">
-                        <div class="action-btn" onclick="playEmote(1);">1</div>
-                        <div class="action-btn" onclick="playEmote(2);">2</div>
-                        <div class="action-btn" onclick="playEmote(3);">3</div>
-                        <div class="action-btn" onclick="playEmote(4);">4</div>
-                        <div class="action-btn" onclick="playEmote(5);">5</div>
-                        <div class="action-btn" onclick="playEmote(6);">6</div>
-                        <div class="action-btn" onclick="playEmote(7);">7</div>
-                        <div class="action-btn" onclick="playEmote(8);">8</div>
-                    </div>
+                    <div class="content-caption">Feed</div>
                 </div>
 
                 <div class="content-news">
@@ -171,8 +158,6 @@
                     <div class="scroll-content">
                         <div class="filter-content"></div>
                     </div>
-                    <div class="content-btn color-secondary neg-one" onclick="DeletePropMode();">Enter Delete Mode</div>
-                    <div class="content-btn color-secondary zero" onclick="deleteAllMyProps();">Delete All My Props</div>
                     <div class="content-btn first" onclick="filterContent('props', '');">Reset Filters</div>
                     <div class="content-btn color-primary second" onclick="refreshProps();">Refresh</div>
                 </div>
@@ -244,19 +229,16 @@
                             <div class="filter-option" onclick="switchSettingCategorie('settings-audio', this)">Audio</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-input', this)">Input & Key-Bindings</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-filter', this)">Content filter</div>
-                            <div class="filter-option" onclick="switchSettingCategorie('settings-props', this)">Prop Settings</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-interaction', this)">Interactions</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-implementation', this)">Implementation</div>
-                            <div class="filter-option" onclick="switchSettingCategorie('settings-experimental', this)">experimental</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-slimysettings', this)">Slimy Settings</div>
                             <!--<div class="filter-option" onclick="switchSettingCategorie('settings-cache', this)">Cache management</div>-->
                         </div>
                     </div>
-                    <div class="content-btn first" onclick="ReloadAllAvatars();">Reload Avatars</div>
+                    <!--<div class="content-btn first" onclick="saveSettings();">Save</div>-->
                     <div class="content-btn color-primary second" onclick="settingsReset();">Reset Settings</div>
                 </div>
                 <div class="list-content">
-                    
                     <div id="settings-general" class="settings-categorie active">
                         <div class="row-wrapper">
                             <div class="option-caption">Player Height in cm:</div>
@@ -312,18 +294,6 @@
                             <div class="option-caption">Time Format:</div>
                             <div class="option-input">
                                 <div id="GeneralClockFormat" class="inp_dropdown" data-options="24:24h,12:12h" data-current="24" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-                        <div class="row-wrapper">
-                            <div class="option-caption">Running Animation in FBT:</div>
-                            <div class="option-input">
-                                <div id="GeneralEnableRunningAnimationFullBody" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-                        <div class="row-wrapper">
-                            <div class="option-caption">Portal safe distance in cm:</div>
-                            <div class="option-input">
-                                <div id="GeneralPortalSafeDistance" class="inp_slider" data-min="100" data-max="500" data-current="3" data-saveOnChange="true"></div>
                             </div>
                         </div>
                     </div>
@@ -408,12 +378,6 @@
                             <div class="option-caption">User Interface:</div>
                             <div class="option-input">
                               <div id="AudioUi" class="inp_slider" data-min="0" data-max="100" data-current="100" data-saveOnChange="true" data-continuousUpdate="true"></div>
-                            </div>
-                        </div>
-                        <div class="row-wrapper">
-                            <div class="option-caption">Props:</div>
-                            <div class="option-input">
-                                <div id="AudioProp" class="inp_slider" data-min="0" data-max="100" data-current="100" data-saveOnChange="true" data-continuousUpdate="true"></div>
                             </div>
                         </div>
 
@@ -597,162 +561,11 @@
                         
                     </div>
 
-                    <div id="settings-props" class="settings-categorie">
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Enable Props:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsEnabled" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-                        
-                        <h2 style="margin-bottom: 0;">Tag based Prop blocking</h2>
-                        <p>This options will lead to the whole Prop to be blocked</p>
-
-                        <div id="content-filter-nsfw-wrapper-props" style="display: none;">
-                            <div class="row-wrapper">
-                                <div class="option-caption">Enable NSFW Content:</div>
-                                <div class="option-input">
-                                    <div id="ContentFilterPropsNSFW" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Flashing Colors:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsFlashingColors" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Flashing Lights:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsFlashingLights" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Screen Effects:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsScreenEffects" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div id="content-filter-nsfw-wrapper-second-props" style="display: none;">
-                            <div class="row-wrapper">
-                                <div class="option-caption">Violence:</div>
-                                <div class="option-input">
-                                    <div id="ContentFilterPropsViolence" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                                </div>
-                            </div>
-
-                            <div class="row-wrapper">
-                                <div class="option-caption">Gore, Death, Cruelty:</div>
-                                <div class="option-input">
-                                    <div id="ContentFilterPropsGore" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Excessively huge:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsExcessivelyHuge" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Excessively small:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsExcessivelySmall" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <h2 style="margin-bottom: 0;">Removables</h2>
-                        <p>This options will remove components from the avatar</p>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Loud Audio:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsLoudAudio" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Long Range Audio:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsLongRangeAudio" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Particle Systems:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsParticleSystems" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Dynamic Bones:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsDynamicBone" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Dynamic Bone Collider:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsDynamicBoneCollision" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Cameras:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsCameras" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="2" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Windzones:</div>
-                            <div class="option-input">
-                                <div id="ContentFilterPropsWindZones" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="2" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <h2>Prop Physics Intercollision</h2>
-                        <div class="row-wrapper">
-                            <div class="option-caption">Enable Particle Collision:</div>
-                            <div class="option-input">
-                                <div id="InteractionPropsPhysicsCollisionEnabled" class="inp_dropdown" data-options="0:Disable,1:Enable for friends,2:Enable" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div class="row-wrapper">
-                            <div class="option-caption">Enable Colliders:</div>
-                            <div class="option-input">
-                                <div id="InteractionPropsPhysicsCollidersEnabled" class="inp_dropdown" data-options="0:Disable,1:Enable for friends,2:Enable" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <h2>Prop Animator Triggers Interaction</h2>
-                        <div class="row-wrapper">
-                            <div class="option-caption">Enable Touch Triggers:</div>
-                            <div class="option-input">
-                                <div id="InteractionPropsAnimatorTriggersEnabled" class="inp_dropdown" data-options="0:Disable,1:Enable for friends,2:Enable" data-current="0" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-
-                        <div style="width: 10px; height: 200px;"></div>
-
-                    </div>
-
                     <div id="settings-interaction" class="settings-categorie">
-                        <h2 style="margin-bottom: 0;">Dynamic Bone Interaction</h2>
+                        <h2 style="margin-bottom: 0;">Dynamic Bone Intercollision</h2>
                         <p>Warning: This setting will impact your performance severely</p>
                         <div class="row-wrapper">
-                            <div class="option-caption">Enable Interaction:</div>
+                            <div class="option-caption">Enable Intercollision:</div>
                             <div class="option-input">
                                 <div id="InteractionDynamicBoneInterCollisionEnabled" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
@@ -822,7 +635,7 @@
 
                     <div id="settings-implementation" class="settings-categorie">
 
-                        <h2>Tobii Eye Tracking</h2>
+                        <!--<h2>Tobii Eye Tracking</h2>
                         <div class="row-wrapper">
                             <div class="option-caption">Enable Tracking:</div>
                             <div class="option-input">
@@ -834,7 +647,7 @@
                             <div class="option-input">
                                 <div id="InteractionTobiiEyeBlinking" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
-                        </div>
+                        </div>-->
 
                         <h2>BHaptics</h2>
                         <div class="row-wrapper">
@@ -1512,10 +1325,9 @@
             <div class="toolbar">
                 <div class="toolbar-btn active" onclick="changeTab('home', this);"><img src="gfx/nav-home.svg">Home</div>
                 <div class="toolbar-btn" onclick="changeTab('friends', this);"><img src="gfx/nav-friends.svg">Friends</div>
-                <!--<div class="toolbar-btn deactivated"><img src="gfx/nav-groups.svg">Groups</div>-->
+                <div class="toolbar-btn deactivated"><img src="gfx/nav-groups.svg">Groups</div>
                 <div class="toolbar-btn" onclick="changeTab('avatars', this);"><img src="gfx/nav-avatars.svg">Avatars</div>
                 <div class="toolbar-btn" onclick="changeTab('worlds', this);"><img src="gfx/nav-worlds.svg">Worlds</div>
-                <div class="toolbar-btn" onclick="changeTab('props', this);"><img src="gfx/btn-props.svg">Props</div>
                 <div class="toolbar-btn-double">
                     <div class="time-display">00:00</div>
                 </div>
