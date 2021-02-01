@@ -233,11 +233,13 @@ updateStuff();
 let slimyVersionValidated = false;
 
 engine.on('UpdateGameDebugInformation', function (_info) {
-  if (!slimyVersionValidated && _info && _info.Version) {
-    const cvrVersion = _info.Version.replace(/\s+/g, '');
-    checkVersion(slimyUIVersion, cvrVersion);
-    slimyVersionValidated = true;
-  } else {
-    checkVersion(slimyUIVersion, '2021r158p3');
+  if (slimyVersionValidated) {
+    return;
   }
+
+  const cvrVersion = (_info && _info.Version) ? _info.Version.replace(/\s+/g, '') : slimyCVRVersion.replace(/\s+/g, '');
+
+  checkVersion(slimyUIVersion, cvrVersion);
+
+  slimyVersionValidated = true;
 });
