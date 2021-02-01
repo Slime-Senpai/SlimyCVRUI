@@ -236,7 +236,7 @@ updateStuff();
 
 // Version
 
-const slimyCVRVersion = '2021r159 Experimental 14';
+const slimyCVRVersion = '2021r158p3';
 const slimyUIVersion = '1.0.5';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');

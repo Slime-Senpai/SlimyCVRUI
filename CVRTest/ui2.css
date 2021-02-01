@@ -14,10 +14,10 @@
     top: 4em;
     bottom: 5em;
 }
-
+/*
 #settings .list-filter .scroll-content .filter-option {
     padding: 0.4em;
-}
+}*/
 
 /* Inputs */
 
@@ -107,9 +107,9 @@
 
 /* Feed */
 
-.content-feed {
+/*.content-feed {
     height: 36%;
-}
+}*/
 
 .content-feed .feed-news {
     height: 90%;
