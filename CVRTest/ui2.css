@@ -12,7 +12,11 @@
     width: 100.000000%;
     left: 5%;
     top: 4em;
-    bottom: 3em;
+    bottom: 5em;
+}
+
+#settings .list-filter .scroll-content .filter-option {
+    padding: 0.4em;
 }
 
 /* Inputs */
