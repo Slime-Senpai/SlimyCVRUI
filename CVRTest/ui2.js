@@ -1,4 +1,4 @@
-/* globals slimyBackgroundClasslist, slimyConfig */
+/* globals slimyBackgroundClasslist, slimyConfig, engine */
 
 /*
 const currFeed = [];
@@ -220,10 +220,26 @@ for (let i = 0; i < slimyBackgroundClasslist.length; i++) {
   slimyBackgroundElements[slimyBackgroundElements.length] = { selector: slimyBackgroundClasslist[i].selector, multiplier: multiplier, alpha: slimyBackgroundClasslist[i].alpha };
 }
 
-const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
-if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = '2021r159 Experimental 14';
-const slimyVersion = document.querySelector('.slimy-ui-version');
-if (slimyVersion) slimyVersion.innerHTML = '1.0.0';
+const slimyCVRVersion = '2021r159 Experimental 14';
+const slimyUIVersion = '1.0.0';
 
-checkVersion('1.0.0', '2021r159Experimental14');
+const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
+if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = slimyCVRVersion;
+const slimyVersionDiv = document.querySelector('.slimy-ui-version');
+if (slimyVersionDiv) slimyVersionDiv.innerHTML = slimyUIVersion;
+
 updateStuff();
+
+let slimyVersionValidated = false;
+
+engine.on('UpdateGameDebugInformation', function (_info) {
+  if (slimyVersionValidated) {
+    return;
+  }
+
+  const cvrVersion = (_info && _info.Version) ? _info.Version.replace(/\s+/g, '') : slimyCVRVersion.replace(/\s+/g, '');
+
+  checkVersion(slimyUIVersion, cvrVersion);
+
+  slimyVersionValidated = true;
+});
