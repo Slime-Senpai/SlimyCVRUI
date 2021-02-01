@@ -17,7 +17,7 @@ The UI will automatically check for updates everytime you start the game. The co
 ## Saving Config
 You like some colors and would want to get them on startup instead of having to redo them all the time? Simply open slimyConfig.js with a text editor and change the default values.
 
-# Got a bug ?
+# Got a bug?
 Feel free to report any bug using the issue system of github or by contacting me.
 
 # Disclaimer
