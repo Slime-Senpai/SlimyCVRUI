@@ -1,4 +1,4 @@
-/* globals slimyBackgroundClasslist, slimyConfig, engine */
+/* globals slimyBackgroundClasslist, slimyConfig, slimyFeed, engine, refreshFriends */
 
 /*
 const currFeed = [];
@@ -175,15 +175,27 @@ function checkVersion (uiVersion, chilloutVersion) {
     if (xhr.readyState === 4 && xhr.status === 200) {
       const slimyVersion = document.querySelector('.slimy-ui-version');
       const response = JSON.parse(xhr.responseText);
-      if (response && response.upToDate === true) {
-        if (slimyVersion) slimyVersion.style.color = 'green';
-      } else {
-        if (slimyVersion) slimyVersion.style.color = 'red';
+      if (response) {
+        if (response.exists === true) {
+          if (response.upToDate === true) {
+            if (slimyVersion) slimyVersion.style.color = 'green';
+          } else if (response.upToDate === false) {
+            if (slimyVersion) slimyVersion.style.color = 'red';
+          }
+        } else if (response.exists === false) {
+          if (response.upToDate === true) {
+            if (slimyVersion) slimyVersion.style.color = 'midnightblue';
+          } else if (response.upToDate === false) {
+            if (slimyVersion) slimyVersion.style.color = 'blueviolet';
+          }
+        }
       }
     }
   };
   xhr.send();
 }
+
+// Colors
 
 const slimySettings = [];
 const slimyValues = [];
@@ -220,15 +232,17 @@ for (let i = 0; i < slimyBackgroundClasslist.length; i++) {
   slimyBackgroundElements[slimyBackgroundElements.length] = { selector: slimyBackgroundClasslist[i].selector, multiplier: multiplier, alpha: slimyBackgroundClasslist[i].alpha };
 }
 
-const slimyCVRVersion = '2021r158p3';
-const slimyUIVersion = '1.0.0';
+updateStuff();
+
+// Version
+
+const slimyCVRVersion = '2021r159 Experimental 14';
+const slimyUIVersion = '1.0.5';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
 if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = slimyCVRVersion;
 const slimyVersionDiv = document.querySelector('.slimy-ui-version');
 if (slimyVersionDiv) slimyVersionDiv.innerHTML = slimyUIVersion;
-
-updateStuff();
 
 let slimyVersionValidated = false;
 
@@ -243,3 +257,64 @@ engine.on('UpdateGameDebugInformation', function (_info) {
 
   slimyVersionValidated = true;
 });
+
+// Friends
+
+engine.on('LoadFriends', function (_list, _filter) {
+  if (!_list || _list.length === 0) {
+    return;
+  }
+
+  const onlineFriends = [];
+  for (let i = 0; i < _list.length; i++) {
+    if (_list[i].OnlineState) {
+      onlineFriends.push(_list[i]);
+    }
+  }
+  renderOnlineFriends(onlineFriends);
+});
+
+function renderOnlineFriends (onlineFriends) {
+  const contentList = document.querySelector('.content-friends .list-content');
+
+  let html = '';
+
+  for (let i = 0; onlineFriends[i]; i++) {
+    if (i % 3 === 0) {
+      if (i !== 0) {
+        html += '</div>';
+      }
+      html += '<div class="content-row">';
+    }
+
+    html += '<div class="content-cell online-friend"><div class="content-cell-formatter"></div>' +
+            '<div class="content-cell-content"><div class="online-state online"></div>' +
+            '<img class="content-image" src="' +
+            onlineFriends[i].ProfileImageUrl + '"><div class="content-name">' +
+            onlineFriends[i].PlayerName + '</div><div class="content-btn second" ' +
+            'onclick="getUserDetails(\'' + onlineFriends[i].Guid + '\');">Details</div>' +
+            '</div></div>';
+  }
+
+  contentList.innerHTML = html;
+}
+
+refreshFriends();
+
+// Feed
+
+function updateFeed () {
+  const newsDiv = document.querySelector('.content-feed .feed-news');
+
+  let html = '';
+
+  html += '<pre>';
+
+  html += slimyFeed;
+
+  html += '</pre>';
+
+  newsDiv.innerHTML = html;
+}
+
+updateFeed();
