@@ -25,6 +25,8 @@ function displayHudAsFeed (_head, _title, _message, _important) {
 }
 */
 
+// Slimy Settings Factory Functions
+
 function SlimyInpSlider (_obj) {
   this.obj = _obj;
   this.minValue = parseFloat(_obj.getAttribute('data-min'));
@@ -115,6 +117,56 @@ function SlimyInpSlider (_obj) {
   };
 }
 
+function SlimyInpToggle (_obj) {
+  this.obj = _obj;
+  this.value = _obj.getAttribute('data-current') === 'true';
+  this.name = _obj.id;
+
+  const self = this;
+
+  this.mouseDown = function (_e) {
+    self.value = !self.value;
+    self.updateState();
+  };
+
+  this.updateState = function () {
+    if (self.value) {
+      self.obj.classList.add('checked');
+    } else {
+      self.obj.classList.remove('checked');
+    }
+    /* TODO TO CHANGE
+      * engine.call('CVRAppCallSaveSetting', self.name, self.value);
+      * game_settings[self.name] = self.value;
+    */
+    updateStuff();
+  };
+
+  _obj.addEventListener('mousedown', this.mouseDown);
+
+  this.getValue = function () {
+    return self.value;
+  };
+
+  this.updateValue = function (value) {
+    self.value = value;
+
+    if (self.value) {
+      self.obj.classList.add('checked');
+    } else {
+      self.obj.classList.remove('checked');
+    }
+  };
+
+  this.updateValue(this.value);
+
+  return {
+    name: this.name,
+    value: this.getValue,
+    updateValue: this.updateValue
+  };
+}
+
 function updateStuff () {
   const change = [];
   for (let i = 0; i < slimySettings.length; i++) {
@@ -125,11 +177,37 @@ function updateStuff () {
   }
 
   let updateBackgroundColor = true;
+  let updateBackgroundImage = true;
 
   for (let i = 0; i < change.length; i++) {
     if (updateBackgroundColor && change[i].includes('SlimyBackgroundColor')) {
       changeBackgroundColor();
       updateBackgroundColor = false;
+    } else if (updateBackgroundImage && change[i].includes('SlimyBackgroundImage')) {
+      changeBackgroundImage();
+      updateBackgroundImage = false;
+    }
+  }
+}
+
+// Background Colors and Image
+
+function changeBackgroundImage () {
+  let image = false;
+
+  for (let i = 0; i < slimySettings.length; i++) {
+    if (slimySettings[i].name === 'SlimyBackgroundImageToggle') {
+      image = slimySettings[i].value();
+    }
+  }
+
+  const contents = document.querySelectorAll('.content .image');
+
+  for (let i = 0; i < contents.length; i++) {
+    if (image) {
+      contents[i].classList.add('enabled');
+    } else {
+      contents[i].classList.remove('enabled');
     }
   }
 }
@@ -165,8 +243,72 @@ function changeBackgroundColor () {
     document.styleSheets[2].insertRule(selector + ' { background-color: ' + css + color + '; }');
   }
 
+  document.styleSheets[2].insertRule('.content .image { opacity: ' + alpha + '; }');
+
   document.styleSheets[2].insertRule('#home h1 span { color: rgb(' + Math.round(red * 0.3) + ',' + Math.round(green * 0.3) + ',' + Math.round(blue * 0.3) + '); }');
 }
+
+const slimySettings = [];
+const slimyValues = [];
+
+// NOTE We can't use pseudo elements ::after or ::before so we need to use another div to have opacity
+function createBackgroundImage () {
+  const contents = document.querySelectorAll('.content');
+
+  for (let i = 0; i < contents.length; i++) {
+    const image = document.createElement('div');
+    image.classList.add('image');
+    contents[i].appendChild(image);
+  }
+}
+
+createBackgroundImage();
+
+const slimySliders = document.querySelectorAll('.slimy_slider');
+
+for (let i = 0; i < slimySliders.length; i++) {
+  const index = slimySettings.length;
+  slimySettings[index] = new SlimyInpSlider(slimySliders[i]);
+  slimyValues[index] = slimySettings[index].value();
+}
+
+const slimyToggles = document.querySelectorAll('.slimy_toggle');
+
+for (let i = 0; i < slimyToggles.length; i++) {
+  const index = slimySettings.length;
+  slimySettings[index] = new SlimyInpToggle(slimyToggles[i]);
+  slimyValues[index] = slimySettings[index].value();
+}
+
+for (let i = 0; i < slimySettings.length; i++) {
+  if (slimySettings[i].name === 'SlimyBackgroundColorRed') {
+    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultRed);
+  } else if (slimySettings[i].name === 'SlimyBackgroundColorGreen') {
+    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultGreen);
+  } else if (slimySettings[i].name === 'SlimyBackgroundColorBlue') {
+    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultBlue);
+  } else if (slimySettings[i].name === 'SlimyBackgroundColorAlpha') {
+    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultAlpha);
+  } else if (slimySettings[i].name === 'SlimyBackgroundImageToggle') {
+    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultImageToggle);
+  }
+}
+
+const slimyBackgroundElements = [];
+
+for (let i = 0; i < slimyBackgroundClasslist.length; i++) {
+  let multiplier = 1;
+  if (slimyBackgroundClasslist[i].type === 'dark') {
+    multiplier = 0.625;
+  } else if (slimyBackgroundClasslist[i].type === 'light') {
+    multiplier = 1.40625;
+  }
+  slimyBackgroundElements[slimyBackgroundElements.length] = { selector: slimyBackgroundClasslist[i].selector, multiplier: multiplier, alpha: slimyBackgroundClasslist[i].alpha };
+}
+
+updateStuff();
+
+// Version
 
 function checkVersion (uiVersion, chilloutVersion) {
   const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
@@ -195,49 +337,8 @@ function checkVersion (uiVersion, chilloutVersion) {
   xhr.send();
 }
 
-// Colors
-
-const slimySettings = [];
-const slimyValues = [];
-
-const slimySliders = document.querySelectorAll('.slimy_slider');
-
-for (let i = 0; i < slimySliders.length; i++) {
-  const index = slimySettings.length;
-  slimySettings[index] = new SlimyInpSlider(slimySliders[i]);
-  slimyValues[index] = slimySettings[index].value();
-}
-
-for (let i = 0; i < slimySettings.length; i++) {
-  if (slimySettings[i].name === 'SlimyBackgroundColorRed') {
-    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultRed);
-  } else if (slimySettings[i].name === 'SlimyBackgroundColorGreen') {
-    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultGreen);
-  } else if (slimySettings[i].name === 'SlimyBackgroundColorBlue') {
-    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultBlue);
-  } else if (slimySettings[i].name === 'SlimyBackgroundColorAlpha') {
-    slimySettings[i].updateValue(slimyConfig.slimyBackgroundDefaultAlpha);
-  }
-}
-
-const slimyBackgroundElements = [];
-
-for (let i = 0; i < slimyBackgroundClasslist.length; i++) {
-  let multiplier = 1;
-  if (slimyBackgroundClasslist[i].type === 'dark') {
-    multiplier = 0.625;
-  } else if (slimyBackgroundClasslist[i].type === 'light') {
-    multiplier = 1.40625;
-  }
-  slimyBackgroundElements[slimyBackgroundElements.length] = { selector: slimyBackgroundClasslist[i].selector, multiplier: multiplier, alpha: slimyBackgroundClasslist[i].alpha };
-}
-
-updateStuff();
-
-// Version
-
 const slimyCVRVersion = '2021r159 Experimental 15';
-const slimyUIVersion = '1.0.5';
+const slimyUIVersion = '1.0.6';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
 if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = slimyCVRVersion;

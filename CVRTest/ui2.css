@@ -61,6 +61,16 @@
     background: blue;
 }
 
+.slimy_toggle {
+    height: 2em;
+    width: 2em;
+    border: 1px solid white;
+    margin-bottom: 0.5em
+}
+.slimy_toggle.checked {
+    background: white;
+}
+
 /* Online Friends */
 
 .content-friends .list-content {
@@ -136,4 +146,16 @@
 
     border-radius: 0.25em;
     border: 3px solid #FFFFFF;
+}
+
+.content .image.enabled {
+    content: "";
+    background-image: url(background.png);
+    background-size: cover;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
 }
