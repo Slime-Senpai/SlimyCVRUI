@@ -312,7 +312,7 @@ updateStuff();
 
 function checkVersion (uiVersion, chilloutVersion) {
   const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
-  xhr.open('GET', 'http://sf4y.fr:8042/chilloutui/checkVersion?v=' + uiVersion + '&cv=' + chilloutVersion, true);
+  xhr.open('GET', 'http://slimesenpai.fr:8042/chilloutui/checkVersion?v=' + uiVersion + '&cv=' + chilloutVersion, true);
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       const slimyVersion = document.querySelector('.slimy-ui-version');
@@ -338,7 +338,7 @@ function checkVersion (uiVersion, chilloutVersion) {
 }
 
 const slimyCVRVersion = '2021r159 Experimental 15';
-const slimyUIVersion = '1.0.6';
+const slimyUIVersion = '1.0.8';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
 if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = slimyCVRVersion;
@@ -419,3 +419,40 @@ function updateFeed () {
 }
 
 updateFeed();
+
+// Secret
+
+function validateSecret (secret) {
+  if (!secret || secret === '') {
+    slimySecret.validated = false;
+    document.querySelector('#SlimySecret').innerHTML = 'Not Validated';
+    return;
+  }
+
+  const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
+  xhr.open('POST', 'http://slimesenpai.fr:8042/chilloutui/secret', true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const slimySecretDiv = document.querySelector('#SlimySecret');
+
+      const response = JSON.parse(xhr.responseText);
+      if (response) {
+        slimySecretDiv.innerHTML = response.validated ? 'Validated' : 'Not Validated';
+        slimySecret.validated = response.validated === true;
+      }
+    } else if (xhr.readyState === 4) {
+      const slimySecretDiv = document.querySelector('#SlimySecret');
+      slimySecretDiv.innerHTML = 'Not Validated';
+      slimySecret.validated = false;
+    }
+  };
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send('{ "secret": "' + secret + '" }');
+}
+
+const slimySecret = {
+  value: slimyConfig.slimySecret,
+  validated: false
+};
+
+validateSecret(slimyConfig.slimySecret);
