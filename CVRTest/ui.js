@@ -377,6 +377,16 @@ function switchSettingCategorie(_id, _e){
     }
 
     _e.classList.add('active');
+    
+    if (_id == "settings-audio")
+    {
+        LoadMicrophones();
+    }
+
+    if (_id == "settings-graphics")
+    {
+        LoadResolutions();
+    }
 
     document.getElementById(_id).classList.add('active');
 }
@@ -953,7 +963,7 @@ function loadInstanceDetail(_owner, _world, _instance, _instanceUsers){
     var html = '';
 
     for(var i=0; i < _instanceUsers.length; i++){
-        html += '<div class="instancePlayer"><img class="instancePlayerImage" src="'+
+        html += '<div class="instancePlayer" onclick="getUserDetails(\''+_instanceUsers[i].UserId+'\');"><img class="instancePlayerImage" src="'+
             _instanceUsers[i].UserImageUrl+'"><div class="instancePlayerName">'+
             _instanceUsers[i].UserName+'</div></div>';
     }
@@ -986,7 +996,12 @@ function getUserDetails(_uid){
 
 var PlayerData = {};
 
-function loadUserDetails(_data, _activity, _instanceUsers){
+var userProfileMute;
+var userProfileVolume;
+var userProfilePlayerAvatarsBlocked;
+var userProfileAvatarBlocked;
+
+function loadUserDetails(_data, _activity, _instanceUsers, _profile){
     PlayerData = _data;
     var detailPage = document.getElementById('user-detail');
 
@@ -1024,26 +1039,83 @@ function loadUserDetails(_data, _activity, _instanceUsers){
         blockBtn.innerHTML = '<img src="gfx/block.svg">Block';
     }
 
-    var muteBtn = document.querySelector('#user-detail .mute-btn');
+    /*var muteBtn = document.querySelector('#user-detail .mute-btn');
     if(_data.IsMuted){
         muteBtn.setAttribute('onclick', 'unMute(\''+_data.Guid+'\');');
         muteBtn.innerHTML = '<img src="gfx/user-unmute.svg">Unmute';
     }else{
         muteBtn.setAttribute('onclick', 'mute(\''+_data.Guid+'\');');
         muteBtn.innerHTML = '<img src="gfx/user-mute.svg">Mute';
-    }
+    }*/
 
     var kickBtn = document.querySelector('#user-detail .kick-btn');
     kickBtn.setAttribute('onmousedown', 'kickUser(\''+_data.Guid+'\');');
 
+    var moderationView = document.querySelector('#user-detail .user-settings-dialog');
+    
+    var userSettingsTools = '<p>User Settings</p><div class="action-btn" onclick="hideUserSettings();">Back</div>';
+    userSettingsTools += '<div class="row-wrapper">\n' +
+        '                            <div class="option-caption">Mute Player:</div>\n' +
+        '                            <div class="option-input">\n' +
+        '                                <div id="SelfModerationMute" class="inp_toggle" data-current="' + (_profile.mute?'True':'False') + 
+                                        '" data-saveOnChange="true"></div>\n' +
+        '                            </div>\n' +
+        '                        </div>';
+
+    userSettingsTools += '<div class="row-wrapper">\n' +
+        '                            <div class="option-caption">Voice Volume:</div>\n' +
+        '                            <div class="option-input">\n' +
+        '                              <div id="SelfModerationVolume" class="inp_slider" data-min="0" data-max="100" data-current="' + (_profile.voiceVolume * 100) + '" data-saveOnChange="true" data-continuousUpdate="true"></div>\n' +
+        '                            </div>\n' +
+        '                        </div>';
+
+    userSettingsTools += '<div class="row-wrapper">\n' +
+        '                            <div class="option-caption">Players Avatar:</div>\n' +
+        '                            <div class="option-input">\n' +
+        '                                <div id="SelfModerationUsersAvatars" class="inp_dropdown" data-options="0:Hide,1:Use content filter,2:Show" data-current="' + (_profile.userAvatarVisibility) + '" data-saveOnChange="true"></div>\n' +
+        '                            </div>\n' +
+        '                        </div>'
+
+    userSettingsTools += '<div class="row-wrapper">\n' +
+        '                            <div class="option-caption">Current Avatar:</div>\n' +
+        '                            <div class="option-input">\n' +
+        '                                <div id="SelfModerationAvatar" class="inp_dropdown" data-options="0:Hide,1:Use content filter,2:Show" data-current="' + (_profile.avatarVisibility) + '" data-saveOnChange="true"></div>\n' +
+        '                            </div>\n' +
+        '                        </div>'
+
+    moderationView.innerHTML = userSettingsTools;
+
+    userProfileMute = new inp_toggle(document.getElementById('SelfModerationMute'));
+    userProfileVolume = new inp_slider(document.getElementById('SelfModerationVolume'));
+    userProfilePlayerAvatarsBlocked = new inp_dropdown(document.getElementById('SelfModerationUsersAvatars'));
+    userProfileAvatarBlocked = new inp_dropdown(document.getElementById('SelfModerationAvatar'));
+
+    moderationView.classList.add('hidden');
+    
     detailPage.classList.remove('hidden');
     detailPage.classList.add('in');
 
     updateUserDetailsActivity(_activity, _instanceUsers);
 }
 
+function showUserSettings(){
+    var moderationView = document.querySelector('#user-detail .user-settings-dialog');
+    moderationView.classList.remove('hidden');
+    moderationView.classList.add('in');
+}
+
+function hideUserSettings(){
+    var moderationView = document.querySelector('#user-detail .user-settings-dialog');
+    moderationView.classList.remove('in');
+    moderationView.classList.add('out');
+    setTimeout(function(){
+        moderationView.classList.add('hidden');
+        moderationView.classList.remove('out');
+    }, 200);
+}
+
 function unFriend(_guid){
-    engine.call('CVRAppCallRelationsManagement', _guid, 'Unfriend');
+    uiConfirmShow("Unfriend", "Are you sure you want to remove this person from your friendslist?", "removeFriend", _guid);
 }
 
 function addFriend(_guid){
@@ -1091,31 +1163,31 @@ function updateUserDetailsActivity(_activity, _instanceUsers){
         var html = '';
 
         for (var i = 0; i < _instanceUsers.length; i++) {
-            html += '<div class="instancePlayer"><img class="instancePlayerImage" src="' +
+            html += '<div class="instancePlayer" onclick="getUserDetails(\''+_instanceUsers[i].UserId+'\');"><img class="instancePlayerImage" src="' +
                 _instanceUsers[i].UserImageUrl + '"><div class="instancePlayerName">' +
                 _instanceUsers[i].UserName + '</div></div>';
         }
 
         document.querySelector('#tab-content-activity .player-instance-players .scroll-content').innerHTML = html;
 
-        document.querySelector('#tab-content-activity .activityDataAviable').className = 'activityDataAviable';
-        document.querySelector('#tab-content-activity .activityDataUnaviable').className = 'activityDataUnaviable hidden';
+        document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable';
+        document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable hidden';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate hidden';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline hidden';
 
     }else if(_activity.IsInPrivateLobby == false && PlayerData.IsFriend && PlayerData.OnlineState && PlayerData.OnlineNotConnected){
-        document.querySelector('#tab-content-activity .activityDataAviable').className = 'activityDataAviable hidden';
-        document.querySelector('#tab-content-activity .activityDataUnaviable').className = 'activityDataUnaviable hidden';
+        document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable hidden';
+        document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable hidden';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate hidden';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline';
     }else if(_activity.IsInPrivateLobby == true && PlayerData.OnlineState){
-        document.querySelector('#tab-content-activity .activityDataAviable').className = 'activityDataAviable hidden';
-        document.querySelector('#tab-content-activity .activityDataUnaviable').className = 'activityDataUnaviable hidden';
+        document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable hidden';
+        document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable hidden';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline hidden';
     }else{
-        document.querySelector('#tab-content-activity .activityDataAviable').className = 'activityDataAviable hidden';
-        document.querySelector('#tab-content-activity .activityDataUnaviable').className = 'activityDataUnaviable';
+        document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable hidden';
+        document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate hidden';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline hidden';
     }
@@ -1124,23 +1196,28 @@ function updateUserDetailsActivity(_activity, _instanceUsers){
     var inviteBtn = document.querySelector('#user-detail .invite-btn');
 
     if(PlayerData.OnlineState && PlayerData.IsFriend && !PlayerData.OnlineNotConnected){
-        joinBtn.setAttribute('onclick', 'joinInstance(\''+_activity.InstanceId+'\');');
-        joinBtn.classList.remove('disabled');
+        if(_activity.InstanceId !== null){
+            joinBtn.setAttribute('onclick', 'joinInstance(\''+_activity.InstanceId+'\');');
+            joinBtn.classList.remove('disabled');
+        }else{
+            joinBtn.setAttribute('onclick', '');
+            joinBtn.classList.add('disabled');
+        }
 
         inviteBtn.setAttribute('onclick', 'invitePlayer(\''+PlayerData.Guid+'\');');
-        joinBtn.classList.remove('disabled');
+        inviteBtn.classList.remove('disabled');
     }else if(PlayerData.IsFriend) {
         joinBtn.setAttribute('onclick', '');
         joinBtn.classList.add('disabled');
 
         inviteBtn.setAttribute('onclick', 'invitePlayer(\''+PlayerData.Guid+'\');');
-        joinBtn.classList.remove('disabled');
+        inviteBtn.classList.remove('disabled');
     }else{
         joinBtn.setAttribute('onclick', '');
         joinBtn.classList.add('disabled');
 
         inviteBtn.setAttribute('onclick', '');
-        joinBtn.classList.add('disabled');
+        inviteBtn.classList.add('disabled');
     }
 }
 
@@ -1189,7 +1266,7 @@ function uiCheckForAdditionalMessage(){
                 uiAlertShow(data.headline, data.text, data.id);
                 break;
             case 'confirm':
-                uiConfirmShow(data.headline, data.text, data.id);
+                uiConfirmShow(data.headline, data.text, data.id, data.data);
                 break;
             case 'alertTimed':
                 uiAlertTimedShow(data.headline, data.text, data.time, data.id);
@@ -1381,7 +1458,7 @@ function uiLoadingClose(){
     }, 200);
 }
 
-function uiConfirmShow(_headline, _text, _id){
+function uiConfirmShow(_headline, _text, _id, _data){
     var alertBox = document.getElementById('confirm');
 
     if(uiMessageActive()){
@@ -1389,7 +1466,8 @@ function uiConfirmShow(_headline, _text, _id){
             type: 'confirm',
             headline: _headline,
             text: _text,
-            id: _id
+            id: _id,
+            data: _data
         });
         return;
     }
@@ -1398,6 +1476,7 @@ function uiConfirmShow(_headline, _text, _id){
     alertBox.classList.add('in');
 
     alertBox.setAttribute('data-index', _id);
+    alertBox.setAttribute('data-storage', _data);
 
     document.querySelector('#confirm h2').innerHTML = _headline;
     document.querySelector('#confirm p').innerHTML = _text;
@@ -1405,13 +1484,15 @@ function uiConfirmShow(_headline, _text, _id){
 
 window.uiConfirm = {
     id: 0,
-    value: ""
+    value: "",
+    data: ""
 };
 
 function uiConfirmClose(_value){
     var alertBox = document.getElementById('confirm');
 
     var id = alertBox.getAttribute('data-index');
+    var data = alertBox.getAttribute('data-storage');
 
     alertBox.classList.remove('in');
     alertBox.classList.add('out');
@@ -1424,10 +1505,30 @@ function uiConfirmClose(_value){
 
     window.uiConfirm.id = id;
     window.uiConfirm.value = _value;
+    window.uiConfirm.data = data;
     
     var event = new CustomEvent("uiConfirm");
     window.dispatchEvent(event);
-    engine.call('CVRAppCallConfirmClose', id, _value);
+    engine.call('CVRAppCallConfirmClose', id, _value, data);
+}
+
+window.addEventListener("uiConfirm", function(){    
+    switch(window.uiConfirm.id){
+        case "logout":
+            if(window.uiConfirm.value) {
+                engine.trigger('CVRAppTaskGameLogout');
+            }
+            break;
+        case "removeFriend":
+            if(window.uiConfirm.value) {
+                engine.call('CVRAppCallRelationsManagement', window.uiConfirm.data, 'Unfriend');
+            }
+            break;
+    }
+});
+
+function logout(){
+    uiConfirmShow("Logout", "You will be logged out and the game will be closed. Are you sure?", "logout", "");
 }
 
 //Time Display
@@ -1662,6 +1763,14 @@ function loadSettings(){
 
 function playSound(sound){
     engine.trigger('CVRAppCallPlayAudio', sound);
+}
+
+function LoadMicrophones(){
+    engine.trigger('CVRAppActionLoadMicrophones');
+}
+
+function LoadResolutions(){
+    engine.trigger('CVRAppActionLoadResolutions');
 }
 
 function updateGameDebugInformation(_info){
@@ -1921,8 +2030,8 @@ engine.on('AddWorldDetailsInstance', function(_instance){
     addWorldDetailInstance(_instance);
 });
 
-engine.on('LoadUserDetails', function (_data, _activity, _instanceUsers) {
-    loadUserDetails(_data, _activity, _instanceUsers);
+engine.on('LoadUserDetails', function (_data, _activity, _instanceUsers, _profile) {
+    loadUserDetails(_data, _activity, _instanceUsers, _profile);
 });
 
 engine.on('alert', function (_headline, _text, _id) {
@@ -2212,26 +2321,31 @@ function inp_dropdown(_obj){
 
     this.list = document.createElement('div');
     this.list.className = 'valueList';
-    for(var i = 0; i < this.options.length; i++){
-        this.optionElements[i] = document.createElement('div');
-        this.optionElements[i].className = 'listValue';
-        var valuePair = this.options[i].split(':');
-        var key = "";
-        var value = "";
-        if(valuePair.length == 1){
-            key = valuePair[0];
-            value = valuePair[0];
-        }else{
-            key = valuePair[0];
-            value = valuePair[1];
+    
+    this.updateOptions = function(){
+        for(var i = 0; i < self.options.length; i++){
+            self.optionElements[i] = document.createElement('div');
+            self.optionElements[i].className = 'listValue';
+            var valuePair = self.options[i].split(':');
+            var key = "";
+            var value = "";
+            if(valuePair.length == 1){
+                key = valuePair[0];
+                value = valuePair[0];
+            }else{
+                key = valuePair[0];
+                value = valuePair[1];
+            }
+            self.keyValue[key] = value;
+            self.optionElements[i].innerHTML = value;
+            self.optionElements[i].setAttribute('data-value', value);
+            self.optionElements[i].setAttribute('data-key', key);
+            self.list.appendChild(self.optionElements[i]);
+            self.optionElements[i].addEventListener('mousedown', self.SelectValue);
         }
-        this.keyValue[key] = value;
-        this.optionElements[i].innerHTML = value;
-        this.optionElements[i].setAttribute('data-value', value);
-        this.optionElements[i].setAttribute('data-key', key);
-        this.list.appendChild(this.optionElements[i]);
-        this.optionElements[i].addEventListener('mousedown', this.SelectValue);
     }
+
+    this.updateOptions();
 
     this.valueElement = document.createElement('div');
     this.valueElement.className = 'dropdown-value';
@@ -2250,11 +2364,17 @@ function inp_dropdown(_obj){
         self.value = value;
         self.valueElement.innerHTML = self.keyValue[value];
     }
+    
+    this.setOptions = function(optionString){
+        self.options = optionString.split(',');
+    }
 
     return {
       name: this.name,
       value: this.getValue,
-      updateValue: this.updateValue
+      updateValue: this.updateValue,
+      updateOptions: this.updateOptions,
+      setOptions: this.setOptions
     }
 }
 
@@ -2533,8 +2653,13 @@ function inp_number(_obj){
     this.name = _obj.id;
     this.type = _obj.getAttribute('data-type');
     this.caption = _obj.getAttribute('data-caption');
+    this.mode = _obj.getAttribute('data-mode');
 
-    this.obj.innerHTML = this.caption + ": " + this.value.toFixed(4);
+    if(this.mode == "int"){
+        this.obj.innerHTML = this.caption + ": " + this.value;
+    }else{
+        this.obj.innerHTML = this.caption + ": " + this.value.toFixed(4);
+    }
     
     var self = this;
 
@@ -2546,7 +2671,12 @@ function inp_number(_obj){
 
     this.updateValue = function(_value, _write){
         self.value = Math.min(9999, Math.max(-9999, _value));
-        _obj.innerHTML = self.caption + ": " + self.value.toFixed(4);
+
+        if(self.mode == "int"){
+            _obj.innerHTML = self.caption + ": " + self.value;
+        }else{
+            _obj.innerHTML = self.caption + ": " + self.value.toFixed(4);
+        }
         
         if(self.saveOnChange && (_write === true || self.type == 'avatar')){
             if(self.type == 'avatar'){
@@ -2570,17 +2700,22 @@ function inp_number(_obj){
     this.getValue = function(){
         return self.value;
     }
+    
+    this.getMode = function(){
+        return self.mode;
+    }
 
     return {
         name: this.name,
         value: this.getValue,
-        updateValue: this.updateValue
+        updateValue: this.updateValue,
+        getMode: this.getMode
     }
 }
 
 var inputNumber = document.querySelectorAll('.inp_number');
-for(var i = 0; i < slidersH.length; i++){
-    settings[settings.length] = new inp_number(slidersH[i]);
+for(var i = 0; i < inputNumber.length; i++){
+    settings[settings.length] = new inp_number(inputNumber[i]);
 }
 
 function updateGameSettingsValue(_name, _value){
@@ -2600,6 +2735,26 @@ engine.on('UpdateGameSettingsBulk', function(_settings){
     for(var i = 0; i < _settings.length; i++){
         updateGameSettingsValue(_settings[i].Name, _settings[i].Value);
     }
+});
+
+function updateDropDownOptions(_name, _options){
+    var optionString = "";
+    
+    for(var i = 0; i < _options.length; i++){
+        if(i > 0) optionString += ",";
+        optionString += _options[i].key + ":" + _options[i].value;
+    }
+    
+    for(i = 0; i < window.settings.length; i++){
+        if(window.settings[i].name == _name){
+            window.settings[i].setOptions(optionString);
+            window.settings[i].updateOptions();
+        }
+    }
+}
+
+engine.on('UpdateDropDownOptions', function(_name, _options){
+    updateDropDownOptions(_name, _options);
 });
 
 function addSettingsValue(name, delta){
@@ -2732,10 +2887,19 @@ var numpadTarget;
 var numpadHasDecimal = false;
 var numpadDecimals = 0;
 var hasPlaceholder = false;
+var numpadMode = "";
 
 function displayNumpad(_e){
     var numpad = document.getElementById('numpad');
-    document.getElementById('numpad-input').value = _e.getValue().toFixed(4);
+
+    numpadMode = _e.getMode();
+
+    if(numpadMode == "int"){
+        document.getElementById('numpad-input').value = _e.getValue();
+    }else{
+        document.getElementById('numpad-input').value = _e.getValue().toFixed(4);
+    }
+    
     document.getElementById('numpad-input').classList.add("placeholder");
 
     numpadTarget = _e;
@@ -2779,12 +2943,14 @@ function sendNumpadKey(_e){
             closeNumpad();
             break;
         case '.':
-            if(!numpadHasDecimal) {
-                input.classList.remove("placeholder");
-                hasPlaceholder = false;
-                numpadHasDecimal = true;
-                numpadDecimals = 1;
-                input.value = currentValue + ".";
+            if(numpadMode != "int") {
+                if (!numpadHasDecimal) {
+                    input.classList.remove("placeholder");
+                    hasPlaceholder = false;
+                    numpadHasDecimal = true;
+                    numpadDecimals = 1;
+                    input.value = currentValue + ".";
+                }
             }
             break;
         default:
@@ -2795,7 +2961,11 @@ function sendNumpadKey(_e){
                 input.value = currentValue;
             }else{
                 currentValue = currentValue + (parseInt(value) / Math.pow(10, numpadDecimals));
-                input.value = currentValue.toFixed(Math.min(numpadDecimals, 4));
+                if(numpadMode == "int") {
+                    input.value = currentValue;
+                }else{
+                    input.value = currentValue.toFixed(Math.min(numpadDecimals, 4));
+                }
                 numpadDecimals++;
             }
             break;
@@ -2810,4 +2980,60 @@ function closeNumpad(){
         numpad.classList.add('hidden');
         numpad.classList.remove('out');
     }, 200);
+}
+
+//Call Menu
+function acceptCall(callId){
+    engine.call("CVRAppCallAcceptCall", callId);
+}
+
+function denyCall(callId){
+    engine.call("CVRAppCallDenyCall", callId);
+}
+
+function endCall(callId){
+    engine.call("CVRAppCallEndCall", callId);
+}
+
+engine.on("CallServiceCallIncoming", function(call){
+    cvr('.call-profile').addClass('calling').attr('src', call.profimeImageUrl);
+    
+    cvr('.call-name').innerHTML(call.username);
+    
+    cvr('.call-duration').innerHTML('Incoming Call');
+    
+    cvr('.call-actions').innerHTML('<div class="action-btn" onclick="acceptCall(\''+call.callId+'\');"><img src="gfx/compass.svg"></div>'+
+        '<div class="action-btn" onclick="denyCall(\''+call.callId+'\');"><img src="gfx/compass.svg"></div>');
+});
+
+engine.on("CallServiceCallStarted", function(call){
+    cvr('.call-profile').removeClass('calling').attr('src', call.profimeImageUrl);
+
+    cvr('.call-name').innerHTML(call.username);
+    
+    cvr('.call-duration').innerHTML('00:00:00');
+
+    cvr('.call-actions').innerHTML('<div class="action-btn" onclick="endCall(\''+call.callId+'\');"><img src="gfx/compass.svg"></div>');
+});
+
+engine.on("CallServiceCallTimeUpdate", function(call){
+    cvr('.call-duration').innerHTML(new Date(call.duration * 1000).toISOString().substr(11, 8));
+});
+
+engine.on("CallServiceCallEnded", function(call){
+    cvr('.call-profile').removeClass('calling').attr('src', '');
+
+    cvr('.call-actions').innerHTML('');
+});
+
+function ShowCurrentInstanceDetails(){
+    engine.trigger("CVRAppActionShowCurrentInstanceDetails");
+}
+
+function RemovePlayerAvatars(){
+    engine.trigger("CVRAppActionClearAllAvatars");
+}
+
+function PanicMute(){
+    engine.trigger("CVRAppActionMuteAllChannels");
 }

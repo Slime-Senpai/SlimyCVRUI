@@ -20,6 +20,7 @@ The UI will automatically check for updates everytime you start the game. The co
 - Red: Can be updated
 - Blue: UI Version doesn't exist in database, but is above all versions for that CVR Version
 - Violet: UI Version doesn't exist and there is a better version available
+- Orange: CVR Version not found in the database
 - No Color: Problem with the server
 
 ## Saving config
