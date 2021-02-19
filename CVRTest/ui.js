@@ -267,7 +267,7 @@ function renderAvatars(_list){
         html += '<div class="content-cell avatar"><div class="content-cell-formatter"></div>'+
                 '<div class="content-cell-content"><img class="content-image" src="'+
                 _list[i].AvatarImageUrl+'"><div class="content-name">'+
-                _list[i].AvatarName+'</div><div class="content-btn first disabled">Details</div>'+
+                _list[i].AvatarName+'</div><div class="content-btn first" onclick="GetAvatarDetails(\''+_list[i].Guid+'\');">Details</div>'+
                 '<div class="content-btn second" onclick="changeAvatar(\''+_list[i].Guid+'\');">Change Avatar</div></div></div>';
     }
 
@@ -361,6 +361,115 @@ function renderFriends(_list){
     }
 
     contentList.innerHTML = html;
+}
+
+//SearchResults
+function filterSearch(_category){
+    var resultsUsers = document.getElementById('searchResultsUsers');
+    var resultsAvatars = document.getElementById('searchResultsAvatars');
+    var resultsWorlds = document.getElementById('searchResultsWorlds');
+    
+    switch(_category){
+        case '':
+            resultsUsers.classList.remove('hidden');
+            resultsAvatars.classList.remove('hidden');
+            resultsWorlds.classList.remove('hidden');
+            break;
+        case 'users':
+            resultsUsers.classList.remove('hidden');
+            resultsAvatars.classList.add('hidden');
+            resultsWorlds.classList.add('hidden');
+            break;
+        case 'avatars':
+            resultsUsers.classList.add('hidden');
+            resultsAvatars.classList.remove('hidden');
+            resultsWorlds.classList.add('hidden');
+            break;
+        case 'worlds':
+            resultsUsers.classList.add('hidden');
+            resultsAvatars.classList.add('hidden');
+            resultsWorlds.classList.remove('hidden');
+            break;
+    }
+}
+function loadSearch(){
+    var term = document.getElementById('globalSearch').value;
+}
+function displaySearch(_users, _avatars, _worlds){
+    var userCount = document.querySelector('#searchResultsUsers .result-count');
+    var userWrapper = document.querySelector('#searchResultsUsers .search-result-wrapper');
+    var avatarCount = document.querySelector('#searchResultsAvatars .result-count');
+    var avatarWrapper = document.querySelector('#searchResultsAvatars .search-result-wrapper');
+    var worldCount = document.querySelector('#searchResultsWorlds .result-count');
+    var worldWrapper = document.querySelector('#searchResultsWorlds .search-result-wrapper');
+    
+    userCount.innerHTML = _users.length;
+    avatarCount.innerHTML = _avatars.length;
+    worldCount.innerHTML = _worlds.length;
+
+    var userHtml = '';
+
+    for(var i=0; _users[i]; i++){
+        if(i%5 === 0){
+            if(i !== 0){
+                userHtml += '</div>';
+            }
+            userHtml += '<div class="content-row">';
+        }
+
+        userHtml += '<div class="content-cell friend"><div class="content-cell-formatter"></div>'+
+            '<div class="content-cell-content">'+
+            '<img class="content-image" src="'+
+            _users[i].ProfileImageUrl+'"><div class="content-name">'+
+            _users[i].PlayerName+'</div><div class="content-btn second" '+
+            'onclick="getUserDetails(\''+_users[i].Guid+'\');">Details</div>'+
+            '</div></div>';
+    }
+
+    userWrapper.innerHTML = userHtml;
+
+
+
+    var avatarHtml = '';
+
+    for(var i=0; _avatars[i]; i++){
+        if(i%4 === 0){
+            if(i !== 0){
+                avatarHtml += '</div>';
+            }
+            avatarHtml += '<div class="content-row">';
+        }
+
+        avatarHtml += '<div class="content-cell avatar"><div class="content-cell-formatter"></div>'+
+            '<div class="content-cell-content"><img class="content-image" src="'+
+            _avatars[i].AvatarImageUrl+'"><div class="content-name">'+
+            _avatars[i].AvatarName+'</div><div class="content-btn first" onclick="GetAvatarDetails(\''+_avatars[i].Guid+'\');">Details</div>'+
+            '<div class="content-btn second" onclick="changeAvatar(\''+_avatars[i].Guid+'\');">Change Avatar</div></div></div>';
+    }
+
+    avatarWrapper.innerHTML = avatarHtml;
+
+
+
+    var worldHtml = '';
+
+    for(var i=0; _worlds[i]; i++){
+        if(i%4 === 0){
+            if(i !== 0){
+                worldHtml += '</div>';
+            }
+            worldHtml += '<div class="content-row">';
+        }
+
+        worldHtml += '<div class="content-cell world"><div class="content-cell-formatter"></div>'+
+            '<div class="content-cell-content"><img class="content-image" src="'+
+            _worlds[i].WorldImageUrl+'"><div class="content-name">'+
+            _worlds[i].WorldName+'</div>'+
+            '<div  onclick="getWorldDetails(\''+_worlds[i].Guid+'\');" class="content-btn second">Details</div>'+
+            '</div></div>';
+    }
+
+    worldWrapper.innerHTML = worldHtml;
 }
 
 //Settings
@@ -1020,6 +1129,7 @@ function loadUserDetails(_data, _activity, _instanceUsers, _profile){
 
     document.querySelector('#user-detail .profile-avatar img').src = _data.CurrentAvatarImageUrl;
     document.querySelector('#user-detail .profile-avatar p').innerHTML = _data.CurrentAvatarName;
+    document.querySelector('#user-detail .profile-avatar img').setAttribute('onclick', 'GetAvatarDetails(\''+_data.CurrentAvatarGuid+'\');');
 
     var friendBtn = document.querySelector('#user-detail .friend-btn');
     if(_data.IsFriend){
@@ -1232,6 +1342,43 @@ function closeUserDetail(){
 }
 
 //Avatar Details
+engine.on('LoadAvatarDetails', function(_AvatarDetails, _avatarCategories, _isMine){
+    displayAvatarDetails(_AvatarDetails, _avatarCategories, _isMine);
+});
+
+window.avatarCategories = [];
+window.avatarCurrentCategories = [];
+
+function displayAvatarDetails(_AvatarDetails, _avatarCategories, _isMine){
+    window.avatarCategories = _avatarCategories;
+    window.avatarCurrentCategories = _AvatarDetails.FilterTags.split(',');
+    var detailPage = document.getElementById('avatar-detail');
+    
+    cvr('#avatar-detail h1').innerHTML(_AvatarDetails.AvatarName);
+    cvr('#avatar-detail .avatar-image').attr('src', _AvatarDetails.AvatarImageUrl);
+    
+    cvr('#avatar-detail .author').innerHTML(_AvatarDetails.AuthorName);
+
+    cvr('#avatar-detail .privacy span').innerHTML(_AvatarDetails.IsPublic?'Public':'Private');
+    cvr('#avatar-detail .uploaded span').innerHTML(_AvatarDetails.UploadedAt);
+    cvr('#avatar-detail .updated span').innerHTML(_AvatarDetails.UpdatedAt);
+    cvr('#avatar-detail .size span').innerHTML(_AvatarDetails.AvatarSize);
+    
+    cvr('#avatar-detail .description').innerHTML(_AvatarDetails.AvatarDescription);
+    cvr('#avatar-detail .tags').innerHTML(_AvatarDetails.SafetyTags.replace(/,/g, ' '));
+
+    if (_AvatarDetails.IsPublic || _AvatarDetails.IsSharedWithMe || _isMine){
+        cvr('#avatar-detail .change-btn').removeClass('disabled').attr('onclick', 'changeAvatar("'+_AvatarDetails.Guid+'");');
+        cvr('#avatar-detail .fav-btn').removeClass('disabled').attr('onclick', 'favoriteAvatar("'+_AvatarDetails.Guid+'");');
+    }else{
+        cvr('#avatar-detail .change-btn').addClass('disabled').attr('onclick', '');
+        cvr('#avatar-detail .fav-btn').addClass('disabled').attr('onclick', '');
+    }
+    
+    detailPage.classList.remove('hidden');
+    detailPage.classList.add('in');
+}
+
 function closeAvatarDetail(){
     var detailPage = document.getElementById('avatar-detail');
     detailPage.classList.remove('in');
@@ -1240,6 +1387,67 @@ function closeAvatarDetail(){
         detailPage.classList.add('hidden');
         detailPage.classList.remove('out');
     }, 200);
+    closeAvatarDetailFavorite();
+}
+
+window.pickedAvatarForCategorie = '';
+window.pickedAvatarCategories = [];
+
+function favoriteAvatar(_guid){
+    
+    window.pickedAvatarForCategorie = _guid;
+    window.pickedAvatarCategories = [];
+    
+    var html = '';
+    
+    for (var i=0; i < window.avatarCategories.length; i++){
+        if(avatarCurrentCategories.includes(window.avatarCategories[i].CategoryKey)){
+            window.pickedAvatarCategories[window.avatarCategories[i].CategoryKey] = true;
+            html += '<div class="favorite-category" onclick="removeAvatarFromCategory(\''+window.avatarCategories[i].CategoryKey+
+                '\');"><img src="gfx/remove.svg"><span>'+window.avatarCategories[i].CategoryClearTextName+'</span></div>';
+        }else{
+            window.pickedAvatarCategories[window.avatarCategories[i].CategoryKey] = false;
+            html += '<div class="favorite-category" onclick="addAvatarToCategory(\''+window.avatarCategories[i].CategoryKey+
+                '\');"><img src="gfx/create_new.svg"><span>'+window.avatarCategories[i].CategoryClearTextName+'</span></div>';
+        }
+    }
+    
+    cvr('#avatar-detail .favorite-categories').innerHTML(html);
+
+    cvr('#avatar-detail .favorite-category-selection').removeClass('hidden').addClass('in');
+}
+
+function closeAvatarDetailFavorite(){
+    var detailPage = document.querySelector('#avatar-detail .favorite-category-selection');
+    detailPage.classList.remove('in');
+    detailPage.classList.add('out');
+    setTimeout(function(){
+        detailPage.classList.add('hidden');
+        detailPage.classList.remove('out');
+    }, 200);
+}
+
+function addAvatarToCategory(_categoryIdentifier){
+    window.pickedAvatarCategories[_categoryIdentifier] = true;
+    sendAvatarCategoryUpdate();
+}
+
+function removeAvatarFromCategory(_categoryIdentifier){
+    window.pickedAvatarCategories[_categoryIdentifier] = false;
+    sendAvatarCategoryUpdate();
+}
+
+function sendAvatarCategoryUpdate(){
+    var categoryList = [];
+    
+    for (var k in window.pickedAvatarCategories){
+        if (window.pickedAvatarCategories[k]){
+            categoryList[categoryList.length] = k;
+        }
+    }
+    
+    engine.call("CVRAppCallUpdateAvatarCategories", window.pickedAvatarForCategorie, categoryList.join(','));
+    closeAvatarDetailFavorite();
 }
 
 //Ui Masseges e.g. alerts, coinfirms
@@ -1619,8 +1827,7 @@ function refreshWorlds(){
 }
 
 function loadFilteredWorlds(){
-    var search = document.getElementById('worldsSearch').value;
-    engine.call('CVRAppCallLoadFilteredWorlds', worldFilter, search);
+    engine.call('CVRAppCallLoadFilteredWorlds', worldFilter, '');
 }
 
 function refreshGameModes(){
@@ -1771,6 +1978,10 @@ function LoadMicrophones(){
 
 function LoadResolutions(){
     engine.trigger('CVRAppActionLoadResolutions');
+}
+
+function GetAvatarDetails(_guid){
+    engine.call('CVRAppCallGetAvatarDetails', _guid);
 }
 
 function updateGameDebugInformation(_info){
@@ -2092,17 +2303,20 @@ engine.on('ChangeGlobalNSFW', function(_enabled){
     var nsfwSettingsAdditional = document.getElementById('content-filter-nsfw-wrapper-second');
     var nsfwSettingsProp = document.getElementById('content-filter-nsfw-wrapper-props');
     var nsfwSettingsAdditionalProp = document.getElementById('content-filter-nsfw-wrapper-second-props');
+    var nsfwSettingsNotice = document.getElementById('content-filter-nsfw-wrapper-notice');
     
     if(_enabled){
         nsfwSettings.style.display = 'block';
         nsfwSettingsAdditional.style.display = 'block';
         nsfwSettingsProp.style.display = 'block';
         nsfwSettingsAdditionalProp.style.display = 'block';
+        nsfwSettingsNotice.style.display = 'none';
     }else{
         nsfwSettings.style.display = 'none';
         nsfwSettingsAdditional.style.display = 'none';
         nsfwSettingsProp.style.display = 'none';
         nsfwSettingsAdditionalProp.style.display = 'none';
+        nsfwSettingsNotice.style.display = 'block';
     }
 });
 
@@ -2326,7 +2540,7 @@ function inp_dropdown(_obj){
         for(var i = 0; i < self.options.length; i++){
             self.optionElements[i] = document.createElement('div');
             self.optionElements[i].className = 'listValue';
-            var valuePair = self.options[i].split(':');
+            var valuePair = Array.isArray(self.options[i])?self.options[i]:self.options[i].split(':');
             var key = "";
             var value = "";
             if(valuePair.length == 1){
@@ -2343,13 +2557,14 @@ function inp_dropdown(_obj){
             self.list.appendChild(self.optionElements[i]);
             self.optionElements[i].addEventListener('mousedown', self.SelectValue);
         }
-    }
 
-    this.updateOptions();
+        self.valueElement.innerHTML = self.keyValue[self.value];
+    }
 
     this.valueElement = document.createElement('div');
     this.valueElement.className = 'dropdown-value';
-    this.valueElement.innerHTML = this.keyValue[this.value];
+    
+    this.updateOptions();
 
     this.obj.appendChild(this.valueElement);
     this.obj.appendChild(this.list);
@@ -2365,8 +2580,8 @@ function inp_dropdown(_obj){
         self.valueElement.innerHTML = self.keyValue[value];
     }
     
-    this.setOptions = function(optionString){
-        self.options = optionString.split(',');
+    this.setOptions = function(options){
+        self.options = options;
     }
 
     return {
@@ -2738,11 +2953,10 @@ engine.on('UpdateGameSettingsBulk', function(_settings){
 });
 
 function updateDropDownOptions(_name, _options){
-    var optionString = "";
+    var optionString = [];
     
     for(var i = 0; i < _options.length; i++){
-        if(i > 0) optionString += ",";
-        optionString += _options[i].key + ":" + _options[i].value;
+        optionString[optionString.length] = [_options[i].key, _options[i].value];
     }
     
     for(i = 0; i < window.settings.length; i++){

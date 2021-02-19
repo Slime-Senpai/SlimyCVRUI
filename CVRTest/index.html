@@ -171,7 +171,6 @@
             <div id="worlds" class="content hidden">
                 <div class="list-filter">
                     <h1>Worlds</h1>
-                    <input type="text" class="inp_search" id="worldsSearch" placeholder="Search" data-submit="loadFilteredWorlds();" onclick="displayKeyboard(this);" />
                     <div class="scroll-content">
                         <div class="filter-content"></div>
                     </div>
@@ -344,6 +343,12 @@
                                 <div id="GeneralPortalSafeDistance" class="inp_slider" data-min="100" data-max="500" data-current="3" data-saveOnChange="true"></div>
                             </div>
                         </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Camera Picture location:</div>
+                            <div class="option-input">
+                                <div id="GeneralPhotoDestination" class="inp_dropdown" data-options="0:Game Directory,1:Pictures Directory" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
 
                         <div class="content-btn" onclick="logout();">Logout</div>
                     </div>
@@ -457,7 +462,7 @@
                         <div class="row-wrapper">
                             <div class="option-caption">Microphone Input:</div>
                             <div class="option-input">
-                                <div id="AudioInputDevice" class="inp_dropdown" data-options="Default" data-current="" data-saveOnChange="true"></div>
+                                <div id="AudioInputDevice" class="inp_dropdown dropdown-full-width" data-options="Default" data-current="" data-saveOnChange="true"></div>
                             </div>
                         </div>
 
@@ -465,6 +470,27 @@
                             <div class="option-caption">Microphone Threshold:</div>
                             <div class="option-input">
                                 <div id="AudioInputThreshold" class="inp_slider" data-min="0" data-max="100" data-current="10" data-saveOnChange="true" data-continuousUpdate="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Push to talk:</div>
+                            <div class="option-input">
+                                <div id="AudioPushToTalk" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Mute on Start:</div>
+                            <div class="option-input">
+                                <div id="AudioMuteMicrophoneOnStart" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Mute on Join:</div>
+                            <div class="option-input">
+                                <div id="AudioMuteMicrophoneOnJoin" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
                         </div>
 
@@ -515,12 +541,25 @@
                                 <div id="ControlUseGripToGrab" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
                         </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Gestures during Finger Tracking:</div>
+                            <div class="option-input">
+                                <div id="ControlEnableGesturesWhileFingerTracking" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                    </div>
+                        </div>
                     </div>
 
                     <div id="settings-filter" class="settings-categorie">
 
                         <h2 style="margin-bottom: 0;">Tag based Avatar blocking</h2>
                         <p>This options will lead to the whole avatar to be blocked</p>
+                        
+                        <div class="row-wrapper">
+                            <div class="option-caption">Show Avatars for:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterVisibility" class="inp_dropdown" data-options="0:Nobody,1:Friends,2:Everyone" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
                         
                         <div id="content-filter-nsfw-wrapper" style="display: none;">
                             <div class="row-wrapper">
@@ -529,6 +568,10 @@
                                     <div id="ContentFilterNSFW" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                                 </div>
                             </div>
+                        </div>
+                        <div id="content-filter-nsfw-wrapper-notice" style="display: none;">
+                            <p>Missing some options? Some options are hidden until you have the free Mature Content Access DLC installed. 
+                                You can install this via the Steam Store.</p>
                         </div>
 
                         <div class="row-wrapper">
@@ -649,6 +692,13 @@
                         
                         <h2 style="margin-bottom: 0;">Tag based Prop blocking</h2>
                         <p>This options will lead to the whole Prop to be blocked</p>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Show Props for:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsVisibility" class="inp_dropdown" data-options="0:Nobody,1:Friends,2:Everyone" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
 
                         <div id="content-filter-nsfw-wrapper-props" style="display: none;">
                             <div class="row-wrapper">
@@ -1004,7 +1054,36 @@
                     
                     <div id="settings-cache" class="settings-categorie">
                     </div>
+                </div>
+            </div>
 
+            <div id="search" class="content hidden">
+                <div class="list-filter">
+                    <h1>Search</h1>
+                    <input type="text" class="inp_search" id="globalSearch" placeholder="Search" data-submit="loadSearch();" onclick="displayKeyboard(this);" />
+                    <div class="scroll-content">
+                        <div class="filter-content">
+                            <div class="filter-option data-filter-users" onclick="filterSearch('users');"></div>
+                            <div class="filter-option data-filter-avatars" onclick="filterSearch('avatars');"></div>
+                            <div class="filter-option data-filter-worlds" onclick="filterSearch('worlds');"></div>
+                        </div>
+                                </div>
+                    <div class="content-btn first" onclick="filterSearch('');">Reset Filters</div>
+                    <div class="content-btn color-primary second" onclick="refreshSearch();">Refresh</div>
+                            </div>
+                <div class="list-content">
+                    <div id="searchResultsUsers">
+                        <div class="search-results-header">Users <div class="result-count">0</div></div>
+                        <div class="search-result-wrapper"></div>
+                        </div>
+                    <div id="searchResultsAvatars">
+                        <div class="search-results-header">Avatars <div class="result-count">0</div></div>
+                        <div class="search-result-wrapper"></div>
+                    </div>
+                    <div id="searchResultsWorlds">
+                        <div class="search-results-header">Worlds <div class="result-count">0</div></div>
+                        <div class="search-result-wrapper"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1414,15 +1493,19 @@
 
                 <div class="avatar-sidebar">
                     <img class="avatar-image" src="gfx/placeholder-square.png">
-                    <h2>[Author name]</h2>
-                    <p>Private/Public</p>
-                    <p>Avatar Uploaded</p>
-                    <p>Avatar Updated</p>
-                    <p>Avatar Size</p>
+                    <h2 class="author">[Author name]</h2>
+                    
+                    <p class="privacy">Publication: <span>Private/Public</span></p>
+                    <p class="uploaded">Avatar Uploaded: <span>2021-02-12</span></p>
+                    <p class="updated">Avatar Updated: <span>2021-02-12</span></p>
+                    <p class="size">Avatar Size: <span>5Mb</span></p>
                 </div>
                 
                 <div class="avatar-maininformation">
-                    <p>Avatar Tags</p>
+                    <p style="margin-bottom: 0;">Description:</p>
+                    <p class="description">[Description]</p>
+                    <p style="margin-bottom: 0;">Tags:</p>
+                    <p class="tags">Avatar Tags</p>
                 </div>
 
                 <div class="avatar-toolbar">
@@ -1435,6 +1518,15 @@
                     <div class="toolbar-btn"></div>
                     <div class="toolbar-btn"></div>
                     <div class="toolbar-btn"></div>
+                </div>
+                
+                <div class="favorite-category-selection">
+                    <h3>Select a Category</h3>
+                    <div class="scroll-content">
+                        <div class="favorite-categories">
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
 

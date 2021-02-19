@@ -510,18 +510,86 @@ const slimyDropdowns = [];
 
 function createDropdowns () {
   const slimyDropdownsList = [
-    { id: 'SlimyMenuBackgroundColor', title: 'Menu BG Color', type: 'background', selectors: '' },
-    { id: 'SlimyMenuBorderColor', title: 'Menu Border Color', type: 'border', selectors: '' },
-    { id: 'SlimyMenuTextColor', title: 'Menu Text Color', type: 'text', selectors: '' },
-    { id: 'SlimyMenuButtonBackgroundColor', title: 'Menu Btn BG Color', type: 'btn-background', selectors: '' },
-    { id: 'SlimyMenuButtonBorderColor', title: 'Menu Btn Border Color', type: 'border', selectors: '' },
-    { id: 'SlimyMenuButtonTextColor', title: 'Menu Btn Text Color', type: 'text', selectors: '' },
-    { id: 'SlimyToolbarBackgroundColor', title: 'Toolbar BG Color', type: 'background', selectors: '' },
-    { id: 'SlimyToolbarBorderColor', title: 'Toolbar Border Color', type: 'border', selectors: '' },
-    { id: 'SlimyToolbarTextColor', title: 'Toolbar Text Color', type: 'text', selectors: '' },
-    { id: 'SlimyToolbarButtonBackgroundColor', title: 'Toolbar Btn BG Color', type: 'btn-background', selectors: '' },
-    { id: 'SlimyToolbarButtonBorderColor', title: 'Toolbar Btn Border Color', type: 'border', selectors: '' },
-    { id: 'SlimyToolbarButtonTextColor', title: 'Toolbar Btn Text Color', type: 'text', selectors: '' }
+    {
+      id: 'SlimyMenuBackgroundColor',
+      title: 'Menu BG Color',
+      type: 'background',
+      selectors: '.content, #world-detail, .world-instancing, #instance-detail, #user-detail, .tab-contents, .user-settings-dialog, .message-box, .valueList, #keyboard, #avatar-settings, #numpad, #avatar-detail, .favorite-category-selection' // .quick-menu-wrapper, .quick-menu-content
+    },
+    {
+      id: 'SlimyMenuBorderColor',
+      title: 'Menu Border Color',
+      type: 'border',
+      selectors: ''
+    },
+    {
+      id: 'SlimyMenuTextColor',
+      title: 'Menu Text Color',
+      type: 'text',
+      selectors: '.content'
+    },
+    {
+      id: 'SlimyMenuButtonBackgroundColor',
+      title: 'Menu Btn BG Color',
+      type: 'btn-background',
+      selectors: '.btn-region .region-select, .btn-rule .rule-select, .tab-btn.active .active-overlay',
+      lightSelectors: '.filter-option.active, .filter-option:hover, .content-btn:hover, .action-btn:hover, .close-btn:hover, ' +
+      '.world-instancing .content-btn.active, .btn-region .region-select.active, .btn-region .region-select:hover, .btn-rule .rule-select.active, .btn-rule .rule-select:hover, ' +
+      '.content-instance-buttons .instance-btn:hover, .user-toolbar .toolbar-btn:hover, .message-btn:hover, .inp_dropdown:hover, .inp_dropdown .valueList .listValue:hover, ' +
+      '.keyboard-key:hover, .keyboard-mod:hover, .keyboard-func:hover, .keyboard-key.active, .keyboard-mod.active, .keyboard-func.active, .advAvtrProfName:hover, .advAvtrProfSave:hover, .advAvtrProfDelete:hover, .numpadButton:hover, .avatar-toolbar .toolbar-btn:hover',
+      darkSelectors: '.content-btn.disabled, .world-instancing .content-btn.disabled, .world-instancing .content-btn.disabled:hover, .content-instance-buttons .instance-btn.disabled, ' +
+      '.user-toolbar .toolbar-btn.disabled, .message-btn.disabled, .avatar-toolbar .toolbar-btn.disabled'
+    },
+    {
+      id: 'SlimyMenuButtonBorderColor',
+      title: 'Menu Btn Border Color',
+      type: 'border',
+      selectors: ''
+    },
+    {
+      id: 'SlimyMenuButtonTextColor',
+      title: 'Menu Btn Text Color',
+      type: 'text',
+      selectors: ''
+    },
+    {
+      id: 'SlimyToolbarBackgroundColor',
+      title: 'Toolbar BG Color',
+      type: 'background',
+      selectors: '.toolbar'
+    },
+    {
+      id: 'SlimyToolbarBorderColor',
+      title: 'Toolbar Border Color',
+      type: 'border',
+      selectors: ''
+    },
+    {
+      id: 'SlimyToolbarTextColor',
+      title: 'Toolbar Text Color',
+      type: 'text',
+      selectors: '.toolbar'
+    },
+    {
+      id: 'SlimyToolbarButtonBackgroundColor',
+      title: 'Toolbar Btn BG Color',
+      type: 'btn-background',
+      selectors: '.toolbar-btn',
+      lightSelectors: '.toolbar-btn.active, .toolbar-btn:hover',
+      darkSelectors: '.toolbar-btn.deactivated'
+    },
+    {
+      id: 'SlimyToolbarButtonBorderColor',
+      title: 'Toolbar Btn Border Color',
+      type: 'border',
+      selectors: ''
+    },
+    {
+      id: 'SlimyToolbarButtonTextColor',
+      title: 'Toolbar Btn Text Color',
+      type: 'text',
+      selectors: '.toolbar-btn'
+    }
   ];
   const parent = document.querySelector('#slimyDropdownsZone');
   let wrapper;
@@ -548,6 +616,7 @@ function createDropdowns () {
     slimySettings[index] = dropdown;
     slimyValues[index] = slimySettings[index].value();
   }
+  parent.appendChild(wrapper);
 }
 
 createDropdowns();
