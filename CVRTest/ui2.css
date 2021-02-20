@@ -121,6 +121,15 @@
 }
 
 /* Online Friends */
+
+#friends .list-filter .content-btn.second[disabled] {
+    background-color: #691900;
+}
+
+#friends .list-filter .content-btn.second[disabled]:hover {
+    background-color: #691900 !important;
+}
+
 /* FIXME Disabled after r159 release, need to change or remove
 .content-friends .list-content {
     width: 98%;

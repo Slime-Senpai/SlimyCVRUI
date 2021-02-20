@@ -710,6 +710,37 @@ engine.on('UpdateGameDebugInformation', function (_info) {
 });
 
 // Friends
+
+let slimyFriendsTimeout = null;
+
+function slimyFriendsRefresh () {
+  refreshFriends();
+  const friendsButton = document.querySelector('#friends .list-filter .content-btn.second');
+
+  friendsButton.removeEventListener('click', slimyFriendsRefresh);
+
+  friendsButton.setAttribute('disabled', 'true');
+
+  slimyFriendsTimeout = setTimeout(function () {
+    const friendsButton = document.querySelector('#friends .list-filter .content-btn.second');
+    friendsButton.removeAttribute('disabled');
+    friendsButton.addEventListener('click', slimyFriendsRefresh);
+  }, 5000);
+}
+
+engine.on('LoadFriends', function () {
+  const friendsButton = document.querySelector('#friends .list-filter .content-btn.second');
+
+  friendsButton.removeAttribute('disabled');
+
+  friendsButton.addEventListener('click', slimyFriendsRefresh);
+
+  if (slimyFriendsTimeout !== null) clearTimeout(slimyFriendsTimeout);
+  slimyFriendsTimeout = null;
+});
+
+document.querySelector('#friends .list-filter .content-btn.second').addEventListener('click', slimyFriendsRefresh);
+
 /* NOTE This doesn't work anymore
 engine.on('LoadFriends', function (_list, _filter) {
   if (!_list || _list.length === 0) {
