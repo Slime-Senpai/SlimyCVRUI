@@ -20,6 +20,8 @@ function changeTab(_id, _e){
                     if(avatarList.length == 0){
                         refreshAvatars();
                     }
+                    closeAvatarDetail();
+                    closeAvatarDetailFavorite();
                 break;
             case 'props':
                 if(propList.length == 0){
@@ -324,6 +326,9 @@ function renderWorlds(_list){
 //Friends
 function loadFriends(_list, _filter){
     friendList = _list;
+    friendList.sort(function(a, b){
+        return a.PlayerName.toLowerCase().localeCompare(b.PlayerName.toLowerCase());
+    });
 
     var html = '';
 
@@ -394,6 +399,7 @@ function filterSearch(_category){
 }
 function loadSearch(){
     var term = document.getElementById('globalSearch').value;
+    //engine.call('CVRAppCallSubmitSearch', term);
 }
 function displaySearch(_users, _avatars, _worlds){
     var userCount = document.querySelector('#searchResultsUsers .result-count');
@@ -1374,6 +1380,8 @@ function displayAvatarDetails(_AvatarDetails, _avatarCategories, _isMine){
         cvr('#avatar-detail .change-btn').addClass('disabled').attr('onclick', '');
         cvr('#avatar-detail .fav-btn').addClass('disabled').attr('onclick', '');
     }
+
+    window.pickedAvatarCategories = [];
     
     detailPage.classList.remove('hidden');
     detailPage.classList.add('in');
@@ -1394,21 +1402,19 @@ window.pickedAvatarForCategorie = '';
 window.pickedAvatarCategories = [];
 
 function favoriteAvatar(_guid){
-    
     window.pickedAvatarForCategorie = _guid;
-    window.pickedAvatarCategories = [];
     
     var html = '';
     
     for (var i=0; i < window.avatarCategories.length; i++){
-        if(avatarCurrentCategories.includes(window.avatarCategories[i].CategoryKey)){
+        if(window.avatarCurrentCategories.includes(window.avatarCategories[i].CategoryKey)){
             window.pickedAvatarCategories[window.avatarCategories[i].CategoryKey] = true;
-            html += '<div class="favorite-category" onclick="removeAvatarFromCategory(\''+window.avatarCategories[i].CategoryKey+
-                '\');"><img src="gfx/remove.svg"><span>'+window.avatarCategories[i].CategoryClearTextName+'</span></div>';
+            html += '<div class="favorite-category"><div class="inp_toggle checked" onclick="changeAvatarCategory(\''+
+                window.avatarCategories[i].CategoryKey+'\', this);"></div><span>'+window.avatarCategories[i].CategoryClearTextName+'</span></div>';
         }else{
             window.pickedAvatarCategories[window.avatarCategories[i].CategoryKey] = false;
-            html += '<div class="favorite-category" onclick="addAvatarToCategory(\''+window.avatarCategories[i].CategoryKey+
-                '\');"><img src="gfx/create_new.svg"><span>'+window.avatarCategories[i].CategoryClearTextName+'</span></div>';
+            html += '<div class="favorite-category"><div class="inp_toggle" onclick="changeAvatarCategory(\''+
+                window.avatarCategories[i].CategoryKey+'\', this);"></div><span>'+window.avatarCategories[i].CategoryClearTextName+'</span></div>';
         }
     }
     
@@ -1427,14 +1433,21 @@ function closeAvatarDetailFavorite(){
     }, 200);
 }
 
-function addAvatarToCategory(_categoryIdentifier){
-    window.pickedAvatarCategories[_categoryIdentifier] = true;
-    sendAvatarCategoryUpdate();
-}
-
-function removeAvatarFromCategory(_categoryIdentifier){
-    window.pickedAvatarCategories[_categoryIdentifier] = false;
-    sendAvatarCategoryUpdate();
+function changeAvatarCategory(_categoryIdentifier, _e){
+    if (_e.classList.contains('checked')){
+        var index = window.avatarCurrentCategories.indexOf(_categoryIdentifier);
+        if (index > -1) {
+            window.avatarCurrentCategories.splice(index, 1);
+        }
+        
+        window.pickedAvatarCategories[_categoryIdentifier] = false;
+        _e.classList.remove('checked');
+    }else{
+        window.avatarCurrentCategories.push(_categoryIdentifier);
+        
+        window.pickedAvatarCategories[_categoryIdentifier] = true;
+        _e.classList.add('checked');
+    }
 }
 
 function sendAvatarCategoryUpdate(){
@@ -1445,6 +1458,8 @@ function sendAvatarCategoryUpdate(){
             categoryList[categoryList.length] = k;
         }
     }
+    
+    console.log(categoryList.join(','));
     
     engine.call("CVRAppCallUpdateAvatarCategories", window.pickedAvatarForCategorie, categoryList.join(','));
     closeAvatarDetailFavorite();
@@ -2072,7 +2087,7 @@ function DisplayAvatarSettings(_list){
                 html += '<div class="row-wrapper">\n' +
                     '    <div class="option-caption">'+entry.name+':</div>\n' +
                     '        <div class="option-input">\n' +
-                    '        <div id="AVS_'+entry.parameterName+'-x" class="inp_number" data-type="avatar" data-caption="X" data-min="-9999" data-max="9999" data-current="'+entry.defaultValueX+'" data-saveOnChange="true"></div>\n' +
+                    '        <div id="AVS_'+entry.parameterName+'" class="inp_number" data-type="avatar" data-caption="X" data-min="-9999" data-max="9999" data-current="'+entry.defaultValueX+'" data-saveOnChange="true"></div>\n' +
                     '    </div>\n' +
                     '</div>';
                 break;
@@ -2134,7 +2149,7 @@ function DisplayAvatarSettings(_list){
                 new inp_sliderH(document.getElementById('AVS_'+entry.parameterName+'-z'));
                 break;
             case 'inputsingle':
-                new inp_number(document.getElementById('AVS_'+entry.parameterName+'-x'));
+                new inp_number(document.getElementById('AVS_'+entry.parameterName));
                 break;
             case 'inputvector2':
                 new inp_number(document.getElementById('AVS_'+entry.parameterName+'-x'));

@@ -547,6 +547,12 @@
                                 <div id="ControlEnableGesturesWhileFingerTracking" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                     </div>
                         </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Vive Advanced Controls:</div>
+                            <div class="option-input">
+                                <div id="ControlViveAdvancedControls" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                    </div>
+                        </div>
                     </div>
 
                     <div id="settings-filter" class="settings-categorie">
@@ -1063,9 +1069,9 @@
                     <input type="text" class="inp_search" id="globalSearch" placeholder="Search" data-submit="loadSearch();" onclick="displayKeyboard(this);" />
                     <div class="scroll-content">
                         <div class="filter-content">
-                            <div class="filter-option data-filter-users" onclick="filterSearch('users');"></div>
-                            <div class="filter-option data-filter-avatars" onclick="filterSearch('avatars');"></div>
-                            <div class="filter-option data-filter-worlds" onclick="filterSearch('worlds');"></div>
+                            <div class="filter-option data-filter-users" onclick="filterSearch('users');">User</div>
+                            <div class="filter-option data-filter-avatars" onclick="filterSearch('avatars');">Avatars</div>
+                            <div class="filter-option data-filter-worlds" onclick="filterSearch('worlds');">Worlds</div>
                         </div>
                                 </div>
                     <div class="content-btn first" onclick="filterSearch('');">Reset Filters</div>
@@ -1522,11 +1528,13 @@
                 
                 <div class="favorite-category-selection">
                     <h3>Select a Category</h3>
+                    <div class="action-btn close-btn" onclick="closeAvatarDetailFavorite();">Back</div>
                     <div class="scroll-content">
                         <div class="favorite-categories">
                             
                         </div>
                     </div>
+                    <div class="action-btn apply-btn" onclick="sendAvatarCategoryUpdate();">Apply</div>
                 </div>
             </div>
 
@@ -1700,6 +1708,7 @@
                 <div class="toolbar-btn" onclick="changeTab('props', this);"><img src="gfx/btn-props.svg">Props</div>
                 <div class="toolbar-btn-double">
                     <div class="time-display">00:00</div>
+                    <!--<div class="action-btn" onclick="changeTab('search', this);">Search</div>-->
                 </div>
                 <div onclick="toggleMic();" class="toolbar-btn action-mute"><img src="gfx/mute.svg">Unmute</div>
                 <!--<div class="toolbar-btn deactivated"><img src="gfx/nav-missions.svg">Missions</div>-->
