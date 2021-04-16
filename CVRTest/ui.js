@@ -327,7 +327,7 @@ function renderWorlds(_list){
 function loadFriends(_list, _filter){
     friendList = _list;
     friendList.sort(function(a, b){
-        const firstParameter = a.OnlineState === b.OnlineState ? 0 : a.OnlineState ? 1 : -1;
+        const firstParameter = a.OnlineState === b.OnlineState ? 0 : a.OnlineState ? -1 : 1;
 
         if (firstParameter === 0) {
             return a.PlayerName.toLowerCase().localeCompare(b.PlayerName.toLowerCase());
