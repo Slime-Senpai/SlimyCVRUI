@@ -14,6 +14,10 @@
     top: 4em;
     bottom: 5em;
 }
+
+#settings .list-filter .scroll-content .filter-option {
+    padding: 0.4em;
+}
 /*
 #settings .list-filter .scroll-content .filter-option {
     padding: 0.4em;
@@ -40,7 +44,6 @@
     width: 100%;
     height: 100%;
     text-align: center;
-    /*text-shadow: 0 0 2px #000;*/
     line-height: 1.333333em;
     font-size: 1.5em;
     color: rgb(60,60,60);
@@ -61,8 +64,77 @@
     background: blue;
 }
 
+.slimy_toggle {
+    height: 2em;
+    width: 2em;
+    border: 1px solid white;
+    margin-bottom: 0.5em
+}
+.slimy_toggle.checked {
+    background: white;
+}
+
+.slimy_dropdown {
+    border: 1px solid #59885d;
+    width: 15em;
+    height: 2em;
+    position: relative;
+    margin-bottom: 1em;
+}
+.slimy_dropdown.open {
+    z-index: 10;
+}
+.slimy_dropdown:hover {
+    background-color: rgba(27, 80, 55, 1);
+}
+
+.slimy_dropdown.open .valueList {
+    display: block;
+}
+
+.slimy_dropdown .valueList .listValue:hover {
+    background-color: rgba(27, 80, 55, 1);
+}
+
+.slimyColorPreview {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1em;
+}
+
+#SlimySecret {
+    height: 2em;
+    margin-top: 0.5em;
+    position: relative;
+}
+
+#slimyReload {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+}
+
+#slimyNewColor {
+    border: 3px solid #59885d;
+    font-size: 1.5em;
+    width: 300px;
+    border-radius: 0.25em;
+    padding: 1.5% 1% 1.5% 2%;
+    margin-left: 40%;
+    margin-bottom: 1em;
+}
+
 /* Online Friends */
 
+#friends .list-filter .content-btn.second[disabled] {
+    background-color: #691900;
+}
+
+#friends .list-filter .content-btn.second[disabled]:hover {
+    background-color: #691900 !important;
+}
+
+/* FIXME Disabled after r159 release, need to change or remove
 .content-friends .list-content {
     width: 98%;
     height: 95%;
@@ -104,12 +176,13 @@
 .online-friend .content-image {
     bottom: 5em;
 }
+*/
 
 /* Feed */
-
-/*.content-feed {
+/* FIXME Disabled after r159 release, need to change or remove
+.content-feed {
     height: 36%;
-}*/
+}
 
 .content-feed .feed-news {
     height: 90%;
@@ -136,4 +209,34 @@
 
     border-radius: 0.25em;
     border: 3px solid #FFFFFF;
+}*/
+
+.content .image, .toolbar .image {
+    content: "";
+    background-size: cover;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.content .image.enabled, .toolbar .image[data-contentImage="true"].enabled {
+    background-image: url(background.png);
+}
+
+.toolbar .image {
+    background-position: bottom;
+}
+
+.toolbar .image[data-contentImage="false"].enabled {
+    background-image: url(background_toolbar.png);
+}
+
+.row-color-wrapper {
+    border: 3px solid #59885d;
+    border-radius: 0.25em;
+    padding: 1.5% 1%;
+    margin-bottom: 1em;
 }

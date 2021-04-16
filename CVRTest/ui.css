@@ -30,6 +30,9 @@ h1 {
 .color-primary {
     background-color: #E43600;
 }
+.color-primary:hover {
+    background-color: #E43600 !important;
+}
 
 .wrapper {
     position: absolute;
@@ -49,9 +52,9 @@ h1 {
     overflow: hidden;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #17452f;
 
-    background-color: rgba(128, 128, 128, 0.8);
+    background-color: #373021;
 
     display: flex;
 
@@ -88,7 +91,7 @@ h1 {
 
 .list-content {
     width: 75%;
-    border-left: 3px solid #FFFFFF;
+    border-left: 3px solid #59885d;
 
     padding: 1%;
 
@@ -110,7 +113,7 @@ h1 {
 
     margin: 0 3% 3% 0;
 
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     position: relative;
 
@@ -124,14 +127,14 @@ h1 {
 
 .list-filter .scroll-content {
     position: absolute;
-    width: 100.000000%;
+    width: 100%;
     left: 5%;
-    top: 8.5em;
+    top: 4.5em;
     bottom: 6em;
 }
 
 .filter-option {
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
     border-radius: 0.25em;
     padding: 0.5em;
     margin-bottom: 0.5em;
@@ -140,7 +143,7 @@ h1 {
 
 .filter-option.active,
 .filter-option:hover {
-    background: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 
 .friend .content-cell-formatter {
@@ -222,11 +225,11 @@ h1 {
 
     border-radius: 0.25em;
 
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-btn:hover {
-    background-color: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 
 .content-btn.first {
@@ -235,6 +238,13 @@ h1 {
 
 .content-btn.second {
     bottom: 0.5em;
+}
+
+.content-btn.zero {
+    bottom: 5.5em;
+}
+.content-btn.neg-one {
+    bottom: 8em;
 }
 
 .content-btn.disabled {
@@ -249,6 +259,18 @@ h1 {
 }
 .content-cell.world .content-name {
     bottom: 3.2em;
+}
+
+.content-cell.prop .content-cell-formatter {
+    margin-top: 9em;
+}
+
+.content-cell.prop .content-name {
+    bottom: 8em;
+}
+
+.content-cell.prop .content-image {
+    bottom: 9.5em;
 }
 
 /*Home*/
@@ -267,7 +289,7 @@ h1 {
     left: 1%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 #home .content-shortcuts .action-btn {
@@ -290,44 +312,98 @@ h1 {
     left: 1%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-feed {
     position: absolute;
     top: 10%;
-    width: 48%;
+    width: 73%;
     padding: 1%;
-    height: 58%;
+    height: 19%;
     left: 26%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
-.content-news {
+.content-avatar-functions {
+    position: absolute;
+    top: 31%;
+    width: 52%;
+    padding: 1%;
+    height: 37%;
+    left: 26%;
+
+    border-radius: 0.25em;
+    border: 3px solid #59885d;
+}
+
+.content-panic {
     position: absolute;
     top: 71%;
-    width: 48%;
+    width: 52%;
     padding: 1%;
     height: 26%;
     left: 26%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
-.content-friends {
+.content-panic .action-btn {
+    padding: 0.5em;
+    width: 12.5em;
+    height: 6em;
+    text-align: center;
+}
+.content-panic .action-btn img {
+    width: 3em;
+    height: 3em;
+    margin-bottom: 0.5em;
+}
+
+.content-call {
     position: absolute;
-    top: 10%;
-    width: 24%;
+    top: 31%;
+    width: 20%;
     padding: 1%;
-    height: 87%;
-    left: 75%;
+    height: 66%;
+    left: 79%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
+    
+    text-align: center;
 }
+
+@keyframes calling {
+    0% {box-shadow: 0 0 0 1em #0AA48E}
+    100% {box-shadow: 0 0 2em 1em #0AA48E}
+}
+
+.call-profile {
+    width: 8em;
+    height: 8em;
+    border-radius: 50%;
+    margin: 2em 0;
+    background: #333333;
+}
+
+.call-profile.calling {
+    animation: calling 2s infinite alternate;
+}
+
+.call-name {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.call-duration {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+
 
 .content-caption {
     width: 100%;
@@ -352,11 +428,11 @@ h1 {
     width: 4em;
     height: 4em;
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
     padding: 0 0.2em 0 0;
 }
 .action-btn:hover {
-    background-color: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 
 .action-btn img {
@@ -366,7 +442,7 @@ h1 {
 
 /*World Detail*/
 #world-detail {
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 
 #world-detail h1 {
@@ -382,7 +458,7 @@ h1 {
     right: 1%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
     padding: 0.5em;
 
     width: 8em;
@@ -390,7 +466,7 @@ h1 {
     text-align: center;
 }
 .close-btn:hover {
-    background-color: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 
 .content-world-information {
@@ -402,7 +478,7 @@ h1 {
     left: 1%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-world-actions {
@@ -414,7 +490,7 @@ h1 {
     left: 26%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-world-author {
@@ -426,7 +502,7 @@ h1 {
     left: 75%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-world-author-worlds {
@@ -438,7 +514,7 @@ h1 {
     left: 75%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-world-instances {
@@ -450,7 +526,7 @@ h1 {
     left: 1%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-world-instances .action-btn {
@@ -619,7 +695,7 @@ h1 {
     margin-right: 1em;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     position: relative;
 
@@ -683,15 +759,15 @@ h1 {
 /*Instancing*/
 .world-instancing {
     position: absolute;
-    background-color: rgba(128, 128, 128, 1);
-    top: 2%;
+    background-color: #373021;
+    top: 6%;
     bottom: 9%;
     left: -100%;
     width: 30%;
-    height: 96%;
+    height: 81%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     padding: 0.5em;
 }
@@ -722,7 +798,7 @@ h1 {
 }
 
 .world-instancing .content-btn.active {
-    background-color: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 
 .world-instancing .btn-region,
@@ -733,30 +809,85 @@ h1 {
 
 .btn-region .region-select {
     width: 33.333333%;
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 .btn-rule .rule-select {
     width: 50%;
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 .btn-region .region-select + .region-select,
 .btn-rule .rule-select + .rule-select {
-    border-left: 3px solid #FFF;
+    border-left: 3px solid #59885d;
 }
 .btn-region .region-select.active,
 .btn-region .region-select:hover,
 .btn-rule .rule-select.active,
 .btn-rule .rule-select:hover {
-    background-color: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 
 .inp-hidden {
     display: none;
 }
 
+/*Avatar Categories*/
+.favorite-category-selection {
+    position: absolute;
+    background-color: #373021;
+    top: 6%;
+    bottom: 9%;
+    left: -100%;
+    width: 30%;
+    height: 81%;
+
+    border-radius: 0.25em;
+    border: 3px solid #59885d;
+
+    padding: 0.5em;
+}
+.favorite-category-selection.in {
+    left: 35%;
+    transition: left 0.2s linear;
+}
+.favorite-category-selection.out {
+    left: 100%;
+    transition: left 0.2s linear;
+}
+.favorite-category-selection.hidden {
+    visibility: hidden;
+}
+.favorite-category-selection .scroll-content {
+    top: 4em;
+    bottom: 4em;
+}
+.favorite-category-selection .favorite-category {
+    display: flex;
+    margin-bottom: 0.25em;
+    padding: 0.5em;
+}
+.favorite-category-selection .close-btn {
+    height: 2.5em;
+    top: 1em;
+    right: 1em;
+}
+.favorite-category-selection .apply-btn {
+    height: 2.5em;
+    bottom: 1em;
+    position: absolute;
+    left: 1em;
+    width: 8em;
+    text-align: center;
+    padding: 0.5em;
+}
+.favorite-category-selection span {
+    position: relative;
+    margin-left: 1em;
+    top: 0.4em;
+}
+
 /*Instance Detail*/
 #instance-detail {
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 
 #instance-detail h1 {
@@ -775,7 +906,7 @@ h1 {
     left: 1%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-instance-owner .profile-image {
@@ -812,7 +943,7 @@ h1 {
     left: 22%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .content-instance-world .world-image {
@@ -837,7 +968,7 @@ h1 {
     left: 43%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 .content-instance-information .cell-name {
     width: 8.000000em;
@@ -852,7 +983,7 @@ h1 {
     left: 22%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
     
     display: flex;
 }
@@ -870,13 +1001,13 @@ h1 {
     margin-bottom: 3%;
 }
 .content-instance-buttons .instance-btn:hover {
-    background: rgba(180, 180, 180, 1);
+    background-color: rgba(27, 80, 55, 1);
 }
 .content-instance-buttons .instance-btn.disabled {
     background: rgba(80, 80, 80, 1);
 }
 .content-instance-buttons .instance-btn + .instance-btn {
-    border-left: 3px solid #FFFFFF;
+    border-left: 3px solid #59885d;
 }
 
 .content-instance-players {
@@ -888,7 +1019,7 @@ h1 {
     left: 69%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 .content-instance-players .instancePlayer {
     display: flex;
@@ -906,7 +1037,7 @@ h1 {
 
 /*User Detail*/
 #user-detail {
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 #user-detail h1 {
     text-align: left;
@@ -923,7 +1054,7 @@ h1 {
     left: 1%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 #user-detail .online-state {
     position: absolute;
@@ -976,7 +1107,7 @@ h1 {
     left: 22%;
 
     /*border-radius: 0.25em;
-    border: 3px solid #FFFFFF;*/
+    border: 3px solid #59885d;*/
 }
 .tab-list {
     display: flex;
@@ -988,7 +1119,7 @@ h1 {
 }
 .tab-btn {
     border-radius: 0.25em 0.25em 0 0;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
     width: 11.5%;
     padding: 0.2em 0;
     text-align: center;
@@ -1001,11 +1132,11 @@ h1 {
     height: 6px;
     width: 100%;
 
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 .tab-contents {
     border-radius: 0 0 0.25em 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     position: absolute;
     top: 2em;
@@ -1014,7 +1145,7 @@ h1 {
     bottom: 0;
     height: auto;
 
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 
 .tab-content {
@@ -1037,7 +1168,7 @@ h1 {
     left: 22%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     display: flex;
 }
@@ -1046,14 +1177,14 @@ h1 {
     width: 11.111111%;
 }
 .user-toolbar .toolbar-btn:hover {
-    background: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 .user-toolbar .toolbar-btn.disabled {
     background: rgb(60, 60, 60);
 }
 
-.activityDataAviable,
-.activityDataUnaviable,
+.activityDataAvailable,
+.activityDataUnavailable,
 .activityDataPrivate,
 .activityDataOffline {
     position: absolute;
@@ -1063,18 +1194,18 @@ h1 {
     height: 100%;
 }
 
-.activityDataAviable.hidden,
-.activityDataUnaviable.hidden,
+.activityDataAvailable.hidden,
+.activityDataUnavailable.hidden,
 .activityDataPrivate.hidden,
 .activityDataOffline.hidden {
     display: none;
 }
 
-.activityDataUnaviableInfo {
+.activityDataUnavailableInfo {
     position: absolute;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     display: flex;
 
@@ -1088,13 +1219,13 @@ h1 {
     padding: 1.2em;
 }
 
-.activityDataUnaviableInfo img {
+.activityDataUnavailableInfo img {
     width: 6em;
     height: 6em;
     margin-right: 2em;
 }
 
-.activityDataUnaviableInfo div {
+.activityDataUnavailableInfo div {
     flex: 1;
     font-size: 1.5em;
     padding-top: 0.8em;
@@ -1127,7 +1258,7 @@ h1 {
     width: 35em;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     border-radius: 0.25em;
 
@@ -1144,7 +1275,7 @@ h1 {
     width: auto;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     border-radius: 0.25em;
 
@@ -1163,6 +1294,59 @@ h1 {
 .player-instance-players .instancePlayer .instancePlayerName {
     flex: 1;
     font-size: 1.2em;
+}
+
+.user-settings-dialog {
+    position: absolute;
+    top: 17%;
+    left: 34%;
+    width: 50%;
+    height: 61%;
+
+    border-radius: 0.25em;
+    overflow: hidden;
+
+    box-sizing: border-box;
+    border: 3px solid #59885d;
+
+    background-color: #373021;
+    
+    padding: 1em;
+
+    left: -100%;
+    transition: left 0.2s linear;
+}
+
+.user-settings-dialog p {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    margin-bottom: 1em;
+    text-align: center;
+    font-size: 1.500000em;
+}
+
+.user-settings-dialog .action-btn {
+    height: 2em;
+    width: 6em;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    text-align: center;
+    padding-top: 0.25em;
+}
+
+.user-settings-dialog.in {
+    left: 34%;
+    transition: left 0.2s linear;
+}
+.user-settings-dialog.out {
+    left: 100%;
+    transition: left 0.2s linear;
+}
+
+.user-settings-dialog.hidden {
+    visibility: hidden;
 }
 
 
@@ -1233,9 +1417,9 @@ h1 {
     overflow: hidden;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
-    background-color: rgba(128, 128, 128, 0.8);
+    background-color: rgba(27, 80, 55, 0.5);
 
     display: flex;
 }
@@ -1253,15 +1437,15 @@ h1 {
 
 .toolbar-btn.active,
 .toolbar-btn:hover {
-    background-color: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 
 .toolbar-btn.deactivated {
-    background-color: rgb(60, 60, 60);
+    background-color: rgba(14, 40, 27, 1);
 }
 
 .toolbar-btn + .toolbar-btn {
-    border-left: 3px solid #FFFFFF;
+    border-left: 3px solid #59885d;
 }
 
 .toolbar-btn-double {
@@ -1274,8 +1458,8 @@ h1 {
     color: #FFF;
     font-size: 1.3em;
 
-    border-left: 3px solid #FFFFFF;
-    border-right: 3px solid #FFFFFF;
+    border-left: 3px solid #59885d;
+    border-right: 3px solid #59885d;
 }
 
 .toolbar-btn > img {
@@ -1301,9 +1485,9 @@ h1 {
     overflow: hidden;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 
     text-align: center;
 }
@@ -1372,7 +1556,7 @@ h1 {
     left: 0.5em;
     right: 0.5em;
     height: 2em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
     border-radius: 0.25em;
 }
 .message-box.alert-timed-box .message-time .message-time-bar {
@@ -1423,7 +1607,7 @@ h1 {
 }
 
 .message-content {
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
     border-radius: 0.25em;
 
     margin-bottom: 1em;
@@ -1435,7 +1619,7 @@ h1 {
     width: 5em;
     height: 5em;
 
-    border-right: 3px solid #FFFFFF;
+    border-right: 3px solid #59885d;
 
     margin-right: 1em;
 }
@@ -1451,10 +1635,10 @@ h1 {
 
     text-align: center;
 
-    border-left: 3px solid #FFFFFF;
+    border-left: 3px solid #59885d;
 }
 .message-btn:hover {
-    background: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 .message-btn.disabled {
     background: rgb(60, 60, 60);
@@ -1477,7 +1661,7 @@ h1 {
   position: absolute;
 
   border-radius: 0.25em;
-  border: 3px solid #FFFFFF;
+  border: 3px solid #59885d;
 
   display: flex;
 
@@ -1512,7 +1696,7 @@ h1 {
 
 /*Inputs*/
 .inp_slider {
-    border: 1px solid white;
+    border: 1px solid #59885d;
     width: 100%;
     height: 2em;
     position: relative;
@@ -1546,7 +1730,7 @@ h1 {
     height: 8em;
 }
 .inp_dropdown {
-    border: 1px solid white;
+    border: 1px solid #59885d;
     width: 15em;
     height: 2em;
     position: relative;
@@ -1557,6 +1741,9 @@ h1 {
 }
 .inp_dropdown:hover {
     background-color: rgba(180, 180, 180, 1);
+}
+.inp_dropdown.dropdown-full-width {
+    width: 100%;
 }
 .dropdown-value {
     position: absolute;
@@ -1574,9 +1761,9 @@ h1 {
     left: 0;
     width: 100%;
     display: none;
-    border: 1px solid white;
+    border: 1px solid #59885d;
 
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 .inp_dropdown.open .valueList {
     display: block;
@@ -1587,7 +1774,7 @@ h1 {
     text-align: center;
 }
 .valueList .listValue + .listValue {
-    border-top: 1px solid white;
+    border-top: 1px solid #59885d;
 }
 .inp_dropdown .valueList .listValue:hover {
     background-color: rgba(180, 180, 180, 1);
@@ -1597,7 +1784,7 @@ h1 {
 .inp_toggle {
     height: 2em;
     width: 2em;
-    border: 1px solid white;
+    border: 1px solid #59885d;
     margin-bottom: 0.5em
 }
 .inp_toggle.checked {
@@ -1615,9 +1802,18 @@ h1 {
     position: relative;
 }
 
+.settings-categorie .inp_number {
+    width: 15em;
+}
+
+.settings-categorie .content-btn {
+    width: 15em;
+    position: relative;
+}
+
 .inp_search {
     width: 100%;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
     background: transparent;
     border-radius: 0.25em;
     padding: 0.5em;
@@ -1637,7 +1833,7 @@ h1 {
     overflow: hidden;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     background-color: rgba(128, 128, 128, 0.8);
 
@@ -1718,7 +1914,7 @@ h1 {
     overflow: hidden;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     background-color: rgba(128, 128, 128, 0.8);
 
@@ -1742,9 +1938,9 @@ h1 {
     overflow: hidden;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 
     text-align: center;
 }
@@ -1766,7 +1962,7 @@ h1 {
     display: flex;
 }
 .keyboard-row + .keyboard-row {
-    border-top: 3px solid #FFFFFF;
+    border-top: 3px solid #59885d;
 }
 .keyboard-row.r1 {
     height: 10%;
@@ -1811,7 +2007,7 @@ h1 {
 .keyboard-key.active,
 .keyboard-mod.active,
 .keyboard-func.active {
-    background: rgba(180, 180, 180, 1);
+    background-color: rgba(27, 80, 55, 1);
 }
 .keyboard-key + .keyboard-key,
 .keyboard-key + .keyboard-mod,
@@ -1822,7 +2018,7 @@ h1 {
 .keyboard-func + .keyboard-key,
 .keyboard-func + .keyboard-mod,
 .keyboard-func + .keyboard-func {
-    border-left: 3px solid #FFFFFF;
+    border-left: 3px solid #59885d;
 }
 .keyboard-key.wide,
 .keyboard-mod.wide,
@@ -1849,7 +2045,7 @@ h1 {
     background: #f56b40;
 }
 
-.content-news .action-btn {
+.content-avatar-functions .action-btn {
     padding: 40px 0;
     text-align: center;
 }
@@ -1863,7 +2059,7 @@ h1 {
 
 .inp_button {
     width: 10%;
-    border: 1px solid white;
+    border: 1px solid #59885d;
     text-align: center;
     line-height: 1.333333em;
     font-size: 1.5em;
@@ -1872,7 +2068,7 @@ h1 {
 }
 .imperialDisplay {
     width: 30%;
-    border: 1px solid white;
+    border: 1px solid #59885d;
     text-align: center;
     line-height: 1.333333em;
     font-size: 1.5em;
@@ -1881,7 +2077,7 @@ h1 {
 
 .inp_btn_action {
     width: 30%;
-    border: 1px solid white;
+    border: 1px solid #59885d;
     text-align: center;
     line-height: 1.333333em;
     font-size: 1.5em;
@@ -1892,7 +2088,7 @@ h1 {
 .inp_joystick {
     width: 12em;
     height: 12em;
-    border: 1px solid white;
+    border: 1px solid #59885d;
     margin-bottom: 1em;
     position: relative;
     background-image: url(gfx/Joystick_bg.svg);
@@ -1903,7 +2099,7 @@ h1 {
     height: 1em;
     width: 1em;
     border-radius: 50%;
-    border: 1px solid white;
+    border: 1px solid #59885d;
     background: white;
     margin-left: -0.5em;
     margin-top: -0.5em;
@@ -1912,7 +2108,7 @@ h1 {
 .inp_sliderH {
     width: 4em;
     height: 12em;
-    border: 1px solid white;
+    border: 1px solid #59885d;
     position: absolute;
     left: 13em;
 }
@@ -1931,10 +2127,10 @@ h1 {
     text-align: center;
     line-height: 1.333333em;
     font-size: 1.5em;
-    color: rgb(60,60,60);
+    color: #FFFFFF;
 }
 .inp_number {
-    border: 1px solid white;
+    border: 1px solid #59885d;
     width: 100%;
     height: 1.333em;
     position: relative;
@@ -1943,11 +2139,11 @@ h1 {
     text-align: center;
     line-height: 1.333333em;
     font-size: 1.5em;
-    color: rgb(60,60,60);
+    color: #FFFFFF;
 }
 
 #avatar-settings {
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 .advAvtrProfile {
     width: 100%;
@@ -1961,7 +2157,7 @@ h1 {
 }
 .advAvtrProfName {
     flex: 1;
-    border: 2px solid white;
+    border: 2px solid #59885d;
     
     white-space: nowrap;
     overflow: hidden;
@@ -1969,19 +2165,19 @@ h1 {
 }
 .advAvtrProfSave {
     width: 1.3em;
-    border: 2px solid white;
+    border: 2px solid #59885d;
     margin-left: 0.3em;
 }
 .advAvtrProfDelete {
     width: 1.3em;
-    border: 2px solid white;
+    border: 2px solid #59885d;
     margin-left: 0.3em;
 }
 
 .advAvtrProfName:hover ,
 .advAvtrProfSave:hover,
 .advAvtrProfDelete:hover {
-    background: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 
 
@@ -1998,9 +2194,9 @@ h1 {
     overflow: hidden;
 
     box-sizing: border-box;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 
     text-align: center;
 }
@@ -2029,7 +2225,7 @@ h1 {
     display: flex;
 }
 .numpad-row + .numpad-row {
-    border-top: 3px solid #FFFFFF;
+    border-top: 3px solid #59885d;
 }
 .numpad-row.r1 {
     top: 0;
@@ -2071,15 +2267,15 @@ h1 {
     flex: 2;
 }
 .numpadButton:hover {
-    background: rgba(180, 180, 180, 1);
+    background-color: rgba(27, 80, 55, 1);
 }
 .numpadButton + .numpadButton {
-    border-left: 3px solid #FFFFFF;
+    border-left: 3px solid #59885d;
 }
 
 .numpadButton.horizontal {
     position: absolute;
-    border-left: 3px solid #FFFFFF;
+    border-left: 3px solid #59885d;
     width: 25%;
     height: 40%;
     right: 0;
@@ -2088,7 +2284,7 @@ h1 {
     height: 20%;
 }
 .numpadButton.horizontal + .numpadButton.horizontal {
-    border-top: 3px solid #FFFFFF;
+    border-top: 3px solid #59885d;
 }
 
 .numpadButton.btn-back {
@@ -2111,7 +2307,7 @@ h1 {
 
 /*Avatar Details*/
 #avatar-detail {
-    background-color: rgba(128, 128, 128, 1);
+    background-color: #373021;
 }
 
 #avatar-detail h1 {
@@ -2129,7 +2325,7 @@ h1 {
     left: 1%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 .avatar-image {
     width: 14.5em;
@@ -2154,7 +2350,7 @@ h1 {
     left: 22%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 }
 
 .avatar-toolbar {
@@ -2165,7 +2361,7 @@ h1 {
     left: 22%;
 
     border-radius: 0.25em;
-    border: 3px solid #FFFFFF;
+    border: 3px solid #59885d;
 
     display: flex;
 }
@@ -2174,8 +2370,16 @@ h1 {
     width: 11.111111%;
 }
 .avatar-toolbar .toolbar-btn:hover {
-    background: rgb(180, 180, 180);
+    background-color: rgba(27, 80, 55, 1);
 }
 .avatar-toolbar .toolbar-btn.disabled {
     background: rgb(60, 60, 60);
+}
+
+.avatar-maininformation {
+    padding: 0 1em;
+}
+
+#search .scroll-content {
+    top: 8em;
 }

@@ -20,6 +20,13 @@ function changeTab(_id, _e){
                     if(avatarList.length == 0){
                         refreshAvatars();
                     }
+                    closeAvatarDetail();
+                    closeAvatarDetailFavorite();
+                break;
+            case 'props':
+                if(propList.length == 0){
+                    refreshProps();
+                }
                 break;
         }
 
@@ -58,6 +65,11 @@ function changeTab(_id, _e){
                 if(avatarList.length == 0){
                     refreshAvatars();
                 }
+            break;
+        case 'props':
+            if(avatarList.length == 0){
+                refreshProps();
+            }
             break;
     }
 }
@@ -172,6 +184,12 @@ window.addEventListener('wheel', function(e){
     e.preventDefault();
 });
 
+/*window.addEventListener('click', function(e){
+    if(e.target.closest('div').getAttribute('onclick') !== null) {
+        playSound("click");
+    }
+});*/
+
 var avatarList = [];
 var worldList = [];
 var friendList = [];
@@ -251,7 +269,7 @@ function renderAvatars(_list){
         html += '<div class="content-cell avatar"><div class="content-cell-formatter"></div>'+
                 '<div class="content-cell-content"><img class="content-image" src="'+
                 _list[i].AvatarImageUrl+'"><div class="content-name">'+
-                _list[i].AvatarName+'</div><div class="content-btn first disabled">Details</div>'+
+                _list[i].AvatarName+'</div><div class="content-btn first" onclick="GetAvatarDetails(\''+_list[i].Guid+'\');">Details</div>'+
                 '<div class="content-btn second" onclick="changeAvatar(\''+_list[i].Guid+'\');">Change Avatar</div></div></div>';
     }
 
@@ -308,6 +326,9 @@ function renderWorlds(_list){
 //Friends
 function loadFriends(_list, _filter){
     friendList = _list;
+    friendList.sort(function(a, b){
+        return a.PlayerName.toLowerCase().localeCompare(b.PlayerName.toLowerCase());
+    });
 
     var html = '';
 
@@ -347,6 +368,116 @@ function renderFriends(_list){
     contentList.innerHTML = html;
 }
 
+//SearchResults
+function filterSearch(_category){
+    var resultsUsers = document.getElementById('searchResultsUsers');
+    var resultsAvatars = document.getElementById('searchResultsAvatars');
+    var resultsWorlds = document.getElementById('searchResultsWorlds');
+    
+    switch(_category){
+        case '':
+            resultsUsers.classList.remove('hidden');
+            resultsAvatars.classList.remove('hidden');
+            resultsWorlds.classList.remove('hidden');
+            break;
+        case 'users':
+            resultsUsers.classList.remove('hidden');
+            resultsAvatars.classList.add('hidden');
+            resultsWorlds.classList.add('hidden');
+            break;
+        case 'avatars':
+            resultsUsers.classList.add('hidden');
+            resultsAvatars.classList.remove('hidden');
+            resultsWorlds.classList.add('hidden');
+            break;
+        case 'worlds':
+            resultsUsers.classList.add('hidden');
+            resultsAvatars.classList.add('hidden');
+            resultsWorlds.classList.remove('hidden');
+            break;
+    }
+}
+function loadSearch(){
+    var term = document.getElementById('globalSearch').value;
+    //engine.call('CVRAppCallSubmitSearch', term);
+}
+function displaySearch(_users, _avatars, _worlds){
+    var userCount = document.querySelector('#searchResultsUsers .result-count');
+    var userWrapper = document.querySelector('#searchResultsUsers .search-result-wrapper');
+    var avatarCount = document.querySelector('#searchResultsAvatars .result-count');
+    var avatarWrapper = document.querySelector('#searchResultsAvatars .search-result-wrapper');
+    var worldCount = document.querySelector('#searchResultsWorlds .result-count');
+    var worldWrapper = document.querySelector('#searchResultsWorlds .search-result-wrapper');
+    
+    userCount.innerHTML = _users.length;
+    avatarCount.innerHTML = _avatars.length;
+    worldCount.innerHTML = _worlds.length;
+
+    var userHtml = '';
+
+    for(var i=0; _users[i]; i++){
+        if(i%5 === 0){
+            if(i !== 0){
+                userHtml += '</div>';
+            }
+            userHtml += '<div class="content-row">';
+        }
+
+        userHtml += '<div class="content-cell friend"><div class="content-cell-formatter"></div>'+
+            '<div class="content-cell-content">'+
+            '<img class="content-image" src="'+
+            _users[i].ProfileImageUrl+'"><div class="content-name">'+
+            _users[i].PlayerName+'</div><div class="content-btn second" '+
+            'onclick="getUserDetails(\''+_users[i].Guid+'\');">Details</div>'+
+            '</div></div>';
+    }
+
+    userWrapper.innerHTML = userHtml;
+
+
+
+    var avatarHtml = '';
+
+    for(var i=0; _avatars[i]; i++){
+        if(i%4 === 0){
+            if(i !== 0){
+                avatarHtml += '</div>';
+            }
+            avatarHtml += '<div class="content-row">';
+        }
+
+        avatarHtml += '<div class="content-cell avatar"><div class="content-cell-formatter"></div>'+
+            '<div class="content-cell-content"><img class="content-image" src="'+
+            _avatars[i].AvatarImageUrl+'"><div class="content-name">'+
+            _avatars[i].AvatarName+'</div><div class="content-btn first" onclick="GetAvatarDetails(\''+_avatars[i].Guid+'\');">Details</div>'+
+            '<div class="content-btn second" onclick="changeAvatar(\''+_avatars[i].Guid+'\');">Change Avatar</div></div></div>';
+    }
+
+    avatarWrapper.innerHTML = avatarHtml;
+
+
+
+    var worldHtml = '';
+
+    for(var i=0; _worlds[i]; i++){
+        if(i%4 === 0){
+            if(i !== 0){
+                worldHtml += '</div>';
+            }
+            worldHtml += '<div class="content-row">';
+        }
+
+        worldHtml += '<div class="content-cell world"><div class="content-cell-formatter"></div>'+
+            '<div class="content-cell-content"><img class="content-image" src="'+
+            _worlds[i].WorldImageUrl+'"><div class="content-name">'+
+            _worlds[i].WorldName+'</div>'+
+            '<div  onclick="getWorldDetails(\''+_worlds[i].Guid+'\');" class="content-btn second">Details</div>'+
+            '</div></div>';
+    }
+
+    worldWrapper.innerHTML = worldHtml;
+}
+
 //Settings
 function switchSettingCategorie(_id, _e){
     var buttons = document.querySelectorAll('#settings .filter-option');
@@ -361,6 +492,16 @@ function switchSettingCategorie(_id, _e){
     }
 
     _e.classList.add('active');
+    
+    if (_id == "settings-audio")
+    {
+        LoadMicrophones();
+    }
+
+    if (_id == "settings-graphics")
+    {
+        LoadResolutions();
+    }
 
     document.getElementById(_id).classList.add('active');
 }
@@ -666,8 +807,9 @@ function renderProps(_list){
         html += '<div class="content-cell prop"><div class="content-cell-formatter"></div>'+
             '<div class="content-cell-content"><img class="content-image" src="'+
             _list[i].SpawnableImageUrl+'"><div class="content-name">'+
-            _list[i].SpawnableName+'</div><div class="content-btn first disabled">Details</div>'+
-            '<div class="content-btn second" onclick="SpawnProp(\''+_list[i].Guid+'\');">Spawn Prop</div></div></div>';
+            _list[i].SpawnableName+'</div><div class="content-btn first disabled zero">Details</div>'+
+            '<div class="content-btn first" onclick="SelectProp(\''+_list[i].Guid+'\', \''+_list[i].SpawnableImageUrl+'\', \''+_list[i].SpawnableName+'\');">Select Prop</div>'+
+            '<div class="content-btn second" onclick="SpawnProp(\''+_list[i].Guid+'\');">Drop Prop</div></div></div>';
     }
 
     contentList.innerHTML = html;
@@ -675,6 +817,15 @@ function renderProps(_list){
 
 function SpawnProp(_uid){
     engine.call('CVRAppCallSpawnProp', _uid);
+}
+function SelectProp(_uid, _image, _name){
+    engine.call('CVRAppCallSelectProp', _uid, _image, _name);
+}
+function DeletePropMode(){
+    engine.trigger('CVRAppCallDeletePropMode');
+}
+function ReloadAllAvatars(){
+    engine.trigger('CVRAppActionReloadAllAvatars');
 }
 
 //World Details
@@ -927,7 +1078,7 @@ function loadInstanceDetail(_owner, _world, _instance, _instanceUsers){
     var html = '';
 
     for(var i=0; i < _instanceUsers.length; i++){
-        html += '<div class="instancePlayer"><img class="instancePlayerImage" src="'+
+        html += '<div class="instancePlayer" onclick="getUserDetails(\''+_instanceUsers[i].UserId+'\');"><img class="instancePlayerImage" src="'+
             _instanceUsers[i].UserImageUrl+'"><div class="instancePlayerName">'+
             _instanceUsers[i].UserName+'</div></div>';
     }
@@ -960,7 +1111,12 @@ function getUserDetails(_uid){
 
 var PlayerData = {};
 
-function loadUserDetails(_data, _activity, _instanceUsers){
+var userProfileMute;
+var userProfileVolume;
+var userProfilePlayerAvatarsBlocked;
+var userProfileAvatarBlocked;
+
+function loadUserDetails(_data, _activity, _instanceUsers, _profile){
     PlayerData = _data;
     var detailPage = document.getElementById('user-detail');
 
@@ -979,6 +1135,7 @@ function loadUserDetails(_data, _activity, _instanceUsers){
 
     document.querySelector('#user-detail .profile-avatar img').src = _data.CurrentAvatarImageUrl;
     document.querySelector('#user-detail .profile-avatar p').innerHTML = _data.CurrentAvatarName;
+    document.querySelector('#user-detail .profile-avatar img').setAttribute('onclick', 'GetAvatarDetails(\''+_data.CurrentAvatarGuid+'\');');
 
     var friendBtn = document.querySelector('#user-detail .friend-btn');
     if(_data.IsFriend){
@@ -998,26 +1155,83 @@ function loadUserDetails(_data, _activity, _instanceUsers){
         blockBtn.innerHTML = '<img src="gfx/block.svg">Block';
     }
 
-    var muteBtn = document.querySelector('#user-detail .mute-btn');
+    /*var muteBtn = document.querySelector('#user-detail .mute-btn');
     if(_data.IsMuted){
         muteBtn.setAttribute('onclick', 'unMute(\''+_data.Guid+'\');');
         muteBtn.innerHTML = '<img src="gfx/user-unmute.svg">Unmute';
     }else{
         muteBtn.setAttribute('onclick', 'mute(\''+_data.Guid+'\');');
         muteBtn.innerHTML = '<img src="gfx/user-mute.svg">Mute';
-    }
+    }*/
 
     var kickBtn = document.querySelector('#user-detail .kick-btn');
     kickBtn.setAttribute('onmousedown', 'kickUser(\''+_data.Guid+'\');');
 
+    var moderationView = document.querySelector('#user-detail .user-settings-dialog');
+    
+    var userSettingsTools = '<p>User Settings</p><div class="action-btn" onclick="hideUserSettings();">Back</div>';
+    userSettingsTools += '<div class="row-wrapper">\n' +
+        '                            <div class="option-caption">Mute Player:</div>\n' +
+        '                            <div class="option-input">\n' +
+        '                                <div id="SelfModerationMute" class="inp_toggle" data-current="' + (_profile.mute?'True':'False') + 
+                                        '" data-saveOnChange="true"></div>\n' +
+        '                            </div>\n' +
+        '                        </div>';
+
+    userSettingsTools += '<div class="row-wrapper">\n' +
+        '                            <div class="option-caption">Voice Volume:</div>\n' +
+        '                            <div class="option-input">\n' +
+        '                              <div id="SelfModerationVolume" class="inp_slider" data-min="0" data-max="100" data-current="' + (_profile.voiceVolume * 100) + '" data-saveOnChange="true" data-continuousUpdate="true"></div>\n' +
+        '                            </div>\n' +
+        '                        </div>';
+
+    userSettingsTools += '<div class="row-wrapper">\n' +
+        '                            <div class="option-caption">Players Avatar:</div>\n' +
+        '                            <div class="option-input">\n' +
+        '                                <div id="SelfModerationUsersAvatars" class="inp_dropdown" data-options="0:Hide,1:Use content filter,2:Show" data-current="' + (_profile.userAvatarVisibility) + '" data-saveOnChange="true"></div>\n' +
+        '                            </div>\n' +
+        '                        </div>'
+
+    userSettingsTools += '<div class="row-wrapper">\n' +
+        '                            <div class="option-caption">Current Avatar:</div>\n' +
+        '                            <div class="option-input">\n' +
+        '                                <div id="SelfModerationAvatar" class="inp_dropdown" data-options="0:Hide,1:Use content filter,2:Show" data-current="' + (_profile.avatarVisibility) + '" data-saveOnChange="true"></div>\n' +
+        '                            </div>\n' +
+        '                        </div>'
+
+    moderationView.innerHTML = userSettingsTools;
+
+    userProfileMute = new inp_toggle(document.getElementById('SelfModerationMute'));
+    userProfileVolume = new inp_slider(document.getElementById('SelfModerationVolume'));
+    userProfilePlayerAvatarsBlocked = new inp_dropdown(document.getElementById('SelfModerationUsersAvatars'));
+    userProfileAvatarBlocked = new inp_dropdown(document.getElementById('SelfModerationAvatar'));
+
+    moderationView.classList.add('hidden');
+    
     detailPage.classList.remove('hidden');
     detailPage.classList.add('in');
 
     updateUserDetailsActivity(_activity, _instanceUsers);
 }
 
+function showUserSettings(){
+    var moderationView = document.querySelector('#user-detail .user-settings-dialog');
+    moderationView.classList.remove('hidden');
+    moderationView.classList.add('in');
+}
+
+function hideUserSettings(){
+    var moderationView = document.querySelector('#user-detail .user-settings-dialog');
+    moderationView.classList.remove('in');
+    moderationView.classList.add('out');
+    setTimeout(function(){
+        moderationView.classList.add('hidden');
+        moderationView.classList.remove('out');
+    }, 200);
+}
+
 function unFriend(_guid){
-    engine.call('CVRAppCallRelationsManagement', _guid, 'Unfriend');
+    uiConfirmShow("Unfriend", "Are you sure you want to remove this person from your friendslist?", "removeFriend", _guid);
 }
 
 function addFriend(_guid){
@@ -1065,31 +1279,31 @@ function updateUserDetailsActivity(_activity, _instanceUsers){
         var html = '';
 
         for (var i = 0; i < _instanceUsers.length; i++) {
-            html += '<div class="instancePlayer"><img class="instancePlayerImage" src="' +
+            html += '<div class="instancePlayer" onclick="getUserDetails(\''+_instanceUsers[i].UserId+'\');"><img class="instancePlayerImage" src="' +
                 _instanceUsers[i].UserImageUrl + '"><div class="instancePlayerName">' +
                 _instanceUsers[i].UserName + '</div></div>';
         }
 
         document.querySelector('#tab-content-activity .player-instance-players .scroll-content').innerHTML = html;
 
-        document.querySelector('#tab-content-activity .activityDataAviable').className = 'activityDataAviable';
-        document.querySelector('#tab-content-activity .activityDataUnaviable').className = 'activityDataUnaviable hidden';
+        document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable';
+        document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable hidden';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate hidden';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline hidden';
 
     }else if(_activity.IsInPrivateLobby == false && PlayerData.IsFriend && PlayerData.OnlineState && PlayerData.OnlineNotConnected){
-        document.querySelector('#tab-content-activity .activityDataAviable').className = 'activityDataAviable hidden';
-        document.querySelector('#tab-content-activity .activityDataUnaviable').className = 'activityDataUnaviable hidden';
+        document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable hidden';
+        document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable hidden';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate hidden';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline';
     }else if(_activity.IsInPrivateLobby == true && PlayerData.OnlineState){
-        document.querySelector('#tab-content-activity .activityDataAviable').className = 'activityDataAviable hidden';
-        document.querySelector('#tab-content-activity .activityDataUnaviable').className = 'activityDataUnaviable hidden';
+        document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable hidden';
+        document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable hidden';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline hidden';
     }else{
-        document.querySelector('#tab-content-activity .activityDataAviable').className = 'activityDataAviable hidden';
-        document.querySelector('#tab-content-activity .activityDataUnaviable').className = 'activityDataUnaviable';
+        document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable hidden';
+        document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate hidden';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline hidden';
     }
@@ -1098,23 +1312,28 @@ function updateUserDetailsActivity(_activity, _instanceUsers){
     var inviteBtn = document.querySelector('#user-detail .invite-btn');
 
     if(PlayerData.OnlineState && PlayerData.IsFriend && !PlayerData.OnlineNotConnected){
-        joinBtn.setAttribute('onclick', 'joinInstance(\''+_activity.InstanceId+'\');');
-        joinBtn.classList.remove('disabled');
+        if(_activity.InstanceId !== null){
+            joinBtn.setAttribute('onclick', 'joinInstance(\''+_activity.InstanceId+'\');');
+            joinBtn.classList.remove('disabled');
+        }else{
+            joinBtn.setAttribute('onclick', '');
+            joinBtn.classList.add('disabled');
+        }
 
         inviteBtn.setAttribute('onclick', 'invitePlayer(\''+PlayerData.Guid+'\');');
-        joinBtn.classList.remove('disabled');
+        inviteBtn.classList.remove('disabled');
     }else if(PlayerData.IsFriend) {
         joinBtn.setAttribute('onclick', '');
         joinBtn.classList.add('disabled');
 
         inviteBtn.setAttribute('onclick', 'invitePlayer(\''+PlayerData.Guid+'\');');
-        joinBtn.classList.remove('disabled');
+        inviteBtn.classList.remove('disabled');
     }else{
         joinBtn.setAttribute('onclick', '');
         joinBtn.classList.add('disabled');
 
         inviteBtn.setAttribute('onclick', '');
-        joinBtn.classList.add('disabled');
+        inviteBtn.classList.add('disabled');
     }
 }
 
@@ -1129,6 +1348,45 @@ function closeUserDetail(){
 }
 
 //Avatar Details
+engine.on('LoadAvatarDetails', function(_AvatarDetails, _avatarCategories, _isMine){
+    displayAvatarDetails(_AvatarDetails, _avatarCategories, _isMine);
+});
+
+window.avatarCategories = [];
+window.avatarCurrentCategories = [];
+
+function displayAvatarDetails(_AvatarDetails, _avatarCategories, _isMine){
+    window.avatarCategories = _avatarCategories;
+    window.avatarCurrentCategories = _AvatarDetails.FilterTags.split(',');
+    var detailPage = document.getElementById('avatar-detail');
+    
+    cvr('#avatar-detail h1').innerHTML(_AvatarDetails.AvatarName);
+    cvr('#avatar-detail .avatar-image').attr('src', _AvatarDetails.AvatarImageUrl);
+    
+    cvr('#avatar-detail .author').innerHTML(_AvatarDetails.AuthorName);
+
+    cvr('#avatar-detail .privacy span').innerHTML(_AvatarDetails.IsPublic?'Public':'Private');
+    cvr('#avatar-detail .uploaded span').innerHTML(_AvatarDetails.UploadedAt);
+    cvr('#avatar-detail .updated span').innerHTML(_AvatarDetails.UpdatedAt);
+    cvr('#avatar-detail .size span').innerHTML(_AvatarDetails.AvatarSize);
+    
+    cvr('#avatar-detail .description').innerHTML(_AvatarDetails.AvatarDescription);
+    cvr('#avatar-detail .tags').innerHTML(_AvatarDetails.SafetyTags.replace(/,/g, ' '));
+
+    if (_AvatarDetails.IsPublic || _AvatarDetails.IsSharedWithMe || _isMine){
+        cvr('#avatar-detail .change-btn').removeClass('disabled').attr('onclick', 'changeAvatar("'+_AvatarDetails.Guid+'");');
+        cvr('#avatar-detail .fav-btn').removeClass('disabled').attr('onclick', 'favoriteAvatar("'+_AvatarDetails.Guid+'");');
+    }else{
+        cvr('#avatar-detail .change-btn').addClass('disabled').attr('onclick', '');
+        cvr('#avatar-detail .fav-btn').addClass('disabled').attr('onclick', '');
+    }
+
+    window.pickedAvatarCategories = [];
+    
+    detailPage.classList.remove('hidden');
+    detailPage.classList.add('in');
+}
+
 function closeAvatarDetail(){
     var detailPage = document.getElementById('avatar-detail');
     detailPage.classList.remove('in');
@@ -1137,6 +1395,74 @@ function closeAvatarDetail(){
         detailPage.classList.add('hidden');
         detailPage.classList.remove('out');
     }, 200);
+    closeAvatarDetailFavorite();
+}
+
+window.pickedAvatarForCategorie = '';
+window.pickedAvatarCategories = [];
+
+function favoriteAvatar(_guid){
+    window.pickedAvatarForCategorie = _guid;
+    
+    var html = '';
+    
+    for (var i=0; i < window.avatarCategories.length; i++){
+        if(window.avatarCurrentCategories.includes(window.avatarCategories[i].CategoryKey)){
+            window.pickedAvatarCategories[window.avatarCategories[i].CategoryKey] = true;
+            html += '<div class="favorite-category"><div class="inp_toggle checked" onclick="changeAvatarCategory(\''+
+                window.avatarCategories[i].CategoryKey+'\', this);"></div><span>'+window.avatarCategories[i].CategoryClearTextName+'</span></div>';
+        }else{
+            window.pickedAvatarCategories[window.avatarCategories[i].CategoryKey] = false;
+            html += '<div class="favorite-category"><div class="inp_toggle" onclick="changeAvatarCategory(\''+
+                window.avatarCategories[i].CategoryKey+'\', this);"></div><span>'+window.avatarCategories[i].CategoryClearTextName+'</span></div>';
+        }
+    }
+    
+    cvr('#avatar-detail .favorite-categories').innerHTML(html);
+
+    cvr('#avatar-detail .favorite-category-selection').removeClass('hidden').addClass('in');
+}
+
+function closeAvatarDetailFavorite(){
+    var detailPage = document.querySelector('#avatar-detail .favorite-category-selection');
+    detailPage.classList.remove('in');
+    detailPage.classList.add('out');
+    setTimeout(function(){
+        detailPage.classList.add('hidden');
+        detailPage.classList.remove('out');
+    }, 200);
+}
+
+function changeAvatarCategory(_categoryIdentifier, _e){
+    if (_e.classList.contains('checked')){
+        var index = window.avatarCurrentCategories.indexOf(_categoryIdentifier);
+        if (index > -1) {
+            window.avatarCurrentCategories.splice(index, 1);
+        }
+        
+        window.pickedAvatarCategories[_categoryIdentifier] = false;
+        _e.classList.remove('checked');
+    }else{
+        window.avatarCurrentCategories.push(_categoryIdentifier);
+        
+        window.pickedAvatarCategories[_categoryIdentifier] = true;
+        _e.classList.add('checked');
+    }
+}
+
+function sendAvatarCategoryUpdate(){
+    var categoryList = [];
+    
+    for (var k in window.pickedAvatarCategories){
+        if (window.pickedAvatarCategories[k]){
+            categoryList[categoryList.length] = k;
+        }
+    }
+    
+    console.log(categoryList.join(','));
+    
+    engine.call("CVRAppCallUpdateAvatarCategories", window.pickedAvatarForCategorie, categoryList.join(','));
+    closeAvatarDetailFavorite();
 }
 
 //Ui Masseges e.g. alerts, coinfirms
@@ -1163,7 +1489,7 @@ function uiCheckForAdditionalMessage(){
                 uiAlertShow(data.headline, data.text, data.id);
                 break;
             case 'confirm':
-                uiConfirmShow(data.headline, data.text, data.id);
+                uiConfirmShow(data.headline, data.text, data.id, data.data);
                 break;
             case 'alertTimed':
                 uiAlertTimedShow(data.headline, data.text, data.time, data.id);
@@ -1355,7 +1681,7 @@ function uiLoadingClose(){
     }, 200);
 }
 
-function uiConfirmShow(_headline, _text, _id){
+function uiConfirmShow(_headline, _text, _id, _data){
     var alertBox = document.getElementById('confirm');
 
     if(uiMessageActive()){
@@ -1363,7 +1689,8 @@ function uiConfirmShow(_headline, _text, _id){
             type: 'confirm',
             headline: _headline,
             text: _text,
-            id: _id
+            id: _id,
+            data: _data
         });
         return;
     }
@@ -1372,6 +1699,7 @@ function uiConfirmShow(_headline, _text, _id){
     alertBox.classList.add('in');
 
     alertBox.setAttribute('data-index', _id);
+    alertBox.setAttribute('data-storage', _data);
 
     document.querySelector('#confirm h2').innerHTML = _headline;
     document.querySelector('#confirm p').innerHTML = _text;
@@ -1379,13 +1707,15 @@ function uiConfirmShow(_headline, _text, _id){
 
 window.uiConfirm = {
     id: 0,
-    value: ""
+    value: "",
+    data: ""
 };
 
 function uiConfirmClose(_value){
     var alertBox = document.getElementById('confirm');
 
     var id = alertBox.getAttribute('data-index');
+    var data = alertBox.getAttribute('data-storage');
 
     alertBox.classList.remove('in');
     alertBox.classList.add('out');
@@ -1398,10 +1728,30 @@ function uiConfirmClose(_value){
 
     window.uiConfirm.id = id;
     window.uiConfirm.value = _value;
+    window.uiConfirm.data = data;
     
     var event = new CustomEvent("uiConfirm");
     window.dispatchEvent(event);
-    engine.call('CVRAppCallConfirmClose', id, _value);
+    engine.call('CVRAppCallConfirmClose', id, _value, data);
+}
+
+window.addEventListener("uiConfirm", function(){    
+    switch(window.uiConfirm.id){
+        case "logout":
+            if(window.uiConfirm.value) {
+                engine.trigger('CVRAppTaskGameLogout');
+            }
+            break;
+        case "removeFriend":
+            if(window.uiConfirm.value) {
+                engine.call('CVRAppCallRelationsManagement', window.uiConfirm.data, 'Unfriend');
+            }
+            break;
+    }
+});
+
+function logout(){
+    uiConfirmShow("Logout", "You will be logged out and the game will be closed. Are you sure?", "logout", "");
 }
 
 //Time Display
@@ -1492,8 +1842,7 @@ function refreshWorlds(){
 }
 
 function loadFilteredWorlds(){
-    var search = document.getElementById('worldsSearch').value;
-    engine.call('CVRAppCallLoadFilteredWorlds', worldFilter, search);
+    engine.call('CVRAppCallLoadFilteredWorlds', worldFilter, '');
 }
 
 function refreshGameModes(){
@@ -1575,6 +1924,14 @@ function mouseUnlock(){
     engine.trigger('CVRAppActionMouseUnlock');
 }
 
+function refreshProps(){
+    engine.trigger('CVRAppActionRefreshProps');
+}
+
+function deleteAllMyProps(){
+    engine.trigger('CVRAppActionDeleteAllMyProps');
+}
+
 function changeAvatar(_uid){
     engine.call('CVRAppCallChangeAvatar', _uid);
 }
@@ -1624,6 +1981,22 @@ function dropInstancePortal(_instanceID){
 
 function loadSettings(){
     engine.trigger('CVRAppActionLoadSettings');
+}
+
+function playSound(sound){
+    engine.trigger('CVRAppCallPlayAudio', sound);
+}
+
+function LoadMicrophones(){
+    engine.trigger('CVRAppActionLoadMicrophones');
+}
+
+function LoadResolutions(){
+    engine.trigger('CVRAppActionLoadResolutions');
+}
+
+function GetAvatarDetails(_guid){
+    engine.call('CVRAppCallGetAvatarDetails', _guid);
 }
 
 function updateGameDebugInformation(_info){
@@ -1714,7 +2087,7 @@ function DisplayAvatarSettings(_list){
                 html += '<div class="row-wrapper">\n' +
                     '    <div class="option-caption">'+entry.name+':</div>\n' +
                     '        <div class="option-input">\n' +
-                    '        <div id="AVS_'+entry.parameterName+'-x" class="inp_number" data-type="avatar" data-caption="X" data-min="-9999" data-max="9999" data-current="'+entry.defaultValueX+'" data-saveOnChange="true"></div>\n' +
+                    '        <div id="AVS_'+entry.parameterName+'" class="inp_number" data-type="avatar" data-caption="X" data-min="-9999" data-max="9999" data-current="'+entry.defaultValueX+'" data-saveOnChange="true"></div>\n' +
                     '    </div>\n' +
                     '</div>';
                 break;
@@ -1776,7 +2149,7 @@ function DisplayAvatarSettings(_list){
                 new inp_sliderH(document.getElementById('AVS_'+entry.parameterName+'-z'));
                 break;
             case 'inputsingle':
-                new inp_number(document.getElementById('AVS_'+entry.parameterName+'-x'));
+                new inp_number(document.getElementById('AVS_'+entry.parameterName));
                 break;
             case 'inputvector2':
                 new inp_number(document.getElementById('AVS_'+entry.parameterName+'-x'));
@@ -1844,6 +2217,16 @@ window.addEventListener("uiConfirm", function(e){
     }
 });
 
+function vrInputChanged(_fullBodyActive){
+    if (_fullBodyActive){
+        cvr('#seatedPlayBtnHome').hide();
+        cvr('#recalibrateBtnHome').show();
+    } else {
+        cvr('#seatedPlayBtnHome').show();
+        cvr('#recalibrateBtnHome').hide();
+    }
+}
+
 //Calls from cohtml
 engine.on('LoadAvatars', function (_list, _filter) {
     loadAvatars(_list, _filter);
@@ -1873,8 +2256,8 @@ engine.on('AddWorldDetailsInstance', function(_instance){
     addWorldDetailInstance(_instance);
 });
 
-engine.on('LoadUserDetails', function (_data, _activity, _instanceUsers) {
-    loadUserDetails(_data, _activity, _instanceUsers);
+engine.on('LoadUserDetails', function (_data, _activity, _instanceUsers, _profile) {
+    loadUserDetails(_data, _activity, _instanceUsers, _profile);
 });
 
 engine.on('alert', function (_headline, _text, _id) {
@@ -1933,13 +2316,22 @@ engine.on('ChangeGlobalNSFW', function(_enabled){
     console.log(_enabled);
     var nsfwSettings = document.getElementById('content-filter-nsfw-wrapper');
     var nsfwSettingsAdditional = document.getElementById('content-filter-nsfw-wrapper-second');
+    var nsfwSettingsProp = document.getElementById('content-filter-nsfw-wrapper-props');
+    var nsfwSettingsAdditionalProp = document.getElementById('content-filter-nsfw-wrapper-second-props');
+    var nsfwSettingsNotice = document.getElementById('content-filter-nsfw-wrapper-notice');
     
     if(_enabled){
         nsfwSettings.style.display = 'block';
         nsfwSettingsAdditional.style.display = 'block';
+        nsfwSettingsProp.style.display = 'block';
+        nsfwSettingsAdditionalProp.style.display = 'block';
+        nsfwSettingsNotice.style.display = 'none';
     }else{
         nsfwSettings.style.display = 'none';
         nsfwSettingsAdditional.style.display = 'none';
+        nsfwSettingsProp.style.display = 'none';
+        nsfwSettingsAdditionalProp.style.display = 'none';
+        nsfwSettingsNotice.style.display = 'block';
     }
 });
 
@@ -1960,8 +2352,12 @@ engine.on('ShowAvatarSettingsProfiles', function(_info){
 });
 
 engine.on('LoadSpawnables', function (_list, _filter) {
-    changeTab('props', document.getElementById('props-btn'));
+    //changeTab('props', document.getElementById('props-btn'));
     loadProps(_list, _filter);
+});
+
+engine.on('vrInputChanged', function (_fullBody) {
+    vrInputChanged(_fullBody);
 });
 
 //General Input Types
@@ -2154,30 +2550,36 @@ function inp_dropdown(_obj){
 
     this.list = document.createElement('div');
     this.list.className = 'valueList';
-    for(var i = 0; i < this.options.length; i++){
-        this.optionElements[i] = document.createElement('div');
-        this.optionElements[i].className = 'listValue';
-        var valuePair = this.options[i].split(':');
-        var key = "";
-        var value = "";
-        if(valuePair.length == 1){
-            key = valuePair[0];
-            value = valuePair[0];
-        }else{
-            key = valuePair[0];
-            value = valuePair[1];
+    
+    this.updateOptions = function(){
+        for(var i = 0; i < self.options.length; i++){
+            self.optionElements[i] = document.createElement('div');
+            self.optionElements[i].className = 'listValue';
+            var valuePair = Array.isArray(self.options[i])?self.options[i]:self.options[i].split(':');
+            var key = "";
+            var value = "";
+            if(valuePair.length == 1){
+                key = valuePair[0];
+                value = valuePair[0];
+            }else{
+                key = valuePair[0];
+                value = valuePair[1];
+            }
+            self.keyValue[key] = value;
+            self.optionElements[i].innerHTML = value;
+            self.optionElements[i].setAttribute('data-value', value);
+            self.optionElements[i].setAttribute('data-key', key);
+            self.list.appendChild(self.optionElements[i]);
+            self.optionElements[i].addEventListener('mousedown', self.SelectValue);
         }
-        this.keyValue[key] = value;
-        this.optionElements[i].innerHTML = value;
-        this.optionElements[i].setAttribute('data-value', value);
-        this.optionElements[i].setAttribute('data-key', key);
-        this.list.appendChild(this.optionElements[i]);
-        this.optionElements[i].addEventListener('mousedown', this.SelectValue);
+
+        self.valueElement.innerHTML = self.keyValue[self.value];
     }
 
     this.valueElement = document.createElement('div');
     this.valueElement.className = 'dropdown-value';
-    this.valueElement.innerHTML = this.keyValue[this.value];
+    
+    this.updateOptions();
 
     this.obj.appendChild(this.valueElement);
     this.obj.appendChild(this.list);
@@ -2192,11 +2594,17 @@ function inp_dropdown(_obj){
         self.value = value;
         self.valueElement.innerHTML = self.keyValue[value];
     }
+    
+    this.setOptions = function(options){
+        self.options = options;
+    }
 
     return {
       name: this.name,
       value: this.getValue,
-      updateValue: this.updateValue
+      updateValue: this.updateValue,
+      updateOptions: this.updateOptions,
+      setOptions: this.setOptions
     }
 }
 
@@ -2475,8 +2883,13 @@ function inp_number(_obj){
     this.name = _obj.id;
     this.type = _obj.getAttribute('data-type');
     this.caption = _obj.getAttribute('data-caption');
+    this.mode = _obj.getAttribute('data-mode');
 
-    this.obj.innerHTML = this.caption + ": " + this.value.toFixed(4);
+    if(this.mode == "int"){
+        this.obj.innerHTML = this.caption + ": " + this.value;
+    }else{
+        this.obj.innerHTML = this.caption + ": " + this.value.toFixed(4);
+    }
     
     var self = this;
 
@@ -2488,7 +2901,12 @@ function inp_number(_obj){
 
     this.updateValue = function(_value, _write){
         self.value = Math.min(9999, Math.max(-9999, _value));
-        _obj.innerHTML = self.caption + ": " + self.value.toFixed(4);
+
+        if(self.mode == "int"){
+            _obj.innerHTML = self.caption + ": " + self.value;
+        }else{
+            _obj.innerHTML = self.caption + ": " + self.value.toFixed(4);
+        }
         
         if(self.saveOnChange && (_write === true || self.type == 'avatar')){
             if(self.type == 'avatar'){
@@ -2512,17 +2930,22 @@ function inp_number(_obj){
     this.getValue = function(){
         return self.value;
     }
+    
+    this.getMode = function(){
+        return self.mode;
+    }
 
     return {
         name: this.name,
         value: this.getValue,
-        updateValue: this.updateValue
+        updateValue: this.updateValue,
+        getMode: this.getMode
     }
 }
 
 var inputNumber = document.querySelectorAll('.inp_number');
-for(var i = 0; i < slidersH.length; i++){
-    settings[settings.length] = new inp_number(slidersH[i]);
+for(var i = 0; i < inputNumber.length; i++){
+    settings[settings.length] = new inp_number(inputNumber[i]);
 }
 
 function updateGameSettingsValue(_name, _value){
@@ -2542,6 +2965,25 @@ engine.on('UpdateGameSettingsBulk', function(_settings){
     for(var i = 0; i < _settings.length; i++){
         updateGameSettingsValue(_settings[i].Name, _settings[i].Value);
     }
+});
+
+function updateDropDownOptions(_name, _options){
+    var optionString = [];
+    
+    for(var i = 0; i < _options.length; i++){
+        optionString[optionString.length] = [_options[i].key, _options[i].value];
+    }
+    
+    for(i = 0; i < window.settings.length; i++){
+        if(window.settings[i].name == _name){
+            window.settings[i].setOptions(optionString);
+            window.settings[i].updateOptions();
+        }
+    }
+}
+
+engine.on('UpdateDropDownOptions', function(_name, _options){
+    updateDropDownOptions(_name, _options);
 });
 
 function addSettingsValue(name, delta){
@@ -2674,10 +3116,19 @@ var numpadTarget;
 var numpadHasDecimal = false;
 var numpadDecimals = 0;
 var hasPlaceholder = false;
+var numpadMode = "";
 
 function displayNumpad(_e){
     var numpad = document.getElementById('numpad');
-    document.getElementById('numpad-input').value = _e.getValue().toFixed(4);
+
+    numpadMode = _e.getMode();
+
+    if(numpadMode == "int"){
+        document.getElementById('numpad-input').value = _e.getValue();
+    }else{
+        document.getElementById('numpad-input').value = _e.getValue().toFixed(4);
+    }
+    
     document.getElementById('numpad-input').classList.add("placeholder");
 
     numpadTarget = _e;
@@ -2721,12 +3172,14 @@ function sendNumpadKey(_e){
             closeNumpad();
             break;
         case '.':
-            if(!numpadHasDecimal) {
-                input.classList.remove("placeholder");
-                hasPlaceholder = false;
-                numpadHasDecimal = true;
-                numpadDecimals = 1;
-                input.value = currentValue + ".";
+            if(numpadMode != "int") {
+                if (!numpadHasDecimal) {
+                    input.classList.remove("placeholder");
+                    hasPlaceholder = false;
+                    numpadHasDecimal = true;
+                    numpadDecimals = 1;
+                    input.value = currentValue + ".";
+                }
             }
             break;
         default:
@@ -2737,7 +3190,11 @@ function sendNumpadKey(_e){
                 input.value = currentValue;
             }else{
                 currentValue = currentValue + (parseInt(value) / Math.pow(10, numpadDecimals));
-                input.value = currentValue.toFixed(Math.min(numpadDecimals, 4));
+                if(numpadMode == "int") {
+                    input.value = currentValue;
+                }else{
+                    input.value = currentValue.toFixed(Math.min(numpadDecimals, 4));
+                }
                 numpadDecimals++;
             }
             break;
@@ -2752,4 +3209,60 @@ function closeNumpad(){
         numpad.classList.add('hidden');
         numpad.classList.remove('out');
     }, 200);
+}
+
+//Call Menu
+function acceptCall(callId){
+    engine.call("CVRAppCallAcceptCall", callId);
+}
+
+function denyCall(callId){
+    engine.call("CVRAppCallDenyCall", callId);
+}
+
+function endCall(callId){
+    engine.call("CVRAppCallEndCall", callId);
+}
+
+engine.on("CallServiceCallIncoming", function(call){
+    cvr('.call-profile').addClass('calling').attr('src', call.profimeImageUrl);
+    
+    cvr('.call-name').innerHTML(call.username);
+    
+    cvr('.call-duration').innerHTML('Incoming Call');
+    
+    cvr('.call-actions').innerHTML('<div class="action-btn" onclick="acceptCall(\''+call.callId+'\');"><img src="gfx/compass.svg"></div>'+
+        '<div class="action-btn" onclick="denyCall(\''+call.callId+'\');"><img src="gfx/compass.svg"></div>');
+});
+
+engine.on("CallServiceCallStarted", function(call){
+    cvr('.call-profile').removeClass('calling').attr('src', call.profimeImageUrl);
+
+    cvr('.call-name').innerHTML(call.username);
+    
+    cvr('.call-duration').innerHTML('00:00:00');
+
+    cvr('.call-actions').innerHTML('<div class="action-btn" onclick="endCall(\''+call.callId+'\');"><img src="gfx/compass.svg"></div>');
+});
+
+engine.on("CallServiceCallTimeUpdate", function(call){
+    cvr('.call-duration').innerHTML(new Date(call.duration * 1000).toISOString().substr(11, 8));
+});
+
+engine.on("CallServiceCallEnded", function(call){
+    cvr('.call-profile').removeClass('calling').attr('src', '');
+
+    cvr('.call-actions').innerHTML('');
+});
+
+function ShowCurrentInstanceDetails(){
+    engine.trigger("CVRAppActionShowCurrentInstanceDetails");
+}
+
+function RemovePlayerAvatars(){
+    engine.trigger("CVRAppActionClearAllAvatars");
+}
+
+function PanicMute(){
+    engine.trigger("CVRAppActionMuteAllChannels");
 }

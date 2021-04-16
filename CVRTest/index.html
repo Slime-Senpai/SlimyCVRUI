@@ -11,7 +11,8 @@
         <div class="wrapper">
 
             <div id="home" class="content in">
-                <h1>Welcome to ChilloutVR<br/>
+                <div id="slimyReload" onclick="window.location.reload()">Reload</div>
+                <h1>Welcome to ChilloutBR<br/>
                     <span>HUD by Slime-Senpai</span>
                 </h1>
 
@@ -77,13 +78,24 @@
                 </div>
 
                 <div class="content-feed">
-                    <div class="content-caption">Feed</div>
-                    <div class="feed-news list-content">
-
+                    <div class="content-caption">News</div>
+                    <p style="margin:0;">Thank you for playing ChilloutVR in early access.</p>
+                    <p style="margin:0;">We are actively working on improvements regarding game-server and api stability as well as user-experience.</p>
+                    <p style="margin:0;">Please mail us your feedback and ideas (especially regarding the UI) to team@abinteractive.net.</p>
                     </div>
-                </div>
 
-                <div class="content-news">
+                <div class="content-avatar-functions">
+                    <div class="content-caption">Emotes</div>
+                    <div class="btn-row-wrapper actions">
+                        <div class="action-btn" onclick="playEmote(1);">1</div>
+                        <div class="action-btn" onclick="playEmote(2);">2</div>
+                        <div class="action-btn" onclick="playEmote(3);">3</div>
+                        <div class="action-btn" onclick="playEmote(4);">4</div>
+                        <div class="action-btn" onclick="playEmote(5);">5</div>
+                        <div class="action-btn" onclick="playEmote(6);">6</div>
+                        <div class="action-btn" onclick="playEmote(7);">7</div>
+                        <div class="action-btn" onclick="playEmote(8);">8</div>
+                    </div>
                     <div class="content-caption">Toggle States (current Avatar)</div>
                     <div class="btn-row-wrapper actions">
                         <div class="action-btn" onclick="changeState(0);">Default</div>
@@ -97,12 +109,22 @@
                     </div>
                 </div>
 
-                <div class="content-friends">
-                    <div class="content-caption">Online Friends</div>
-                    <div class="list-content">
-                        
+                <div class="content-panic">
+                    <div class="content-caption">Actions</div>
+                    <div class="btn-row-wrapper actions">
+                        <div class="action-btn" onclick="ShowCurrentInstanceDetails();"><img src="gfx/compass.svg">Current Instance</div>
+                        <div class="action-btn" onclick="RemovePlayerAvatars();"><img src="gfx/nav-avatars.svg">Remove All Avatars</div>
+                        <div class="action-btn" onclick="recalibrate()"><img src="gfx/recalibrate.svg">Recalibrate</div>
                     </div>
                 </div>
+
+                <div class="content-call">
+                    <div class="content-caption">Call</div>
+                    <img class="call-profile" src="">
+                    <div class="call-name">No ongoing call</div>
+                    <div class="call-duration">&nbsp;</div>
+                    <div class="call-actions"></div>
+            </div>
             </div>
 
             <div id="friends" class="content hidden">
@@ -112,7 +134,7 @@
                         <div class="filter-content"></div>
                     </div>
                     <div class="content-btn first" onclick="filterContent('friends', '');">Reset Filters</div>
-                    <div class="content-btn color-primary second" onclick="refreshFriends();">Refresh</div>
+                    <div class="content-btn color-primary second">Refresh</div>
                 </div>
                 <div class="list-content">
 
@@ -146,7 +168,6 @@
             <div id="worlds" class="content hidden">
                 <div class="list-filter">
                     <h1>Worlds</h1>
-                    <input type="text" class="inp_search" id="worldsSearch" placeholder="Search" data-submit="loadFilteredWorlds();" onclick="displayKeyboard(this);" />
                     <div class="scroll-content">
                         <div class="filter-content"></div>
                     </div>
@@ -281,7 +302,7 @@
                         <div class="row-wrapper">
                             <div class="option-caption">Show Image on Nameplates:</div>
                             <div class="option-input">
-                                <div id="GeneralShowNameplatesImage" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                                <div id="GeneralNameplatesImageVisibility" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
                             </div>
                         </div>
                         <div class="row-wrapper">
@@ -302,9 +323,44 @@
                                 <div id="GeneralClockFormat" class="inp_dropdown" data-options="24:24h,12:12h" data-current="24" data-saveOnChange="true"></div>
                             </div>
                         </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Running Animation in FBT:</div>
+                            <div class="option-input">
+                                <div id="GeneralEnableRunningAnimationFullBody" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Portal safe distance in cm:</div>
+                            <div class="option-input">
+                                <div id="GeneralPortalSafeDistance" class="inp_slider" data-min="100" data-max="500" data-current="3" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Camera Picture location:</div>
+                            <div class="option-input">
+                                <div id="GeneralPhotoDestination" class="inp_dropdown" data-options="0:Game Directory,1:Pictures Directory" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="content-btn" onclick="logout();">Logout</div>
                     </div>
 
                     <div id="settings-graphics" class="settings-categorie">
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Fullscreen:</div>
+                            <div class="option-input">
+                                <div id="GraphicsFullscreen" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Resolution:</div>
+                            <div class="option-input">
+                                <div id="GraphicsResolutionPresets" class="inp_dropdown" data-options="1920x1080,1366x768,1440x900,1536x864,2560x1440" data-current="1920x1080" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
                         <div class="row-wrapper">
                             <div class="option-caption">Framerate Target:</div>
                             <div class="option-input">
@@ -347,6 +403,8 @@
                                 <div id="GraphicsVSync" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
                         </div>
+
+                        <div style="width: 10px; height: 200px;"></div>
                     </div>
 
                     <div id="settings-audio" class="settings-categorie">
@@ -387,18 +445,43 @@
                             </div>
                         </div>
 
-                        <!--<div class="row-wrapper">
-                            <div class="option-caption">Microphone VR:</div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Microphone Input:</div>
                             <div class="option-input">
-                                <div id="AudioMicVr" class="inp_dropdown" data-options="" data-current="" data-saveOnChange="true"></div>
+                                <div id="AudioInputDevice" class="inp_dropdown dropdown-full-width" data-options="Default" data-current="" data-saveOnChange="true"></div>
                             </div>
                         </div>
+
                         <div class="row-wrapper">
-                            <div class="option-caption">Microphone Desktop:</div>
+                            <div class="option-caption">Microphone Threshold:</div>
                             <div class="option-input">
-                                <div id="AudioMicDesctop" class="inp_dropdown" data-options="" data-current="" data-saveOnChange="true"></div>
+                                <div id="AudioInputThreshold" class="inp_slider" data-min="0" data-max="100" data-current="10" data-saveOnChange="true" data-continuousUpdate="true"></div>
                             </div>
-                        </div>-->
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Push to talk:</div>
+                            <div class="option-input">
+                                <div id="AudioPushToTalk" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Mute on Start:</div>
+                            <div class="option-input">
+                                <div id="AudioMuteMicrophoneOnStart" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Mute on Join:</div>
+                            <div class="option-input">
+                                <div id="AudioMuteMicrophoneOnJoin" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div style="width: 10px; height: 200px;"></div>
+                        
                     </div>
 
                     <div id="settings-input" class="settings-categorie">
@@ -444,12 +527,31 @@
                                 <div id="ControlUseGripToGrab" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
                         </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Gestures during Finger Tracking:</div>
+                            <div class="option-input">
+                                <div id="ControlEnableGesturesWhileFingerTracking" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                    </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Vive Advanced Controls:</div>
+                            <div class="option-input">
+                                <div id="ControlViveAdvancedControls" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                    </div>
+                        </div>
                     </div>
 
                     <div id="settings-filter" class="settings-categorie">
 
                         <h2 style="margin-bottom: 0;">Tag based Avatar blocking</h2>
                         <p>This options will lead to the whole avatar to be blocked</p>
+                        
+                        <div class="row-wrapper">
+                            <div class="option-caption">Show Avatars for:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterVisibility" class="inp_dropdown" data-options="0:Nobody,1:Friends,2:Everyone" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
                         
                         <div id="content-filter-nsfw-wrapper" style="display: none;">
                             <div class="row-wrapper">
@@ -458,6 +560,10 @@
                                     <div id="ContentFilterNSFW" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                                 </div>
                             </div>
+                        </div>
+                        <div id="content-filter-nsfw-wrapper-notice" style="display: none;">
+                            <p>Missing some options? Some options are hidden until you have the free Mature Content Access DLC installed. 
+                                You can install this via the Steam Store.</p>
                         </div>
 
                         <div class="row-wrapper">
@@ -567,6 +673,164 @@
                         
                     </div>
 
+                    <div id="settings-props" class="settings-categorie">
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Props:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsEnabled" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
+                        <h2 style="margin-bottom: 0;">Tag based Prop blocking</h2>
+                        <p>This options will lead to the whole Prop to be blocked</p>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Show Props for:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsVisibility" class="inp_dropdown" data-options="0:Nobody,1:Friends,2:Everyone" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div id="content-filter-nsfw-wrapper-props" style="display: none;">
+                            <div class="row-wrapper">
+                                <div class="option-caption">Enable NSFW Content:</div>
+                                <div class="option-input">
+                                    <div id="ContentFilterPropsNSFW" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Flashing Colors:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsFlashingColors" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Flashing Lights:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsFlashingLights" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Screen Effects:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsScreenEffects" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div id="content-filter-nsfw-wrapper-second-props" style="display: none;">
+                            <div class="row-wrapper">
+                                <div class="option-caption">Violence:</div>
+                                <div class="option-input">
+                                    <div id="ContentFilterPropsViolence" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                                </div>
+                            </div>
+
+                            <div class="row-wrapper">
+                                <div class="option-caption">Gore, Death, Cruelty:</div>
+                                <div class="option-input">
+                                    <div id="ContentFilterPropsGore" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Excessively huge:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsExcessivelyHuge" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Excessively small:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsExcessivelySmall" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <h2 style="margin-bottom: 0;">Removables</h2>
+                        <p>This options will remove components from the avatar</p>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Loud Audio:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsLoudAudio" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Long Range Audio:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsLongRangeAudio" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Particle Systems:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsParticleSystems" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Dynamic Bones:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsDynamicBone" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Dynamic Bone Collider:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsDynamicBoneCollision" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Cameras:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsCameras" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="2" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Windzones:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsWindZones" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="2" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <h2>Prop Physics Intercollision</h2>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Particle Collision:</div>
+                            <div class="option-input">
+                                <div id="InteractionPropsPhysicsCollisionEnabled" class="inp_dropdown" data-options="0:Disable,1:Enable for friends,2:Enable" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Colliders:</div>
+                            <div class="option-input">
+                                <div id="InteractionPropsPhysicsCollidersEnabled" class="inp_dropdown" data-options="0:Disable,1:Enable for friends,2:Enable" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <h2>Prop Animator Triggers Interaction</h2>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Touch Triggers:</div>
+                            <div class="option-input">
+                                <div id="InteractionPropsAnimatorTriggersEnabled" class="inp_dropdown" data-options="0:Disable,1:Enable for friends,2:Enable" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div style="width: 10px; height: 200px;"></div>
+
+                    </div>
+
                     <div id="settings-interaction" class="settings-categorie">
                         <h2 style="margin-bottom: 0;">Dynamic Bone Intercollision</h2>
                         <p>Warning: This setting will impact your performance severely</p>
@@ -627,6 +891,13 @@
                             </div>
                         </div>
 
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Selfcollision:</div>
+                            <div class="option-input">
+                                <div id="InteractionPhysicsCollidersSelfEnabled" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
                         <h2>Player Animator Triggers Interaction</h2>
                         <div class="row-wrapper">
                             <div class="option-caption">Enable Touch Triggers:</div>
@@ -672,41 +943,139 @@
                         
                     </div>
 
+                    <div id="settings-experimental" class="settings-categorie">
+                        
+                        <div class="row-wrapper">
+                            <div class="option-caption">Always On Microphone Mode:</div>
+                            <div class="option-input">
+                                <div id="ExperimentalAlwaysOnMicrophone" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <h2>IK Settings</h2>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Plant Feet:</div>
+                            <div class="option-input">
+                                <div id="IKPlantFeet" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Pin Hip to Tracker:</div>
+                            <div class="option-input">
+                                <div id="IKHipPinned" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Straighten Neck:</div>
+                            <div class="option-input">
+                                <div id="IKStraightenNeck" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Hip Shifting:</div>
+                            <div class="option-input">
+                                <div id="IKHipShifting" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Pre Straighten Spine:</div>
+                            <div class="option-input">
+                                <div id="IKPreStraightenSpine" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
                     <div id ="settings-slimysettings" class="settings-categorie">
                         <h2>Slimy Settings</h2>
 
-                        <div class="row-wrapper">
-                            <div class="option-caption">Background Color Red</div>
-                            <div class="option-input">
-                                <div id="SlimyBackgroundColorRed" class="slimy_slider slimyred" data-min="0" data-max="255" data-current="128"></div>
+                        <div id="slimySettingsZone"></div>
+                        
+                        <div id="slimyNewColor">Add Color</div>
+
+                        <div id="slimyDropdownsZone"></div>
+
+                        <div class="row-color-wrapper">
+                            <div class="row-wrapper">
+                                <div class="option-caption">Menu BG Image</div>
+                                <div class="option-input">
+                                    <div id="SlimyBackgroundImageToggle" class="slimy_toggle" data-current="false"></div>
+                                </div>
+                            </div>
+
+                            <div class="row-wrapper">
+                                <div class="option-caption">Menu BG Image Alpha</div>
+                                <div class="option-input">
+                                    <div id="SlimyBackgroundImageAlpha" class="slimy_slider" data-min="0" data-max="100" data-current="80"></div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row-wrapper">
-                            <div class="option-caption">Background Color Green</div>
-                            <div class="option-input">
-                                <div id="SlimyBackgroundColorGreen" class="slimy_slider slimygreen" data-min="0" data-max="255" data-current="128"></div>
+
+                        <div class="row-color-wrapper">
+                            <div class="row-wrapper">
+                                <div class="option-caption">Toolbar BG Image</div>
+                                <div class="option-input">
+                                    <div id="SlimyToolbarImageToggle" class="slimy_toggle" data-current="false"></div>
+                                </div>
+                            </div>
+
+                            <div class="row-wrapper">
+                                <div class="option-caption">Same Image as Menu</div>
+                                <div class="option-input">
+                                    <div id="SlimyToolbarImageSameAsMenuToggle" class="slimy_toggle" data-current="false"></div>
+                                </div>
+                            </div>
+
+                            <div class="row-wrapper">
+                                <div class="option-caption">Toolbar BG Image Alpha</div>
+                                <div class="option-input">
+                                    <div id="SlimyToolbarImageAlpha" class="slimy_slider" data-min="0" data-max="100" data-current="80"></div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row-wrapper">
-                            <div class="option-caption">Background Color Blue</div>
-                            <div class="option-input">
-                                <div id="SlimyBackgroundColorBlue" class="slimy_slider slimyblue" data-min="0" data-max="255" data-current="128"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="row-wrapper">
-                            <div class="option-caption">Background Color Alpha</div>
-                            <div class="option-input">
-                                <div id="SlimyBackgroundColorAlpha" class="slimy_slider" data-min="0" data-max="100" data-current="80"></div>
+
+                        <div class="row-color-wrapper">
+                            <div class="row-wrapper">
+                                <div class="option-caption">Slimy Secret</div>
+                                <div class="option-input">
+                                    <div id="SlimySecret">[State of Secret]</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
                     <div id="settings-cache" class="settings-categorie">
                     </div>
+                </div>
+            </div>
 
+            <div id="search" class="content hidden">
+                <div class="list-filter">
+                    <h1>Search</h1>
+                    <input type="text" class="inp_search" id="globalSearch" placeholder="Search" data-submit="loadSearch();" onclick="displayKeyboard(this);" />
+                    <div class="scroll-content">
+                        <div class="filter-content">
+                            <div class="filter-option data-filter-users" onclick="filterSearch('users');">User</div>
+                            <div class="filter-option data-filter-avatars" onclick="filterSearch('avatars');">Avatars</div>
+                            <div class="filter-option data-filter-worlds" onclick="filterSearch('worlds');">Worlds</div>
+                        </div>
+                                </div>
+                    <div class="content-btn first" onclick="filterSearch('');">Reset Filters</div>
+                    <div class="content-btn color-primary second" onclick="refreshSearch();">Refresh</div>
+                            </div>
+                <div class="list-content">
+                    <div id="searchResultsUsers">
+                        <div class="search-results-header">Users <div class="result-count">0</div></div>
+                        <div class="search-result-wrapper"></div>
+                        </div>
+                    <div id="searchResultsAvatars">
+                        <div class="search-results-header">Avatars <div class="result-count">0</div></div>
+                        <div class="search-result-wrapper"></div>
+                    </div>
+                    <div id="searchResultsWorlds">
+                        <div class="search-results-header">Worlds <div class="result-count">0</div></div>
+                        <div class="search-result-wrapper"></div>
+                    </div>
                 </div>
             </div>
 
@@ -842,12 +1211,6 @@
                         <div class="region-select reqion-eu active" onclick="instancingChangeRegion('EU', this);">EU</div>
                         <div class="region-select reqion-us" onclick="instancingChangeRegion('US', this);">US</div>
                         <div class="region-select reqion-as" onclick="instancingChangeRegion('AS', this);">AS</div>
-                    </div>
-
-                    <h3>Select Content Rules</h3>
-                    <div class="content-btn btn-rule">
-                        <div class="rule-select rule-sfw active" onclick="instancingChangeRule('SFW', this);">SFW</div>
-                        <div class="rule-select rule-nsfw" onclick="instancingChangeRule('NSFW', this);">NSFW</div>
                     </div>
 
                     <input id="instancing-type" class="inp-hidden" value="public">
@@ -988,7 +1351,7 @@
                     </div>
                     <div class="tab-contents">
                         <div id="tab-content-activity" class="tab-content active">
-                            <div class="activityDataAviable">
+                            <div class="activityDataAvailable">
                                 <img class="player-instance-world-image">
                                 <div class="player-instance-details">
                                     <h2>[World Name]</h2>
@@ -1011,8 +1374,8 @@
                                    <div class="scroll-content"></div>
                                 </div>
                             </div>
-                            <div class="activityDataUnaviable hidden">
-                                <div class="activityDataUnaviableInfo">
+                            <div class="activityDataUnavailable hidden">
+                                <div class="activityDataUnavailableInfo">
                                     <img src="gfx\attention.svg">
                                     <div>
                                         No activity data, the user might be offline or is not a friend of yours.
@@ -1020,7 +1383,7 @@
                                 </div>
                             </div>
                             <div class="activityDataOffline hidden">
-                                <div class="activityDataUnaviableInfo">
+                                <div class="activityDataUnavailableInfo">
                                     <img src="gfx\attention.svg">
                                     <div>
                                         The User is Exploring the Metaverse offline.
@@ -1028,7 +1391,7 @@
                                 </div>
                             </div>
                             <div class="activityDataPrivate hidden">
-                                <div class="activityDataUnaviableInfo">
+                                <div class="activityDataUnavailableInfo">
                                     <img src="gfx\attention.svg">
                                     <div>
                                         The User is online in a private instance
@@ -1037,8 +1400,8 @@
                             </div>
                         </div>
                         <div id="tab-content-feed" class="tab-content">
-                          <div class="activityDataUnaviable">
-                              <div class="activityDataUnaviableInfo">
+                          <div class="activityDataUnavailable">
+                              <div class="activityDataUnavailableInfo">
                                   <img src="gfx\attention.svg">
                                   <div>
                                       Under Construction.
@@ -1047,8 +1410,8 @@
                           </div>
                         </div>
                         <div id="tab-content-avatars" class="tab-content">
-                          <div class="activityDataUnaviable">
-                              <div class="activityDataUnaviableInfo">
+                          <div class="activityDataUnavailable">
+                              <div class="activityDataUnavailableInfo">
                                   <img src="gfx\attention.svg">
                                   <div>
                                       Under Construction.
@@ -1057,8 +1420,8 @@
                           </div>
                         </div>
                         <div id="tab-content-worlds" class="tab-content">
-                          <div class="activityDataUnaviable">
-                              <div class="activityDataUnaviableInfo">
+                          <div class="activityDataUnavailable">
+                              <div class="activityDataUnavailableInfo">
                                   <img src="gfx\attention.svg">
                                   <div>
                                       Under Construction.
@@ -1067,8 +1430,8 @@
                           </div>
                         </div>
                         <div id="tab-content-badges" class="tab-content">
-                          <div class="activityDataUnaviable">
-                              <div class="activityDataUnaviableInfo">
+                          <div class="activityDataUnavailable">
+                              <div class="activityDataUnavailableInfo">
                                   <img src="gfx\attention.svg">
                                   <div>
                                       Under Construction.
@@ -1077,8 +1440,8 @@
                           </div>
                         </div>
                         <div id="tab-content-groups" class="tab-content">
-                          <div class="activityDataUnaviable">
-                              <div class="activityDataUnaviableInfo">
+                          <div class="activityDataUnavailable">
+                              <div class="activityDataUnavailableInfo">
                                   <img src="gfx\attention.svg">
                                   <div>
                                       Under Construction.
@@ -1087,8 +1450,8 @@
                           </div>
                         </div>
                         <div id="tab-content-misc1" class="tab-content">
-                          <div class="activityDataUnaviable">
-                              <div class="activityDataUnaviableInfo">
+                          <div class="activityDataUnavailable">
+                              <div class="activityDataUnavailableInfo">
                                   <img src="gfx\attention.svg">
                                   <div>
                                       Under Construction.
@@ -1098,15 +1461,19 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="user-settings-dialog">
+                    
+                </div>
 
                 <div class="user-toolbar">
                     <div class="toolbar-btn friend-btn"><img src="gfx/friend.svg">Add Friend</div>
                     <div class="toolbar-btn block-btn disabled"><img src="gfx/block.svg">Block</div>
-                    <div class="toolbar-btn mute-btn disabled"><img src="gfx/user-mute.svg">Mute</div>
-                    <div class="toolbar-btn volume-btn disabled"><img src="gfx/nav-settings.svg">Settings</div>
+                    <div class="toolbar-btn volume-btn" onclick="showUserSettings();"><img src="gfx/nav-settings.svg">Settings</div>
                     <div class="toolbar-btn join-btn"><img src="gfx/btn-join.svg">Join</div>
                     <div class="toolbar-btn invite-btn"><img src="gfx/invite.svg">Invite</div>
                     <div class="toolbar-btn kick-btn"><img src="gfx/btn-kick.svg">Kick</div>
+                    <div class="toolbar-btn"></div>
                     <div class="toolbar-btn"></div>
                     <div class="toolbar-btn disabled"><img src="gfx/nav-mod-tools.svg">Moderate</div>
                 </div>
@@ -1118,15 +1485,19 @@
 
                 <div class="avatar-sidebar">
                     <img class="avatar-image" src="gfx/placeholder-square.png">
-                    <h2>[Author name]</h2>
-                    <p>Private/Public</p>
-                    <p>Avatar Uploaded</p>
-                    <p>Avatar Updated</p>
-                    <p>Avatar Size</p>
+                    <h2 class="author">[Author name]</h2>
+                    
+                    <p class="privacy">Publication: <span>Private/Public</span></p>
+                    <p class="uploaded">Avatar Uploaded: <span>2021-02-12</span></p>
+                    <p class="updated">Avatar Updated: <span>2021-02-12</span></p>
+                    <p class="size">Avatar Size: <span>5Mb</span></p>
                 </div>
                 
                 <div class="avatar-maininformation">
-                    <p>Avatar Tags</p>
+                    <p style="margin-bottom: 0;">Description:</p>
+                    <p class="description">[Description]</p>
+                    <p style="margin-bottom: 0;">Tags:</p>
+                    <p class="tags">Avatar Tags</p>
                 </div>
 
                 <div class="avatar-toolbar">
@@ -1139,6 +1510,17 @@
                     <div class="toolbar-btn"></div>
                     <div class="toolbar-btn"></div>
                     <div class="toolbar-btn"></div>
+                </div>
+                
+                <div class="favorite-category-selection">
+                    <h3>Select a Category</h3>
+                    <div class="action-btn close-btn" onclick="closeAvatarDetailFavorite();">Back</div>
+                    <div class="scroll-content">
+                        <div class="favorite-categories">
+                            
+                        </div>
+                    </div>
+                    <div class="action-btn apply-btn" onclick="sendAvatarCategoryUpdate();">Apply</div>
                 </div>
             </div>
 
@@ -1311,13 +1693,14 @@
                 <div class="toolbar-btn" onclick="changeTab('worlds', this);"><img src="gfx/nav-worlds.svg">Worlds</div>
                 <div class="toolbar-btn-double">
                     <div class="time-display">00:00</div>
+                    <!--<div class="action-btn" onclick="changeTab('search', this);">Search</div>-->
                 </div>
                 <div onclick="toggleMic();" class="toolbar-btn action-mute"><img src="gfx/mute.svg">Unmute</div>
                 <!--<div class="toolbar-btn deactivated"><img src="gfx/nav-missions.svg">Missions</div>-->
                 <div class="toolbar-btn" onclick="changeTab('messages', this);"><img src="gfx/nav-messages.svg">Messages</div>
                 <div class="toolbar-btn" onclick="changeTab('settings', this);"><img src="gfx/nav-settings.svg">Settings</div>
                 <!--<div class="toolbar-btn deactivated"><img src="gfx/nav-mod-tools.svg">Mod Tools</div>-->
-                <div onclick="mouseUnlock();" class="toolbar-btn"><img src="gfx/mouse.svg">Unlock</div>
+                <div onclick="mouseUnlock();" class="toolbar-btn"><img src="gfx/mouse.svg">Cursorlock</div>
                 <div id="props-btn" style="display:none;" onclick="" class="toolbar-btn"><img src="gfx/mouse.svg">Props</div>
                 <div class="toolbar-btn" onclick="changeTab('exit', this);"><img src="gfx/nav-exit.svg">Exit</div>
             </div>

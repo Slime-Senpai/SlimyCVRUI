@@ -13,5 +13,9 @@ const slimyConfig = { // eslint-disable-line no-unused-vars
   /* Default Background Blue (0 - 255) */
   slimyBackgroundDefaultBlue: 155,
   /* Default Background Alpha (0 - 100) */
-  slimyBackgroundDefaultAlpha: 75 // NOTE There is no comma here
+  slimyBackgroundDefaultAlpha: 75,
+  /* Default Background Image Toggle (false - true) */
+  slimyBackgroundDefaultImageToggle: false,
+  /* Secret to use to connect */
+  slimySecret: '935eca5fbfdd33d7767df6b8Slime4f57b4a2e4e9fe261cb290d8' // NOTE There is no comma here
 };
