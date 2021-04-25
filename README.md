@@ -6,7 +6,7 @@ This is a modification of the UI of ChilloutVR made by Slime-Senpai.
 ### Installers
 You can have your version installed by a little script made by [MilchZocker](https://github.com/MilchZocker) where you can choose between [his version](https://github.com/MilchZocker/ChillouVR-Dark-UI) and mine of the UI.
 
-[Direct download link of Installer.bat](https://github.com/MilchZocker/ChillouVR-Dark-UI/releases/download/0.1/Installer.bat)
+[Direct download link of Installer.bat](https://github.com/MilchZocker/ChillouVR-Dark-UI/releases/latest)
 
 Just place the installer in the drive where the game is (or where Chillout.exe is to be faster), start it and follow the instructions.
 
