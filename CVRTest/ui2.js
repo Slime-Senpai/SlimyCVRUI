@@ -1,4 +1,4 @@
-/* globals slimyBackgroundClasslist, slimyConfig, slimyFeed, engine, refreshFriends */ // eslint-disable-line no-unused-vars
+/* globals slimyBackgroundClasslist, slimyConfig, slimyFeed, engine, refreshFriends, renderFriends, friendList, loadFriends */ // eslint-disable-line no-unused-vars
 
 /*
 const currFeed = [];
@@ -740,6 +740,31 @@ engine.on('LoadFriends', function () {
 });
 
 document.querySelector('#friends .list-filter .content-btn.second').addEventListener('click', slimyFriendsRefresh);
+
+loadFriends = function (_list, _filter) { // eslint-disable-line no-global-assign
+  friendList = _list; // eslint-disable-line no-global-assign
+  friendList.sort(function (a, b) {
+    const firstParameter = a.OnlineState === b.OnlineState ? 0 : a.OnlineState ? -1 : 1;
+
+    if (firstParameter === 0) {
+      return a.PlayerName.toLowerCase().localeCompare(b.PlayerName.toLowerCase());
+    } else {
+      return firstParameter;
+    }
+  });
+
+  let html = '';
+
+  for (let i = 0; _filter[i]; i++) {
+    html += '<div class="filter-option data-filter-' + _filter[i].CategoryKey +
+            '" onclick="filterContent(\'friends\', \'' +
+            _filter[i].CategoryKey + '\');">' + _filter[i].CategoryClearTextName + '</div>';
+  }
+
+  document.querySelector('#friends .filter-content').innerHTML = html;
+
+  renderFriends(_list);
+};
 
 /* NOTE This doesn't work anymore
 engine.on('LoadFriends', function (_list, _filter) {
