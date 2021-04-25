@@ -455,8 +455,6 @@ function updateCSS () {
   // document.styleSheets[2].insertRule('#home h1 span { color: rgb(' + Math.round(red * 0.3) + ',' + Math.round(green * 0.3) + ',' + Math.round(blue * 0.3) + '); }');
 }
 
-// Colors
-
 const slimySettings = [];
 const slimyValues = [];
 

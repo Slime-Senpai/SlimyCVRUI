@@ -22,9 +22,12 @@
                         <div onclick="toggleMic();" class="action-btn action-mute">
                             <img src="gfx/mute.svg">
                             Unmute</div>
-                        <div onclick="toogleSeatedPlay();" class="action-btn">
+                        <div id="seatedPlayBtnHome" onclick="toogleSeatedPlay();" class="action-btn">
                             <img src="gfx/seated-play.svg">
                             Seated</div>
+                        <!--<div id="recalibrateBtnHome" onclick="recalibrate();" class="action-btn">
+                            <img src="gfx/recalibrate.svg">
+                            Recalib</div>-->
                         <div onclick="toggleFlight();" class="action-btn">
                             <img src="gfx/jetpack.svg">
                             Flight</div>
@@ -185,6 +188,8 @@
                     <div class="scroll-content">
                         <div class="filter-content"></div>
                     </div>
+                    <div class="content-btn color-secondary neg-one" onclick="DeletePropMode();">Enter Delete Mode</div>
+                    <div class="content-btn color-secondary zero" onclick="deleteAllMyProps();">Delete All My Props</div>
                     <div class="content-btn first" onclick="filterContent('props', '');">Reset Filters</div>
                     <div class="content-btn color-primary second" onclick="refreshProps();">Refresh</div>
                 </div>
@@ -256,16 +261,19 @@
                             <div class="filter-option" onclick="switchSettingCategorie('settings-audio', this)">Audio</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-input', this)">Input & Key-Bindings</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-filter', this)">Content filter</div>
+                            <div class="filter-option" onclick="switchSettingCategorie('settings-props', this)">Prop Settings</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-interaction', this)">Interactions</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-implementation', this)">Implementation</div>
+                            <div class="filter-option" onclick="switchSettingCategorie('settings-experimental', this)">experimental</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-slimysettings', this)">Slimy Settings</div>
                             <!--<div class="filter-option" onclick="switchSettingCategorie('settings-cache', this)">Cache management</div>-->
                         </div>
                     </div>
-                    <!--<div class="content-btn first" onclick="saveSettings();">Save</div>-->
+                    <div class="content-btn first" onclick="ReloadAllAvatars();">Reload Avatars</div>
                     <div class="content-btn color-primary second" onclick="settingsReset();">Reset Settings</div>
                 </div>
                 <div class="list-content">
+                    
                     <div id="settings-general" class="settings-categorie active">
                         <div class="row-wrapper">
                             <div class="option-caption">Player Height in cm:</div>
@@ -442,6 +450,12 @@
                             <div class="option-caption">User Interface:</div>
                             <div class="option-input">
                               <div id="AudioUi" class="inp_slider" data-min="0" data-max="100" data-current="100" data-saveOnChange="true" data-continuousUpdate="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Props:</div>
+                            <div class="option-input">
+                                <div id="AudioProp" class="inp_slider" data-min="0" data-max="100" data-current="100" data-saveOnChange="true" data-continuousUpdate="true"></div>
                             </div>
                         </div>
 
@@ -832,10 +846,10 @@
                     </div>
 
                     <div id="settings-interaction" class="settings-categorie">
-                        <h2 style="margin-bottom: 0;">Dynamic Bone Intercollision</h2>
+                        <h2 style="margin-bottom: 0;">Dynamic Bone Interaction</h2>
                         <p>Warning: This setting will impact your performance severely</p>
                         <div class="row-wrapper">
-                            <div class="option-caption">Enable Intercollision:</div>
+                            <div class="option-caption">Enable Interaction:</div>
                             <div class="option-input">
                                 <div id="InteractionDynamicBoneInterCollisionEnabled" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
@@ -912,7 +926,7 @@
 
                     <div id="settings-implementation" class="settings-categorie">
 
-                        <!--<h2>Tobii Eye Tracking</h2>
+                        <h2>Tobii Eye Tracking</h2>
                         <div class="row-wrapper">
                             <div class="option-caption">Enable Tracking:</div>
                             <div class="option-input">
@@ -924,7 +938,7 @@
                             <div class="option-input">
                                 <div id="InteractionTobiiEyeBlinking" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
-                        </div>-->
+                        </div>
 
                         <h2>BHaptics</h2>
                         <div class="row-wrapper">
@@ -1688,9 +1702,10 @@
             <div class="toolbar">
                 <div class="toolbar-btn active" onclick="changeTab('home', this);"><img src="gfx/nav-home.svg">Home</div>
                 <div class="toolbar-btn" onclick="changeTab('friends', this);"><img src="gfx/nav-friends.svg">Friends</div>
-                <div class="toolbar-btn deactivated"><img src="gfx/nav-groups.svg">Groups</div>
+                <!--<div class="toolbar-btn deactivated"><img src="gfx/nav-groups.svg">Groups</div>-->
                 <div class="toolbar-btn" onclick="changeTab('avatars', this);"><img src="gfx/nav-avatars.svg">Avatars</div>
                 <div class="toolbar-btn" onclick="changeTab('worlds', this);"><img src="gfx/nav-worlds.svg">Worlds</div>
+                <div class="toolbar-btn" onclick="changeTab('props', this);"><img src="gfx/btn-props.svg">Props</div>
                 <div class="toolbar-btn-double">
                     <div class="time-display">00:00</div>
                     <!--<div class="action-btn" onclick="changeTab('search', this);">Search</div>-->
