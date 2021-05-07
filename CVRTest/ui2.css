@@ -238,7 +238,7 @@
 }
 
 /* #region World Search */
-.list-filter .scroll-content {
+#worlds .list-filter .scroll-content {
     top: 10em;
 }
 /* #endregion */
