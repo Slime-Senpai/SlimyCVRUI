@@ -236,3 +236,9 @@
     padding: 1.5% 1%;
     margin-bottom: 1em;
 }
+
+/* #region World Search */
+.list-filter .scroll-content {
+    top: 10em;
+}
+/* #endregion */

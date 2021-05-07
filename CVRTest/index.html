@@ -171,10 +171,13 @@
             <div id="worlds" class="content hidden">
                 <div class="list-filter">
                     <h1>Worlds</h1>
+                    <div>
+                        <div class="inp_search" id="worldsSearch" data-submit="slimySearchWorld" data-value="" onclick="displayKeyboard(this);">Search...</div> <!-- HERE -->
+                    </div>
                     <div class="scroll-content">
                         <div class="filter-content"></div>
                     </div>
-                    <div class="content-btn first" onclick="filterContent('worlds', '');">Reset Filters</div>
+                    <div class="content-btn first" onclick="filterContent('worlds', 'wrldpublic');">Reset Filters</div>
                     <div class="content-btn color-primary second" onclick="refreshWorlds();">Refresh</div>
                 </div>
                 <div class="list-content">

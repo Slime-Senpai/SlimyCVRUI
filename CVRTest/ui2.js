@@ -688,7 +688,7 @@ function checkVersion (uiVersion, chilloutVersion) {
 }
 
 const slimyCVRVersion = '2021r159p1 RELEASE';
-const slimyUIVersion = '1.0.8';
+const slimyUIVersion = '1.0.8.5';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
 if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = slimyCVRVersion;
@@ -862,3 +862,116 @@ const slimySecret = {
 };
 
 validateSecret(slimyConfig.slimySecret);
+
+// #region Active world filter fix
+loadWorlds = (_list, _filter) => { // eslint-disable-line no-undef
+  worldList = _list; // eslint-disable-line no-undef
+
+  let html = '';
+
+  for (let i = 0; _filter[i]; i++) {
+    // if((i == 0 && worldsResetLoad) || worldFilter == '')worldFilter = _filter[i].CategoryKey;
+    html += '<div class="filter-option data-filter-' + _filter[i].CategoryKey +
+            ' ' + (_filter[i].CategoryKey === worldFilter ? 'active' : '') + '" onclick="filterContent(\'worlds\', \'' + // eslint-disable-line no-undef
+            _filter[i].CategoryKey + '\');">' + _filter[i].CategoryClearTextName + '</div>';
+  }
+
+  document.querySelector('#worlds .filter-content').innerHTML = html;
+
+  renderWorlds(_list); // eslint-disable-line no-undef
+
+  worldsResetLoad = false; // eslint-disable-line no-undef
+};
+
+refreshWorlds = () => { // eslint-disable-line no-undef
+  worldsResetLoad = true; // eslint-disable-line no-undef
+  worldFilter = 'wrldtrending'; // eslint-disable-line no-undef
+  document.getElementById('worldsSearch').innerHTML = 'Search...';
+  engine.trigger('CVRAppTaskRefreshWorlds');
+};
+// #endregion
+
+// #region World Search
+displayKeyboard = (_e) => { // eslint-disable-line no-undef
+  const keyboard = document.getElementById('keyboard');
+  document.getElementById('keyoard-input').value = _e.getAttribute('data-value');
+  keyboardMaxLength = parseInt(_e.getAttribute('data-max-length')); // eslint-disable-line no-undef
+
+  keyboardTarget = _e; // eslint-disable-line no-undef
+
+  keyboard.classList.remove('hidden');
+  keyboard.classList.add('in');
+};
+
+sendFuncKey = (_e) => { // eslint-disable-line no-undef
+  const input = document.getElementById('keyoard-input');
+  const func = _e.target.getAttribute('data-key-func');
+  const submit = keyboardTarget.getAttribute('data-submit'); // eslint-disable-line no-undef
+
+  switch (func) {
+    case 'BACKSPACE':
+      input.value = input.value.substring(0, input.value.length - 1);
+      break;
+    case 'CLEAR':
+      input.value = '';
+      break;
+    case 'ENTER':
+      keyboardTarget.setAttribute('data-value', input.value); // eslint-disable-line no-undef
+      closeKeyboard(); // eslint-disable-line no-undef
+      if (submit != null) {
+        window[submit]();
+      }
+      break;
+    case 'BACK':
+      closeKeyboard(); // eslint-disable-line no-undef
+      break;
+  }
+};
+
+const slimyKeyboardFuncKeys = document.querySelectorAll('.keyboard-func');
+for (let i = 0; i < slimyKeyboardFuncKeys.length; i++) {
+  slimyKeyboardFuncKeys[i].addEventListener('mousedown', sendFuncKey); // eslint-disable-line no-undef
+}
+
+function slimySearchWorld () { // eslint-disable-line no-unused-vars
+  const search = document.getElementById('worldsSearch').getAttribute('data-value').toLowerCase();
+  document.getElementById('worldsSearch').innerHTML = search;
+  document.getElementById('worldsSearch').setAttribute('data-value', '');
+
+  if (search && worldList !== null && worldList.length !== 0) { // eslint-disable-line no-undef
+    const filteredWorlds = worldList.filter(w => w.WorldName.toLowerCase().includes(search)); // eslint-disable-line no-undef
+    renderWorlds(filteredWorlds); // eslint-disable-line no-undef
+  }
+}
+
+filterContent = (_ident, _filter) => { // eslint-disable-line no-undef
+  const buttons = document.querySelectorAll('#' + _ident + ' .filter-option');
+
+  for (let i = 0; buttons[i]; i++) {
+    buttons[i].classList.remove('active');
+  }
+
+  const activeButton = document.querySelector('#' + _ident + ' .filter-option.data-filter-' + _filter + '');
+  if (activeButton != null) {
+    activeButton.classList.add('active');
+  }
+
+  let list;
+
+  switch (_ident) {
+    case 'avatars':
+      list = filterList(avatarList, _filter); // eslint-disable-line no-undef
+      renderAvatars(list); // eslint-disable-line no-undef
+      break;
+    case 'worlds':
+      worldFilter = _filter; // eslint-disable-line no-undef
+      document.getElementById('worldsSearch').innerHTML = 'Search...';
+      loadFilteredWorlds(); // eslint-disable-line no-undef
+      break;
+    case 'friends':
+      list = filterList(friendList, _filter); // eslint-disable-line no-undef
+      renderFriends(list);
+      break;
+  }
+};
+// #endregion
