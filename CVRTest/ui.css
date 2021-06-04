@@ -2383,3 +2383,21 @@ h1 {
 #search .scroll-content {
     top: 8em;
 }
+
+#friend .list-content, #avatars .list-content, #worlds .list-content, #props .list-content {
+    padding-right: 0;
+    width: 76%;
+}
+.flex-list {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+.content-cell {
+    width: 22.000000%;
+}
+.content-cell.friend {
+    width: 18.5%;
+    margin-right: 1.5%;
+    margin-bottom: 1.5%;
+}

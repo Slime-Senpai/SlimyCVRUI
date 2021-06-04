@@ -25,7 +25,7 @@ function displayHudAsFeed (_head, _title, _message, _important) {
 }
 */
 
-// Slimy Settings Factory Functions
+// #region Slimy Settings Factory Functions
 
 function SlimyInpSlider (_obj) {
   this.obj = _obj;
@@ -350,6 +350,10 @@ function createNewColorSettings (name = slimySettings.length) {
   slimySettings.push(newSettings);
 }
 
+// #endregion
+
+// #region Background Colors and Image
+
 function updateStuff () {
   const change = [];
   for (let i = 0; i < slimySettings.length; i++) {
@@ -372,8 +376,6 @@ function updateStuff () {
 
   updateCSS();
 }
-
-// Background Colors and Image
 
 function changeBackgroundImage (background) {
   let image = false;
@@ -655,7 +657,9 @@ for (let i = 0; i < slimyBackgroundClasslist.length; i++) {
 
 updateStuff();
 
-// Version
+// #endregion
+
+// #region Version
 
 function checkVersion (uiVersion, chilloutVersion) {
   const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
@@ -687,7 +691,7 @@ function checkVersion (uiVersion, chilloutVersion) {
   xhr.send();
 }
 
-const slimyCVRVersion = '2021r159p1 RELEASE';
+const slimyCVRVersion = '2021r160 Infra2.0pog5';
 const slimyUIVersion = '1.0.8.5';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
@@ -709,7 +713,9 @@ engine.on('UpdateGameDebugInformation', function (_info) {
   slimyVersionValidated = true;
 });
 
-// Friends
+// #endregion
+
+// #region Friends Refresh
 
 let slimyFriendsTimeout = null;
 
@@ -741,7 +747,7 @@ engine.on('LoadFriends', function () {
 
 document.querySelector('#friends .list-filter .content-btn.second').addEventListener('click', slimyFriendsRefresh);
 
-loadFriends = function (_list, _filter) { // eslint-disable-line no-global-assign
+loadFriends = function (_list) { // eslint-disable-line no-global-assign
   friendList = _list; // eslint-disable-line no-global-assign
   friendList.sort(function (a, b) {
     const firstParameter = a.OnlineState === b.OnlineState ? 0 : a.OnlineState ? -1 : 1;
@@ -753,62 +759,16 @@ loadFriends = function (_list, _filter) { // eslint-disable-line no-global-assig
     }
   });
 
-  let html = '';
-
-  for (let i = 0; _filter[i]; i++) {
-    html += '<div class="filter-option data-filter-' + _filter[i].CategoryKey +
-            '" onclick="filterContent(\'friends\', \'' +
-            _filter[i].CategoryKey + '\');">' + _filter[i].CategoryClearTextName + '</div>';
+  for (let i = 0; i < friendList.length; i++) {
+    friendList[i].FilterTags += ',' + (friendList[i].UserIsOnline ? 'frndonline' : 'frndoffline');
   }
-
-  document.querySelector('#friends .filter-content').innerHTML = html;
 
   renderFriends(_list);
 };
 
-/* NOTE This doesn't work anymore
-engine.on('LoadFriends', function (_list, _filter) {
-  if (!_list || _list.length === 0) {
-    return;
-  }
+// #endregion
 
-  const onlineFriends = [];
-  for (let i = 0; i < _list.length; i++) {
-    if (_list[i].OnlineState) {
-      onlineFriends.push(_list[i]);
-    }
-  }
-  renderOnlineFriends(onlineFriends);
-});
-
-function renderOnlineFriends (onlineFriends) {
-  const contentList = document.querySelector('.content-friends .list-content');
-
-  let html = '';
-
-  for (let i = 0; onlineFriends[i]; i++) {
-    if (i % 3 === 0) {
-      if (i !== 0) {
-        html += '</div>';
-      }
-      html += '<div class="content-row">';
-    }
-
-    html += '<div class="content-cell online-friend"><div class="content-cell-formatter"></div>' +
-            '<div class="content-cell-content"><div class="online-state online"></div>' +
-            '<img class="content-image" src="' +
-            onlineFriends[i].ProfileImageUrl + '"><div class="content-name">' +
-            onlineFriends[i].PlayerName + '</div><div class="content-btn second" ' +
-            'onclick="getUserDetails(\'' + onlineFriends[i].Guid + '\');">Details</div>' +
-            '</div></div>';
-  }
-
-  contentList.innerHTML = html;
-}
-
-refreshFriends();
-*/
-// Feed
+// #region Feed
 /*
 function updateFeed () {
   const newsDiv = document.querySelector('.content-feed .feed-news');
@@ -826,8 +786,10 @@ function updateFeed () {
 
 updateFeed();
 */
-// Secret
+// #endregion
 
+// #region Secret
+/*
 function validateSecret (secret) {
   if (!secret || secret === '') {
     slimySecret.validated = false;
@@ -862,27 +824,10 @@ const slimySecret = {
 };
 
 validateSecret(slimyConfig.slimySecret);
+*/
+// #endregion
 
 // #region Active world filter fix
-loadWorlds = (_list, _filter) => { // eslint-disable-line no-undef
-  worldList = _list; // eslint-disable-line no-undef
-
-  let html = '';
-
-  for (let i = 0; _filter[i]; i++) {
-    // if((i == 0 && worldsResetLoad) || worldFilter == '')worldFilter = _filter[i].CategoryKey;
-    html += '<div class="filter-option data-filter-' + _filter[i].CategoryKey +
-            ' ' + (_filter[i].CategoryKey === worldFilter ? 'active' : '') + '" onclick="filterContent(\'worlds\', \'' + // eslint-disable-line no-undef
-            _filter[i].CategoryKey + '\');">' + _filter[i].CategoryClearTextName + '</div>';
-  }
-
-  document.querySelector('#worlds .filter-content').innerHTML = html;
-
-  renderWorlds(_list); // eslint-disable-line no-undef
-
-  worldsResetLoad = false; // eslint-disable-line no-undef
-};
-
 refreshWorlds = () => { // eslint-disable-line no-undef
   worldsResetLoad = true; // eslint-disable-line no-undef
   worldFilter = 'wrldtrending'; // eslint-disable-line no-undef
@@ -924,6 +869,9 @@ sendFuncKey = (_e) => { // eslint-disable-line no-undef
       break;
     case 'BACK':
       closeKeyboard(); // eslint-disable-line no-undef
+      break;
+    case 'PASTE':
+      keyboardPasteFromClipboard(); // eslint-disable-line no-undef
       break;
   }
 };

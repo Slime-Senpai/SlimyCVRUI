@@ -172,7 +172,7 @@
                 <div class="list-filter">
                     <h1>Worlds</h1>
                     <div>
-                        <div class="inp_search" id="worldsSearch" data-submit="slimySearchWorld" data-value="" onclick="displayKeyboard(this);">Search...</div> <!-- HERE -->
+                        <div class="inp_search" id="worldsSearch" data-submit="slimySearchWorld" data-value="" onclick="displayKeyboard(this);">Search...</div>
                     </div>
                     <div class="scroll-content">
                         <div class="filter-content"></div>
@@ -323,12 +323,6 @@
                             </div>
                         </div>
                         <div class="row-wrapper">
-                            <div class="option-caption">Enable Step Assist:</div>
-                            <div class="option-input">
-                                <div id="GeneralEnableStepAssist" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
-                            </div>
-                        </div>
-                        <div class="row-wrapper">
                             <div class="option-caption">Time Format:</div>
                             <div class="option-input">
                                 <div id="GeneralClockFormat" class="inp_dropdown" data-options="24:24h,12:12h" data-current="24" data-saveOnChange="true"></div>
@@ -373,6 +367,13 @@
                         </div>
                         
                         <div class="row-wrapper">
+                            <div class="option-caption">Enable VSync:</div>
+                            <div class="option-input">
+                                <div id="GraphicsVSync" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row-wrapper">
                             <div class="option-caption">Framerate Target:</div>
                             <div class="option-input">
                                 <div id="GraphicsFramerateTarget" class="inp_dropdown" data-options="60,90,100,120,144,165,240,0:Unlimited" data-current="144" data-saveOnChange="true"></div>
@@ -396,22 +397,71 @@
                               <div id="GraphicsFancyTransition" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
                             </div>
                         </div>
+                        
                         <div class="row-wrapper">
-                            <div class="option-caption">Enable Bloom:</div>
+                            <div class="option-caption">Bloom:</div>
                             <div class="option-input">
                                 <div id="GraphicsBloom" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
                             </div>
                         </div>
                         <div class="row-wrapper">
-                            <div class="option-caption">Enable AO:</div>
+                            <div class="option-caption">Ambient Occlusion:</div>
                             <div class="option-input">
                                 <div id="GraphicsAO" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
                             </div>
                         </div>
                         <div class="row-wrapper">
-                            <div class="option-caption">Enable VSync:</div>
+                            <div class="option-caption">Color Grading:</div>
                             <div class="option-input">
-                                <div id="GraphicsVSync" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                                <div id="GraphicsColorGrading" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Auto Exposure:</div>
+                            <div class="option-input">
+                                <div id="GraphicsAutoExposure" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Chromatic Aberration:</div>
+                            <div class="option-input">
+                                <div id="GraphicsChromaticAberration" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Depth of Field:</div>
+                            <div class="option-input">
+                                <div id="GraphicsDepthOfField" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Grain:</div>
+                            <div class="option-input">
+                                <div id="GraphicsGrain" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Lens Distortion:</div>
+                            <div class="option-input">
+                                <div id="GraphicsLensDistortion" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Motion Blur:</div>
+                            <div class="option-input">
+                                <div id="GraphicsMotionBlur" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Screen Space Reflections:</div>
+                            <div class="option-input">
+                                <div id="GraphicsScreenSpaceReflections" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Vignette:</div>
+                            <div class="option-input">
+                                <div id="GraphicsVignette" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
                             </div>
                         </div>
 
@@ -461,6 +511,12 @@
                                 <div id="AudioProp" class="inp_slider" data-min="0" data-max="100" data-current="100" data-saveOnChange="true" data-continuousUpdate="true"></div>
                             </div>
                         </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">VideoPlayer:</div>
+                            <div class="option-input">
+                                <div id="AudioVideoPlayer" class="inp_slider" data-min="0" data-max="100" data-current="100" data-saveOnChange="true" data-continuousUpdate="true"></div>
+                            </div>
+                        </div>
 
                         <div class="row-wrapper">
                             <div class="option-caption">Microphone Input:</div>
@@ -502,6 +558,12 @@
                     </div>
 
                     <div id="settings-input" class="settings-categorie">
+                        <div class="row-wrapper">
+                            <div class="option-caption">Use Holoport:</div>
+                            <div class="option-input">
+                                <div id="ControlEnableHoloPort" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
                         <div class="row-wrapper">
                             <div class="option-caption">Use Snap turning (VR):</div>
                             <div class="option-input">
@@ -555,6 +617,12 @@
                             <div class="option-input">
                                 <div id="ControlViveAdvancedControls" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
                     </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Gamepad input:</div>
+                            <div class="option-input">
+                                <div id="ControlEnableGamepad" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -683,6 +751,13 @@
                             <div class="option-caption">Windzones:</div>
                             <div class="option-input">
                                 <div id="ContentFilterWindZones" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="2" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row-wrapper">
+                            <div class="option-caption">Lights:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterLights" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="2" data-saveOnChange="true"></div>
                             </div>
                         </div>
                         
@@ -821,6 +896,13 @@
                             </div>
                         </div>
 
+                        <div class="row-wrapper">
+                            <div class="option-caption">Lights:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsLights" class="inp_dropdown" data-options="0:Hide,1:Show for friends,2:Show" data-current="2" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
                         <h2>Prop Physics Intercollision</h2>
                         <div class="row-wrapper">
                             <div class="option-caption">Enable Particle Collision:</div>
@@ -955,6 +1037,21 @@
                             <div class="option-caption">Triggers Placement:</div>
                             <div class="option-input">
                                 <div id="InteractionBHapticsTriggerPlacement" class="inp_dropdown" data-options="0:Hands,1:+ Fingers,2:+ Arms,3:+ Torso,4:+ Legs,5:+ Head" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
+                        <h2>Vive Face tracking</h2>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Enable Tracking:</div>
+                            <div class="option-input">
+                                <div id="InteractionViveFaceTracking" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+
+                        <div class="row-wrapper">
+                            <div class="option-caption">Intensity:</div>
+                            <div class="option-input">
+                                <div id="InteractionViveFaceTrackingStrength" class="inp_slider" data-min="50" data-max="500" data-current="100" data-saveOnChange="true" data-continuousUpdate="true"></div>
                             </div>
                         </div>
                         
@@ -1568,6 +1665,7 @@
             </div>
             
             <div id="keyboard" class="content hidden">
+                <input type="text" id="world-ui-input" data-submit="sendToWorldUi();" style="position: absolute; left: -9999px;" />
                 <div class="keyboard-row r1">
                     <input type="text" id="keyoard-input" />
                 </div>
@@ -1634,7 +1732,7 @@
                 </div>
                 <div class="keyboard-row r6">
                     <div class="keyboard-func" data-key-func="CLEAR">clear</div>
-                    <div class="keyboard-mod" data-key-mod="">&nbsp;&nbsp;&nbsp;</div>
+                    <div class="keyboard-func" data-key-func="PASTE">paste</div>
                     <div class="keyboard-key space" data-key=" " data-key-shift=" " data-key-altgr=" ">&nbsp;</div>
                     <div class="keyboard-mod" data-key-mod="">&nbsp;&nbsp;&nbsp;</div>
                     <div class="keyboard-func" data-key-func="CLEAR">clear</div>
