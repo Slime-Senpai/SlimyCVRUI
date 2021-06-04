@@ -750,10 +750,10 @@ document.querySelector('#friends .list-filter .content-btn.second').addEventList
 loadFriends = function (_list) { // eslint-disable-line no-global-assign
   friendList = _list; // eslint-disable-line no-global-assign
   friendList.sort(function (a, b) {
-    const firstParameter = a.OnlineState === b.OnlineState ? 0 : a.OnlineState ? -1 : 1;
+    const firstParameter = a.UserIsOnline === b.UserIsOnline ? 0 : a.UserIsOnline ? -1 : 1;
 
     if (firstParameter === 0) {
-      return a.PlayerName.toLowerCase().localeCompare(b.PlayerName.toLowerCase());
+      return a.UserName.toLowerCase().localeCompare(b.UserName.toLowerCase());
     } else {
       return firstParameter;
     }
