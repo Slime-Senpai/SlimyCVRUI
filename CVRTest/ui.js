@@ -1388,8 +1388,8 @@ function loadUserDetails(_data, _profile){
     document.querySelector('#user-detail .profile-group p').innerHTML = _data.FeaturedGroupName;
 
     document.querySelector('#user-detail .profile-avatar img').src = _data.CurrentAvatarImageUrl;
-    document.querySelector('#user-detail .profile-avatar p').innerHTML = _data.CurrentAvatarName;
-    document.querySelector('#user-detail .profile-avatar img').setAttribute('onclick', 'GetAvatarDetails(\''+_data.CurrentAvatarId+'\');');
+    document.querySelector('#user-detail .profile-avatar p').innerHTML = _data.CurrentAvatarId; // HACK Temporary fix for the reversed
+    document.querySelector('#user-detail .profile-avatar img').setAttribute('onclick', 'GetAvatarDetails(\''+_data.CurrentAvatarName+'\');');
 
     var friendBtn = document.querySelector('#user-detail .friend-btn');
     if(_data.IsFriend){
@@ -1520,12 +1520,12 @@ function kickUserAction(){
 }
 
 function updateUserDetailsActivity(_activity, _instanceUsers){
-
-    if(_activity.IsInPrivateLobby == false && PlayerData.IsFriend && PlayerData.OnlineState) {
+    
+    if(_activity.IsInJoinableInstance == false && PlayerData.IsFriend && PlayerData.OnlineState) {
 
         document.querySelector('#tab-content-activity .player-instance-world-image').src = _activity.WorldImageUrl;
         document.querySelector('#tab-content-activity .player-instance-details h2').innerHTML = _activity.WorldName;
-        document.querySelector('#tab-content-activity .player-instance-details .data-gamemode').innerHTML = _activity.GameMode;
+        document.querySelector('#tab-content-activity .player-instance-details .data-gamemode').innerHTML = _activity.GameModeName;
         document.querySelector('#tab-content-activity .player-instance-details .data-maxplayers').innerHTML = _activity.MaxPlayer;
         document.querySelector('#tab-content-activity .player-instance-details .data-currplayers').innerHTML = _activity.CurrentPlayer;
 
@@ -1544,12 +1544,12 @@ function updateUserDetailsActivity(_activity, _instanceUsers){
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate hidden';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline hidden';
 
-    }else if(_activity.IsInPrivateLobby == false && PlayerData.IsFriend && PlayerData.OnlineState){
+    }else if(_activity.IsInJoinableInstance == false && PlayerData.IsFriend && PlayerData.OnlineState){
         document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable hidden';
         document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable hidden';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate hidden';
         document.querySelector('#tab-content-activity .activityDataOffline').className = 'activityDataOffline';
-    }else if(_activity.IsInPrivateLobby == true && PlayerData.OnlineState){
+    }else if(_activity.IsInJoinableInstance == true && PlayerData.OnlineState){
         document.querySelector('#tab-content-activity .activityDataAvailable').className = 'activityDataAvailable hidden';
         document.querySelector('#tab-content-activity .activityDataUnavailable').className = 'activityDataUnavailable hidden';
         document.querySelector('#tab-content-activity .activityDataPrivate').className = 'activityDataPrivate';
@@ -1566,7 +1566,7 @@ function updateUserDetailsActivity(_activity, _instanceUsers){
 
     if(PlayerData.OnlineState && PlayerData.IsFriend){
         if(_activity.InstanceId !== null){
-            joinBtn.setAttribute('onclick', 'joinInstance(\''+_activity.InstanceId+'\', \''+_activity.World.WorldId+'\');');
+            joinBtn.setAttribute('onclick', 'joinInstance(\''+_activity.InstanceId+'\', \''+_activity.WorldId+'\');');
             joinBtn.classList.remove('disabled');
         }else{
             joinBtn.setAttribute('onclick', '');
@@ -2858,6 +2858,7 @@ function inp_dropdown(_obj){
     this.list.className = 'valueList';
     
     this.updateOptions = function(){
+        self.list.innerHTML = "";
         for(var i = 0; i < self.options.length; i++){
             self.optionElements[i] = document.createElement('div');
             self.optionElements[i].className = 'listValue';
