@@ -1388,8 +1388,8 @@ function loadUserDetails(_data, _profile){
     document.querySelector('#user-detail .profile-group p').innerHTML = _data.FeaturedGroupName;
 
     document.querySelector('#user-detail .profile-avatar img').src = _data.CurrentAvatarImageUrl;
-    document.querySelector('#user-detail .profile-avatar p').innerHTML = _data.CurrentAvatarId; // HACK Temporary fix for the reversed
-    document.querySelector('#user-detail .profile-avatar img').setAttribute('onclick', 'GetAvatarDetails(\''+_data.CurrentAvatarName+'\');');
+    document.querySelector('#user-detail .profile-avatar p').innerHTML = _data.CurrentAvatarName;
+    document.querySelector('#user-detail .profile-avatar img').setAttribute('onclick', 'GetAvatarDetails(\''+_data.CurrentAvatarId+'\');');
 
     var friendBtn = document.querySelector('#user-detail .friend-btn');
     if(_data.IsFriend){
