@@ -1012,7 +1012,6 @@ function getJoinParameters (joinId) {
           document.getElementById('joinIdSearch').innerHTML = 'joining...';
           document.getElementById('joinIdSearch').setAttribute('data-value', '');
           joinInstance(response.instanceId, response.worldId); // eslint-disable-line no-undef
-          setTimeout(() => { document.getElementById('joinIdSearch').innerHTML = 'joinId...'; }, 5000);
         } else {
           document.getElementById('joinIdSearch').innerHTML = 'error no ids in response...';
           document.getElementById('joinIdSearch').setAttribute('data-value', '');
@@ -1021,9 +1020,11 @@ function getJoinParameters (joinId) {
         document.getElementById('joinIdSearch').innerHTML = 'error no response from server...';
         document.getElementById('joinIdSearch').setAttribute('data-value', '');
       }
+      setTimeout(() => { document.getElementById('joinIdSearch').innerHTML = 'joinId...'; }, 5000);
     } else if (xhr.readyState === 4) {
       document.getElementById('joinIdSearch').innerHTML = 'error from server...';
       document.getElementById('joinIdSearch').setAttribute('data-value', '');
+      setTimeout(() => { document.getElementById('joinIdSearch').innerHTML = 'joinId...'; }, 5000);
     }
   };
   xhr.send();
