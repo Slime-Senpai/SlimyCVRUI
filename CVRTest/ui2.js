@@ -1,4 +1,4 @@
-/* globals slimyBackgroundClasslist, slimyConfig, slimyFeed, engine, refreshFriends, renderFriends, friendList, loadFriends */ // eslint-disable-line no-unused-vars
+/* globals slimyBackgroundClasslist, slimyConfig, slimyFeed, engine, refreshFriends, renderFriends, friendList, loadFriends, loadInstanceDetail */ // eslint-disable-line no-unused-vars
 
 /*
 const currFeed = [];
@@ -663,7 +663,7 @@ updateStuff();
 
 function checkVersion (uiVersion, chilloutVersion) {
   const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
-  xhr.open('GET', 'http://slimesenpai.fr:8042/chilloutui/checkVersion?v=' + uiVersion + '&cv=' + chilloutVersion, true);
+  xhr.open('GET', 'https://slimesenpai.fr/chilloutui/checkVersion?v=' + uiVersion + '&cv=' + chilloutVersion, true);
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       const slimyVersion = document.querySelector('.slimy-ui-version');
@@ -848,6 +848,11 @@ displayKeyboard = (_e) => { // eslint-disable-line no-undef
   keyboard.classList.add('in');
 };
 
+const slimyKeyboardFuncKeys = document.querySelectorAll('.keyboard-func');
+for (let i = 0; i < slimyKeyboardFuncKeys.length; i++) {
+  slimyKeyboardFuncKeys[i].removeEventListener('mousedown', sendFuncKey); // eslint-disable-line no-undef
+}
+
 sendFuncKey = (_e) => { // eslint-disable-line no-undef
   const input = document.getElementById('keyoard-input');
   const func = _e.target.getAttribute('data-key-func');
@@ -876,7 +881,6 @@ sendFuncKey = (_e) => { // eslint-disable-line no-undef
   }
 };
 
-const slimyKeyboardFuncKeys = document.querySelectorAll('.keyboard-func');
 for (let i = 0; i < slimyKeyboardFuncKeys.length; i++) {
   slimyKeyboardFuncKeys[i].addEventListener('mousedown', sendFuncKey); // eslint-disable-line no-undef
 }
@@ -922,4 +926,115 @@ filterContent = (_ident, _filter) => { // eslint-disable-line no-undef
       break;
   }
 };
+// #endregion
+
+// HACK This whole region is just a quick fix for experimental glitch
+// #region Joining instances
+
+loadInstanceDetail = (_instance) => { // eslint-disable-line no-global-assign
+  const detailPage = document.getElementById('instance-detail');
+  closeAvatarSettings(); // eslint-disable-line no-undef
+
+  document.querySelector('#instance-detail h1').innerHTML = 'Instance: ' + _instance.InstanceName;
+
+  document.querySelector('#instance-detail .profile-image').src = _instance.Owner.UserImageUrl;
+  document.querySelector('#instance-detail .content-instance-owner h2').innerHTML = _instance.Owner.UserName;
+  document.querySelector('#instance-detail .content-instance-owner h3').innerHTML = _instance.Owner.UserRank;
+
+  document.querySelector('#instance-detail .profile-badge img').src = _instance.Owner.FeaturedBadgeImageUrl;
+  document.querySelector('#instance-detail .profile-badge p').innerHTML = _instance.Owner.FeaturedBadgeName;
+
+  document.querySelector('#instance-detail .profile-group img').src = _instance.Owner.FeaturedGroupImageUrl;
+  document.querySelector('#instance-detail .profile-group p').innerHTML = _instance.Owner.FeaturedGroupName;
+
+  document.querySelector('#instance-detail .profile-avatar img').src = _instance.Owner.CurrentAvatarImageUrl;
+  document.querySelector('#instance-detail .profile-avatar p').innerHTML = _instance.Owner.CurrentAvatarName;
+
+  document.querySelector('#instance-detail .world-image').src = _instance.World.WorldImageUrl;
+  document.querySelector('#instance-detail .content-instance-world h2').innerHTML = _instance.World.WorldName;
+  document.querySelector('#instance-detail .content-instance-world p').innerHTML = 'by ' + _instance.World.AuthorName;
+  document.querySelector('#instance-detail .content-instance-world p').setAttribute('onclick', 'getUserDetails(\'' + _instance.World.AuthorId + '\');');
+
+  document.querySelector('#instance-detail .data-type').innerHTML = _instance.Privacy;
+  document.querySelector('#instance-detail .data-region').innerHTML = _instance.Region;
+  document.querySelector('#instance-detail .data-gamemode').innerHTML = _instance.GameMode;
+  document.querySelector('#instance-detail .data-maxplayers').innerHTML = _instance.MaxPlayer;
+  document.querySelector('#instance-detail .data-currplayers').innerHTML = _instance.CurrentPlayer;
+
+  getJoinId(_instance.InstanceId, _instance.World.WorldId);
+
+  document.querySelector('#instance-detail .instance-btn.joinBtn')
+    .setAttribute('onclick', 'joinInstance(\'' + _instance.InstanceId + '\', \'' + _instance.World.WorldId + '\');');
+  document.querySelector('#instance-detail .instance-btn.portalBtn')
+    .setAttribute('onclick', 'dropInstancePortal(\'' + _instance.InstanceId + '\');');
+
+  let html = '';
+
+  for (let i = 0; i < _instance.Users.length; i++) {
+    html += '<div class="instancePlayer" onclick="getUserDetails(\'' + _instance.Users[i].UserId + '\');"><img class="instancePlayerImage" src="' +
+      _instance.Users[i].UserImageUrl + '"><div class="instancePlayerName">' +
+      _instance.Users[i].UserName + '</div></div>';
+  }
+
+  document.querySelector('#instance-detail .content-instance-players .scroll-content').innerHTML = html;
+
+  detailPage.classList.remove('hidden');
+  detailPage.classList.add('in');
+};
+
+function getJoinId (instanceId, worldId) {
+  const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
+  xhr.open('GET', 'https://slimesenpai.fr/chilloutui/joinId/new?instanceId=' + instanceId + '&worldId=' + worldId, true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const response = JSON.parse(xhr.responseText);
+      if (response) {
+        if (response.joinId) {
+          document.querySelector('#instance-detail .data-instanceRules').innerHTML = response.joinId;
+        }
+      }
+    } else if (xhr.readyState === 4) {
+      document.querySelector('#instance-detail .data-instanceRules').innerHTML = 'Error getting a link';
+    }
+  };
+  xhr.send();
+}
+
+function getJoinParameters (joinId) {
+  document.getElementById('joinIdSearch').innerHTML = joinId + ' HELLO';
+  const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
+  xhr.open('GET', 'https://slimesenpai.fr/chilloutui/joinId/' + joinId, true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const response = JSON.parse(xhr.responseText);
+      if (response) {
+        if (response.worldId && response.instanceId) {
+          document.getElementById('joinIdSearch').innerHTML = 'joining...';
+          document.getElementById('joinIdSearch').setAttribute('data-value', '');
+          joinInstance(response.instanceId, response.worldId); // eslint-disable-line no-undef
+          setTimeout(() => { document.getElementById('joinIdSearch').innerHTML = 'joinId...'; }, 5000);
+        } else {
+          document.getElementById('joinIdSearch').innerHTML = 'error no ids in response...';
+          document.getElementById('joinIdSearch').setAttribute('data-value', '');
+        }
+      } else {
+        document.getElementById('joinIdSearch').innerHTML = 'error no response from server...';
+        document.getElementById('joinIdSearch').setAttribute('data-value', '');
+      }
+    } else if (xhr.readyState === 4) {
+      document.getElementById('joinIdSearch').innerHTML = 'error from server...';
+      document.getElementById('joinIdSearch').setAttribute('data-value', '');
+    }
+  };
+  xhr.send();
+}
+
+function slimyJoinWorld () { // eslint-disable-line no-unused-vars
+  const search = document.getElementById('joinIdSearch').getAttribute('data-value').toLowerCase();
+
+  document.getElementById('joinIdSearch').innerHTML = search;
+
+  getJoinParameters(search);
+}
+
 // #endregion

@@ -242,3 +242,7 @@
     top: 10em;
 }
 /* #endregion */
+
+#instance-detail .data-instanceRules {
+    font-size: 24px;
+}
