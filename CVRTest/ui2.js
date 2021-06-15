@@ -1,5 +1,4 @@
 /* globals slimyBackgroundClasslist, slimyConfig, slimyFeed, engine, refreshFriends, renderFriends, friendList, loadFriends */ // eslint-disable-line no-unused-vars
-
 /*
 const currFeed = [];
 
@@ -659,7 +658,7 @@ updateStuff();
 
 function checkVersion (uiVersion, chilloutVersion) {
   const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
-  xhr.open('GET', 'http://slimesenpai.fr:8042/chilloutui/checkVersion?v=' + uiVersion + '&cv=' + chilloutVersion, true);
+  xhr.open('GET', 'https://slimesenpai.fr/chilloutui/checkVersion?v=' + uiVersion + '&cv=' + chilloutVersion, true);
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       const slimyVersion = document.querySelector('.slimy-ui-version');
@@ -826,7 +825,8 @@ function updateFeed () {
 
 updateFeed();
 */
-// Secret
+
+// #region Secret
 
 function validateSecret (secret) {
   if (!secret || secret === '') {
@@ -836,14 +836,14 @@ function validateSecret (secret) {
   }
 
   const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
-  xhr.open('POST', 'http://slimesenpai.fr:8042/chilloutui/secret', true); // FIXME Can't use POST
+  xhr.open('GET', 'https://slimesenpai.fr/chilloutui/secret?secret=' + secret, true);
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       const slimySecretDiv = document.querySelector('#SlimySecret');
 
       const response = JSON.parse(xhr.responseText);
       if (response) {
-        slimySecretDiv.innerHTML = response.validated ? 'Validated' : 'Not Validated';
+        slimySecretDiv.innerHTML = (response.validated === true) ? 'Validated' : 'Not Validated';
         slimySecret.validated = response.validated === true;
       }
     } else if (xhr.readyState === 4) {
@@ -852,8 +852,7 @@ function validateSecret (secret) {
       slimySecret.validated = false;
     }
   };
-  xhr.setRequestHeader('Content-Type', 'application/json'); // FIXME Can't use setRequestHeader
-  xhr.send('{ "secret": "' + secret + '" }');
+  xhr.send();
 }
 
 const slimySecret = {
@@ -862,6 +861,8 @@ const slimySecret = {
 };
 
 validateSecret(slimyConfig.slimySecret);
+
+// #endregion
 
 // #region Active world filter fix
 loadWorlds = (_list, _filter) => { // eslint-disable-line no-undef
@@ -903,6 +904,11 @@ displayKeyboard = (_e) => { // eslint-disable-line no-undef
   keyboard.classList.add('in');
 };
 
+const slimyKeyboardFuncKeys = document.querySelectorAll('.keyboard-func');
+for (let i = 0; i < slimyKeyboardFuncKeys.length; i++) {
+  slimyKeyboardFuncKeys[i].removeEventListener('mousedown', sendFuncKey); // eslint-disable-line no-undef
+}
+
 sendFuncKey = (_e) => { // eslint-disable-line no-undef
   const input = document.getElementById('keyoard-input');
   const func = _e.target.getAttribute('data-key-func');
@@ -928,7 +934,6 @@ sendFuncKey = (_e) => { // eslint-disable-line no-undef
   }
 };
 
-const slimyKeyboardFuncKeys = document.querySelectorAll('.keyboard-func');
 for (let i = 0; i < slimyKeyboardFuncKeys.length; i++) {
   slimyKeyboardFuncKeys[i].addEventListener('mousedown', sendFuncKey); // eslint-disable-line no-undef
 }
@@ -974,4 +979,199 @@ filterContent = (_ident, _filter) => { // eslint-disable-line no-undef
       break;
   }
 };
+// #endregion
+/*
+// #region Sync Parameters
+
+engine.on('ShowAvatarSettings', function (info) {
+  if (slimySecret.validated) setTimeout(() => syncParametersInit(info), 100);
+});
+
+function syncParametersInit (info) {
+  const colors = [];
+  const checkboxes = [];
+
+  const syncCheckboxes = [];
+
+  for (let i = 0; i < info.length; i++) {
+    const parameter = info[i];
+
+    const syncCheckboxWrapper = document.createElement('div');
+    syncCheckboxWrapper.classList.add('row-wrapper');
+
+    const syncCheckbox = document.createElement('div');
+    syncCheckbox.classList.add('slimy_sync_toggle');
+    syncCheckbox.setAttribute('data-current', 'false');
+
+    syncCheckboxes.push(syncCheckbox);
+
+    // <div class="option-caption">'+entry.name+':</div>
+
+    const syncText = document.createElement('div');
+    syncText.classList.add('option-caption');
+    syncText.innerHTML = 'Synced';
+
+    // <div id="SlimyBackgroundImageToggle" class="slimy_toggle" data-current="false"></div>
+
+    syncCheckboxWrapper.appendChild(syncText);
+    syncCheckboxWrapper.appendChild(syncCheckbox);
+
+    let element;
+
+    switch (parameter.type) {
+      case 'toggle':
+        element = document.getElementById(`AVS_${parameter.parameterName}`);
+        checkboxes.push(parameter);
+        break;
+      case 'colorpicker':
+        element = document.getElementById(`AVS_PREV_${parameter.parameterName}`);
+        colors.push(parameter);
+        break;
+      case 'slider':
+        // do nothing
+        break;
+      case 'dropdown':
+        // do nothing
+        break;
+      case 'joystick2d':
+        // do nothing
+        break;
+      case 'joystick3d':
+        // do nothing
+        break;
+      case 'inputsingle':
+        // do nothing
+        break;
+      case 'inputvector2':
+        // do nothing
+        break;
+      case 'inputvector3':
+        // do nothing
+        break;
+      default:
+        // do nothing
+    }
+
+    if (element) element.parentNode.parentNode.parentNode.insertBefore(syncCheckboxWrapper, element.parentNode.parentNode);
+  }
+
+  const syncTogglesObjects = [];
+
+  for (let i = 0; i < syncCheckboxes.length; i++) {
+    syncTogglesObjects.push(new SlimyInpToggle(syncCheckboxes[i]));
+  }
+}
+
+// #endregion
+*/
+
+// #region Joining instances
+
+loadInstanceDetail = (_owner, _world, _instance, _instanceUsers) => { // eslint-disable-line no-undef
+  const detailPage = document.getElementById('instance-detail');
+  closeAvatarSettings(); // eslint-disable-line no-undef
+
+  document.querySelector('#instance-detail h1').innerHTML = 'Instance: ' + _instance.InstanceName;
+
+  document.querySelector('#instance-detail .profile-image').src = _owner.PlayerImageUrl;
+  document.querySelector('#instance-detail .content-instance-owner h2').innerHTML = _owner.PlayerName;
+  document.querySelector('#instance-detail .content-instance-owner h3').innerHTML = _owner.PlayerRank;
+
+  document.querySelector('#instance-detail .profile-badge img').src = _owner.FeaturedBadgeImageUrl;
+  document.querySelector('#instance-detail .profile-badge p').innerHTML = _owner.FeaturedBadgeName;
+
+  document.querySelector('#instance-detail .profile-group img').src = _owner.FeaturedGroupImageUrl;
+  document.querySelector('#instance-detail .profile-group p').innerHTML = _owner.FeaturedGroupName;
+
+  document.querySelector('#instance-detail .profile-avatar img').src = _owner.CurrentAvatarImageUrl;
+  document.querySelector('#instance-detail .profile-avatar p').innerHTML = _owner.CurrentAvatarName;
+
+  document.querySelector('#instance-detail .world-image').src = _world.WorldImageUrl;
+  document.querySelector('#instance-detail .content-instance-world h2').innerHTML = _world.WorldName;
+  document.querySelector('#instance-detail .content-instance-world p').innerHTML = 'by ' + _world.AuthorName;
+  document.querySelector('#instance-detail .content-instance-world p')
+    .setAttribute('onclick', 'getUserDetails(\'' + _world.AuthorGuid + '\');');
+
+  document.querySelector('#instance-detail .data-type').innerHTML = _instance.Privacy;
+  document.querySelector('#instance-detail .data-region').innerHTML = _instance.Region;
+  document.querySelector('#instance-detail .data-gamemode').innerHTML = _instance.GameMode;
+  document.querySelector('#instance-detail .data-maxplayers').innerHTML = _instance.MaxPlayer;
+  document.querySelector('#instance-detail .data-currplayers').innerHTML = _instance.CurrentPlayer;
+
+  getJoinId(_instance.InstanceId);
+
+  document.querySelector('#instance-detail .instance-btn.joinBtn')
+    .setAttribute('onclick', 'joinInstance(\'' + _instance.InstanceId + '\');');
+  document.querySelector('#instance-detail .instance-btn.portalBtn')
+    .setAttribute('onclick', 'dropInstancePortal(\'' + _instance.InstanceId + '\');');
+
+  let html = '';
+
+  for (let i = 0; i < _instanceUsers.length; i++) {
+    html += '<div class="instancePlayer" onclick="getUserDetails(\'' + _instanceUsers[i].UserId + '\');"><img class="instancePlayerImage" src="' +
+      _instanceUsers[i].UserImageUrl + '"><div class="instancePlayerName">' +
+      _instanceUsers[i].UserName + '</div></div>';
+  }
+
+  document.querySelector('#instance-detail .content-instance-players .scroll-content').innerHTML = html;
+
+  detailPage.classList.remove('hidden');
+  detailPage.classList.add('in');
+};
+
+function getJoinId (instanceId) {
+  const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
+  xhr.open('GET', 'https://slimesenpai.fr/chilloutui/joinId/new?instanceId=' + instanceId + '&worldId=' + 'notNeeded', true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const response = JSON.parse(xhr.responseText);
+      if (response) {
+        if (response.joinId) {
+          document.querySelector('#instance-detail .data-instanceRules').innerHTML = response.joinId;
+        }
+      }
+    } else if (xhr.readyState === 4) {
+      document.querySelector('#instance-detail .data-instanceRules').innerHTML = 'Error getting a link';
+    }
+  };
+  xhr.send();
+}
+
+function getJoinParameters (joinId) {
+  const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
+  xhr.open('GET', 'https://slimesenpai.fr/chilloutui/joinId/' + joinId, true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const response = JSON.parse(xhr.responseText);
+      if (response) {
+        if (response.instanceId) {
+          document.getElementById('joinIdSearch').innerHTML = 'joining...';
+          document.getElementById('joinIdSearch').setAttribute('data-value', '');
+          joinInstance(response.instanceId); // eslint-disable-line no-undef
+        } else {
+          document.getElementById('joinIdSearch').innerHTML = 'error no ids in response...';
+          document.getElementById('joinIdSearch').setAttribute('data-value', '');
+        }
+      } else {
+        document.getElementById('joinIdSearch').innerHTML = 'error no response from server...';
+        document.getElementById('joinIdSearch').setAttribute('data-value', '');
+      }
+      setTimeout(() => { document.getElementById('joinIdSearch').innerHTML = 'joinId...'; }, 5000);
+    } else if (xhr.readyState === 4) {
+      document.getElementById('joinIdSearch').innerHTML = 'error from server...';
+      document.getElementById('joinIdSearch').setAttribute('data-value', '');
+      setTimeout(() => { document.getElementById('joinIdSearch').innerHTML = 'joinId...'; }, 5000);
+    }
+  };
+  xhr.send();
+}
+
+function slimyJoinWorld () { // eslint-disable-line no-unused-vars
+  const search = document.getElementById('joinIdSearch').getAttribute('data-value').toLowerCase();
+
+  document.getElementById('joinIdSearch').innerHTML = search;
+
+  getJoinParameters(search);
+}
+
 // #endregion
