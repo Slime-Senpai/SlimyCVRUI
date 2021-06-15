@@ -691,8 +691,8 @@ function checkVersion (uiVersion, chilloutVersion) {
   xhr.send();
 }
 
-const slimyCVRVersion = '2021r160 Infra2.0pog5';
-const slimyUIVersion = '1.0.8.5';
+const slimyCVRVersion = '2021r160 Experimental 2';
+const slimyUIVersion = '1.0.8.6';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
 if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = slimyCVRVersion;
