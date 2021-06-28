@@ -1175,3 +1175,19 @@ function slimyJoinWorld () { // eslint-disable-line no-unused-vars
 }
 
 // #endregion
+
+// #region fakeWorldJoin
+
+let slimyCurrentInstance;
+
+changeWorld = (_uid) => { // eslint-disable-line no-undef
+  engine.call('CVRAppCallChangeWorld', _uid);
+  if (slimyCurrentInstance) joinInstance(slimyCurrentInstance); // eslint-disable-line no-undef
+};
+
+joinInstance = (_uid) => { // eslint-disable-line no-undef
+  engine.call('CVRAppCallJoinInstance', _uid);
+  slimyCurrentInstance = _uid;
+};
+
+// #endregion
