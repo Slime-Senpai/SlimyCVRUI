@@ -720,7 +720,6 @@ engine.on('UpdateGameDebugInformation', function (_info) {
 let slimyFriendsTimeout = null;
 
 function slimyFriendsRefresh () {
-  refreshFriends();
   const friendsButton = document.querySelector('#friends .list-filter .content-btn.second');
 
   friendsButton.removeEventListener('click', slimyFriendsRefresh);
@@ -732,6 +731,8 @@ function slimyFriendsRefresh () {
     friendsButton.removeAttribute('disabled');
     friendsButton.addEventListener('click', slimyFriendsRefresh);
   }, 5000);
+
+  refreshFriends();
 }
 
 engine.on('LoadFriends', function () {
@@ -740,6 +741,12 @@ engine.on('LoadFriends', function () {
   friendsButton.removeAttribute('disabled');
 
   friendsButton.addEventListener('click', slimyFriendsRefresh);
+
+  const buttons = document.querySelectorAll('#friends .filter-option');
+
+  for (let i = 0; buttons[i]; i++) {
+    buttons[i].classList.remove('active');
+  }
 
   if (slimyFriendsTimeout !== null) clearTimeout(slimyFriendsTimeout);
   slimyFriendsTimeout = null;
