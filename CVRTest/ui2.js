@@ -691,7 +691,7 @@ function checkVersion (uiVersion, chilloutVersion) {
   xhr.send();
 }
 
-const slimyCVRVersion = '2021r160 Experimental 2';
+const slimyCVRVersion = '2021r160 Experimental 3p4';
 const slimyUIVersion = '1.0.8.6';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');

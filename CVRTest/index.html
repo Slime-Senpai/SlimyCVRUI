@@ -267,12 +267,13 @@
                             <div class="filter-option" onclick="switchSettingCategorie('settings-props', this)">Prop Settings</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-interaction', this)">Interactions</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-implementation', this)">Implementation</div>
-                            <div class="filter-option" onclick="switchSettingCategorie('settings-experimental', this)">experimental</div>
+                            <div class="filter-option" onclick="switchSettingCategorie('settings-experimental', this)">Experimental</div>
+                            <div class="filter-option" onclick="switchSettingCategorie('settings-support', this)">Support</div>
                             <div class="filter-option" onclick="switchSettingCategorie('settings-slimysettings', this)">Slimy Settings</div>
                             <!--<div class="filter-option" onclick="switchSettingCategorie('settings-cache', this)">Cache management</div>-->
                         </div>
                     </div>
-                    <div class="content-btn first" onclick="ReloadAllAvatars();">Reload Avatars</div>
+                    <!--<div class="content-btn first" onclick="ReloadAllAvatars();">Reload Avatars</div>-->
                     <div class="content-btn color-primary second" onclick="settingsReset();">Reset Settings</div>
                 </div>
                 <div class="list-content">
@@ -386,6 +387,19 @@
                             </div>
                         </div>
                         <div class="row-wrapper">
+                            <div class="option-caption">Game anti-aliasing:</div>
+                            <div class="option-input">
+                                <div id="GraphicsMsaaLevel" class="inp_dropdown" data-options="1:None,2:2x,4:4x,8:8x" data-current="8" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Camera anti-aliasing:</div>
+                            <div class="option-input">
+                                <div id="CameraMsaaLevel" class="inp_dropdown" data-options="0:Same as main camera,1:None,2:2x,4:4x,8:8x" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row-wrapper">
                             <div class="option-caption">Maximum Mirror Resolution:</div>
                             <div class="option-input">
                                 <div id="GraphicsMaxMirrorResolution" class="inp_dropdown" data-options="32,64,128,256,512,1024,2048,4096" data-current="2048" data-saveOnChange="true"></div>
@@ -401,6 +415,12 @@
                             <div class="option-caption">Use Fancy World Transition:</div>
                             <div class="option-input">
                               <div id="GraphicsFancyTransition" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">Highres Portals:</div>
+                            <div class="option-input">
+                                <div id="GraphicsHighResPortalImages" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
                             </div>
                         </div>
                         
@@ -651,6 +671,13 @@
                             </div>
                         </div>
                         
+                        <div class="row-wrapper">
+                            <div class="option-caption">Max Avatar Size:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterMaxDLSize" class="inp_dropdown" data-options="0:Unlimited,5:5 MB,10:10 MB,20:20 MB,50:50 MB, 100:100 MB" data-current="0" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
                         <div id="content-filter-nsfw-wrapper" style="display: none;">
                             <div class="row-wrapper">
                                 <div class="option-caption">Enable NSFW Content:</div>
@@ -774,6 +801,8 @@
                             </div>
                         </div>
                         
+                        <div class="content-btn" onclick="ReloadAllAvatars();">Reload Avatars</div>
+                        
                         <div style="width: 10px; height: 200px;"></div>
                         
                     </div>
@@ -784,6 +813,13 @@
                             <div class="option-caption">Enable Props:</div>
                             <div class="option-input">
                                 <div id="ContentFilterPropsEnabled" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row-wrapper">
+                            <div class="option-caption">Max Prop Size:</div>
+                            <div class="option-input">
+                                <div id="ContentFilterPropsMaxDLSize" class="inp_dropdown" data-options="0:Unlimited,5:5 MB,10:10 MB,20:20 MB,50:50 MB, 100:100 MB" data-current="0" data-saveOnChange="true"></div>
                             </div>
                         </div>
                         
@@ -1111,6 +1147,97 @@
                             </div>
                         </div>
                         
+                        <h2>Dynamic Occlusion Culling</h2>
+                        <div class="warning-box">
+                            Dynamic occlusion culling is highly experimental. While it may dramatically improve your performance in specific cases, you will also experience delays ("scanning time") after joining a world. This scanning might take a longer time (usually around 5-15 seconds).
+                    </div>
+                            <div class="row-wrapper">
+                            <div class="option-caption">Enable dynamic occlusion culling:</div>
+                                <div class="option-input">
+                                <div id="EnableDynamicOcclusionCulling" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                                </div>
+                            </div>
+                            <div class="row-wrapper">
+                            <div class="option-caption">Show occlusion debug:</div>
+                                <div class="option-input">
+                                <div id="ShowOcclusionDebug" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                                </div>
+                            </div>
+                            <div class="row-wrapper">
+                            <div class="option-caption">Hide view while scanning:</div>
+                                <div class="option-input">
+                                <div id="HideViewWhileScanning" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
+                                </div>
+                            </div>
+
+                                </div>
+
+                    <div id="settings-support" class="settings-categorie">
+                        
+                        <div class="text-center">
+                            <p>Thank you for playing ChilloutVR!</p>
+                            <p>&nbsp;</p>
+                            </div>
+
+                        <div class="text-center">
+                            <p>To get general help or support you can use the following channels to get in touch with us:</p>
+                            <p>&nbsp;</p>
+                                </div>
+                        
+                        <div class="contact-icons">
+                            <div class="contact-icon">
+                                <img src="gfx/discord.svg"> discord.gg/abi
+                            </div>
+                            <div class="contact-icon">
+                                <img src="gfx/email.svg"> team@abinteractive.net
+                            </div>
+                            <div class="contact-icon">
+                                <img src="gfx/twitter.svg"> @AlphaBlendNET
+                            </div>
+                        </div>
+
+                        <div class="text-wrapper">
+                            <div class="text-left-half">
+                                <p>If you experience technical issues, bugs or performance problems, please click on the button below to generate a support code.</p>
+                                <p>&nbsp;</p>
+
+                                <div class="content-btn" onclick="GenerateSupportCode();">Generate Support Code</div>
+                                <div id="support-code-display" class="support-code-display" onclick="CopySupportCode('');"></div>
+                                <div class="support-code-hint">You can copy the support code by clicking the field above</div>
+                            </div>
+                            <div class="text-right-half">
+                                <table>
+                                    <tbody>
+                                        <tr class="first">
+                                            <th>Hardware</th>
+                                            <th>Software</th>
+                                        </tr>
+                                        <tr class="last">
+                                            <td class="first">
+                                                <div>Device Model</div>
+                                                <div>Graphics Device</div>
+                                                <div>Processor</div>
+                                                <div>Amount of RAM</div>
+                                            </td>
+                                            <td>
+                                                <div>Unity Version</div>
+                                                <div>Game version</div>
+                                                <div>Operationg System</div>
+                                                <div>Loaded Assemblies</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p>&nbsp;</p>
+                                <p>Please note that we may be unable to process bug reports or issue reports without a valid support code for the session you are reporting the issue for.</p>
+                                <p>&nbsp;</p>
+                                </div>
+                            </div>
+
+                        <div class="text-left">
+                            <p>Generating a code will send us a message including your log files and the information mentioned in the table on the right side of this page.</p>
+                            <p>By using this code you can report a bug / issue at https://forums.abinteractive.net</p>
+                        </div>
                     </div>
                     
                     <div id ="settings-slimysettings" class="settings-categorie">
@@ -1178,6 +1305,7 @@
                     
                     <div id="settings-cache" class="settings-categorie">
                     </div>
+
                 </div>
             </div>
 
@@ -1600,7 +1728,7 @@
 
                 <div class="user-toolbar">
                     <div class="toolbar-btn friend-btn"><img src="gfx/friend.svg">Add Friend</div>
-                    <div class="toolbar-btn block-btn disabled"><img src="gfx/block.svg">Block</div>
+                    <div class="toolbar-btn block-btn"><img src="gfx/block.svg">Block</div>
                     <div class="toolbar-btn volume-btn" onclick="showUserSettings();"><img src="gfx/nav-settings.svg">Settings</div>
                     <div class="toolbar-btn join-btn"><img src="gfx/btn-join.svg">Join</div>
                     <div class="toolbar-btn invite-btn"><img src="gfx/invite.svg">Invite</div>

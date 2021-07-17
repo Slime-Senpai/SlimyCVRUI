@@ -1349,6 +1349,9 @@ h1 {
     visibility: hidden;
 }
 
+.user-settings-dialog .content-btn {
+    position: relative;
+}
 
 /*Exit Menu*/
 #exit h1 {
@@ -2400,4 +2403,101 @@ h1 {
     width: 18.5%;
     margin-right: 1.5%;
     margin-bottom: 1.5%;
+}
+
+
+
+.settings-categorie p {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 1.25em;
+}
+
+.settings-categorie .text-center {
+    text-align: center;
+}
+
+.settings-categorie .contact-icons {
+    position: relative;
+    display: flex;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.settings-categorie .contact-icons .contact-icon {
+    position: relative;
+    width: 33.3333%;
+}
+.settings-categorie .contact-icons .contact-icon img {
+    width: 150px;
+    height: 150px;
+}
+.settings-categorie .text-wrapper {
+    position: relative;
+    display: flex;
+}
+.settings-categorie .text-left-half {
+    width: 49%;
+    margin-right: 2%;
+}
+.settings-categorie .text-right-half {
+    width: 49%;
+}
+
+tr {
+    display: flex;
+    border: 2px solid white;
+    border-bottom: 0;
+    text-align: center;
+}
+tr.first {
+    background: white;
+}
+tr.last {
+    border-bottom: 2px solid white;
+}
+th {
+    color: #666666;
+}
+th, td {
+    padding: 15px;
+    width: 50%;
+}
+th.first, td.first {
+    border-right: 2px solid white;
+}
+
+td div {
+    text-align: center;
+    display: flex;
+    width: 100%;
+}
+
+#settings-support .content-btn {
+    padding-top: 20px;
+    height: 3em;
+}
+
+.support-code-display {
+    position: relative;
+    width: 100%;
+    top: 32px;
+    height: 96px;
+    font-size: 70px;
+    line-height: 96px;
+    text-align: center;
+
+    border-radius: 8px;
+
+    border: 3px solid #59885d;
+}
+
+.support-code-hint {
+    position: relative;
+    top: 50px;
+}
+
+.warning-box {
+    padding: 0.5em;
+    border: 3px solid #CCCC00;
+    margin-bottom: 1em;
 }
