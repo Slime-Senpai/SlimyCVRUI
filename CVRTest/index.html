@@ -657,6 +657,12 @@
                                 <div id="ControlEnableGamepad" class="inp_toggle" data-current="true" data-saveOnChange="true"></div>
                             </div>
                         </div>
+                        <div class="row-wrapper">
+                            <div class="option-caption">VR Fast Flight:</div>
+                            <div class="option-input">
+                                <div id="ControlVRFastFlight" class="inp_toggle" data-current="false" data-saveOnChange="true"></div>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="settings-filter" class="settings-categorie">
@@ -1288,7 +1294,7 @@
             <div id="search" class="content hidden">
                 <div class="list-filter">
                     <h1>Search</h1>
-                    <input type="text" class="inp_search" id="globalSearch" placeholder="Search" data-submit="loadSearch();" onclick="displayKeyboard(this);" />
+                    <input type="text" class="inp_search" id="globalSearch" placeholder="Search" data-submit="loadSearch" onclick="displayKeyboard(this);" />
                     <div class="scroll-content">
                         <div class="filter-content">
                             <div class="filter-option data-filter-users" onclick="filterSearch('users');">User</div>
@@ -1766,7 +1772,7 @@
 
                     <div class="scroll-content">
                         <div class="filter-content">
-                            <input type="text" id="advAvtrProfileNameNew" data-submit="saveAdvAvtrProfileNew();" data-max-length="12" style="display: none;" />
+                            <input type="text" id="advAvtrProfileNameNew" data-submit="saveAdvAvtrProfileNew" data-max-length="12" style="display: none;" />
                             <div class="advAvtrProfile profileDefault" onclick="loadAdvAvtrProfileDefault();">
                                 <div class="advAvtrProfName">Default</div>
                             </div>
@@ -1787,7 +1793,7 @@
             </div>
             
             <div id="keyboard" class="content hidden">
-                <input type="text" id="world-ui-input" data-submit="sendToWorldUi();" style="position: absolute; left: -9999px;" />
+                <input type="text" id="world-ui-input" data-submit="sendToWorldUi" style="position: absolute; left: -9999px;" />
                 <div class="keyboard-row r1">
                     <input type="text" id="keyoard-input" />
                 </div>
@@ -1910,8 +1916,8 @@
             <div id="confirm" class="message-box confirm-box hidden" data-index="0">
                 <h2>[Headline]</h2>
                 <p>[Content]</p>
-                <div class="action-btn yes-btn" onclick="uiConfirmClose(true);">OK</div>
-                <div class="action-btn no-btn" onclick="uiConfirmClose(false);">Cancel</div>
+                <div class="action-btn yes-btn" onclick="uiConfirmClose('true');">OK</div>
+                <div class="action-btn no-btn" onclick="uiConfirmClose('false');">Cancel</div>
             </div>
 
             <div id="loading" class="message-box loading-box hidden" data-index="0">

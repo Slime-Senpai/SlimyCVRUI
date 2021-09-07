@@ -1,7 +1,11 @@
 var categoriesLoaded = false;
 
+var canChangeTab = true;
+
 function changeTab(_id, _e){
 
+    if (!canChangeTab) return;
+    
     if (!categoriesLoaded){
         engine.trigger('CVRAppTaskRefreshCategories');
     }
@@ -55,6 +59,8 @@ function changeTab(_id, _e){
         content[i].classList.add('out');
     }
     setTimeout(hideTabs, 200);
+    
+    canChangeTab = false;
 
     var target = document.getElementById(_id);
     target.classList.remove('hidden');
@@ -93,6 +99,7 @@ function hideTabs(){
         content[i].classList.add('hidden');
         content[i].classList.remove('out');
     }
+    canChangeTab = true;
 }
 
 function switchTab(_tabs, _contents, _content, _e){
@@ -1338,6 +1345,8 @@ function loadInstanceDetail(_instance){
     }
 
     document.querySelector('#instance-detail .content-instance-players .scroll-content').innerHTML = html;
+
+    document.querySelector('#instance-detail .content-instance-players .scroll-content').scrollTop = 0;
     
     detailPage.classList.remove('hidden');
     detailPage.classList.add('in');
@@ -2287,7 +2296,7 @@ function DisplayAvatarSettings(_list){
 
                 for(var j=0; j < entry.optionList.length; j++){
                     if(j != 0) settings += ',';
-                    settings += j+':'+entry.optionList[j];
+                    settings += j+':'+entry.optionList[j].makeParameterSafeFull();
                 }
 
                 html += '<div class="row-wrapper">\n' +
@@ -2432,9 +2441,9 @@ function DisplayAvatarSettingsProfiles(_info){
     
     for(var i=0; i < _info.length; i++){
         html += '<div class="advAvtrProfile">\n' +
-            '    <div class="advAvtrProfName" onclick="loadAdvAvtrProfile(\''+_info[i].makeSafe()+'\');">'+_info[i].makeSafe()+'</div>\n' +
-            '    <div class="advAvtrProfSave" onclick="saveAdvAvtrProfile(\''+_info[i].makeSafe()+'\');">S</div>\n' +
-            '    <div class="advAvtrProfDelete" onclick="deleteAdvAvtrProfile(\''+_info[i].makeSafe()+'\');">D</div>\n' +
+            '    <div class="advAvtrProfName" onclick="loadAdvAvtrProfile(\''+_info[i].makeParameterSafe()+'\');">'+_info[i].makeSafe()+'</div>\n' +
+            '    <div class="advAvtrProfSave" onclick="saveAdvAvtrProfile(\''+_info[i].makeParameterSafe()+'\');">S</div>\n' +
+            '    <div class="advAvtrProfDelete" onclick="deleteAdvAvtrProfile(\''+_info[i].makeParameterSafe()+'\');">D</div>\n' +
             '</div>';
     }
     
@@ -2450,19 +2459,19 @@ function loadAdvAvtrProfileDefault(){
     engine.trigger('CVRAppActionLoadAdvAvtrSettingsDefault');
 }
 function saveAdvAvtrProfile(_name){
-    engine.call('CVRAppCallSaveAdvAvtrSettingsProfile', _name.makeSafe());
+    engine.call('CVRAppCallSaveAdvAvtrSettingsProfile', _name);
     uiPushShow("The Profile was saved", 2, 'advAvtrCnfSav');
 }
 function loadAdvAvtrProfile(_name){
-    engine.call('CVRAppCallLoadAdvAvtrSettingsProfile', _name.makeSafe());
+    engine.call('CVRAppCallLoadAdvAvtrSettingsProfile', _name);
 }
 var profileIndex = "";
 function deleteAdvAvtrProfile(_name){
     profileIndex = _name;
-    uiConfirmShow("Advanced Avatar Settings", 'Are you sure you want to delete the profile "'+_name.makeSafe()+'"', 'deleteAdvAvtrProfile');
+    uiConfirmShow("Advanced Avatar Settings", 'Are you sure you want to delete the profile "'+ _name +'"', 'deleteAdvAvtrProfile', '');
 }
 window.addEventListener("uiConfirm", function(e){
-    if(window.uiConfirm.id == "deleteAdvAvtrProfile" && window.uiConfirm.value == true){
+    if(window.uiConfirm.id == "deleteAdvAvtrProfile" && window.uiConfirm.value == 'true'){
         engine.call('CVRAppCallDeleteAdvAvtrSettingsProfile', profileIndex);
         uiPushShow("The Profile was deleted", 2, 'advAvtrCnfDel');
     }

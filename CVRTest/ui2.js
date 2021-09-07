@@ -691,8 +691,8 @@ function checkVersion (uiVersion, chilloutVersion) {
   xhr.send();
 }
 
-const slimyCVRVersion = '2021r160 Experimental 3p5';
-const slimyUIVersion = '1.0.8.6';
+const slimyCVRVersion = '2021r161 Experimental 1';
+const slimyUIVersion = '1.0.8.7';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
 if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = slimyCVRVersion;
@@ -796,7 +796,7 @@ updateFeed();
 // #endregion
 
 // #region Secret
-/*
+
 function validateSecret (secret) {
   if (!secret || secret === '') {
     slimySecret.validated = false;
@@ -805,14 +805,14 @@ function validateSecret (secret) {
   }
 
   const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
-  xhr.open('POST', 'http://slimesenpai.fr:8042/chilloutui/secret', true); // FIXME Can't use POST
+  xhr.open('GET', 'https://slimesenpai.fr/chilloutui/secret?secret=' + secret, true);
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       const slimySecretDiv = document.querySelector('#SlimySecret');
 
       const response = JSON.parse(xhr.responseText);
       if (response) {
-        slimySecretDiv.innerHTML = response.validated ? 'Validated' : 'Not Validated';
+        slimySecretDiv.innerHTML = (response.validated === true) ? 'Validated' : 'Not Validated';
         slimySecret.validated = response.validated === true;
       }
     } else if (xhr.readyState === 4) {
@@ -821,8 +821,7 @@ function validateSecret (secret) {
       slimySecret.validated = false;
     }
   };
-  xhr.setRequestHeader('Content-Type', 'application/json'); // FIXME Can't use setRequestHeader
-  xhr.send('{ "secret": "' + secret + '" }');
+  xhr.send();
 }
 
 const slimySecret = {
@@ -831,10 +830,31 @@ const slimySecret = {
 };
 
 validateSecret(slimyConfig.slimySecret);
-*/
+
 // #endregion
 
 // #region Active world filter fix
+/* FIXME
+loadWorlds = (_list, _filter) => { // eslint-disable-line no-undef
+  worldList = _list; // eslint-disable-line no-undef
+
+  let html = '';
+
+  for (let i = 0; _filter[i]; i++) {
+    // if((i == 0 && worldsResetLoad) || worldFilter == '')worldFilter = _filter[i].CategoryKey;
+    html += '<div class="filter-option data-filter-' + _filter[i].CategoryKey +
+            ' ' + (_filter[i].CategoryKey === worldFilter ? 'active' : '') + '" onclick="filterContent(\'worlds\', \'' + // eslint-disable-line no-undef
+            _filter[i].CategoryKey + '\');">' + _filter[i].CategoryClearTextName + '</div>';
+  }
+
+  document.querySelector('#worlds .filter-content').innerHTML = html;
+
+  renderWorlds(_list); // eslint-disable-line no-undef
+
+  worldsResetLoad = false; // eslint-disable-line no-undef
+};
+*/
+
 refreshWorlds = () => { // eslint-disable-line no-undef
   worldsResetLoad = true; // eslint-disable-line no-undef
   worldFilter = 'wrldtrending'; // eslint-disable-line no-undef
@@ -846,7 +866,7 @@ refreshWorlds = () => { // eslint-disable-line no-undef
 // #region World Search
 displayKeyboard = (_e) => { // eslint-disable-line no-undef
   const keyboard = document.getElementById('keyboard');
-  document.getElementById('keyoard-input').value = _e.getAttribute('data-value');
+  document.getElementById('keyoard-input').value = _e.id === 'world-ui-input' ? _e.value : (_e.getAttribute('data-value') !== null ? _e.getAttribute('data-value') : '');
   keyboardMaxLength = parseInt(_e.getAttribute('data-max-length')); // eslint-disable-line no-undef
 
   keyboardTarget = _e; // eslint-disable-line no-undef
@@ -873,7 +893,11 @@ sendFuncKey = (_e) => { // eslint-disable-line no-undef
       input.value = '';
       break;
     case 'ENTER':
-      keyboardTarget.setAttribute('data-value', input.value); // eslint-disable-line no-undef
+      if (keyboardTarget.id === 'world-ui-input') { // eslint-disable-line no-undef
+        keyboardTarget.value = input.value; // eslint-disable-line no-undef
+      } else {
+        keyboardTarget.setAttribute('data-value', input.value); // eslint-disable-line no-undef
+      }
       closeKeyboard(); // eslint-disable-line no-undef
       if (submit != null) {
         window[submit]();
@@ -886,6 +910,20 @@ sendFuncKey = (_e) => { // eslint-disable-line no-undef
       keyboardPasteFromClipboard(); // eslint-disable-line no-undef
       break;
   }
+};
+
+saveAdvAvtrProfileNew = () => { // eslint-disable-line no-undef
+  const profileName = document.getElementById('advAvtrProfileNameNew').getAttribute('data-value');
+  saveAdvAvtrProfile(profileName); // eslint-disable-line no-undef
+  document.getElementById('advAvtrProfileNameNew').value = '';
+};
+
+// QSTN Nothing to change here? I can use .value cause it's an input, but it breaks the getAttribute usage that I have on other stuff...
+// WTF Also that shit was working fine before I fixed it
+sendToWorldUi = () => { // eslint-disable-line no-undef
+  const worldInput = document.getElementById('world-ui-input');
+
+  engine.call('CVRAppCallSendToWorldUi', worldInput.value);
 };
 
 for (let i = 0; i < slimyKeyboardFuncKeys.length; i++) {
@@ -934,8 +972,91 @@ filterContent = (_ident, _filter) => { // eslint-disable-line no-undef
   }
 };
 // #endregion
+/*
+// #region Sync Parameters
 
-// HACK This whole region is just a quick fix for experimental glitch
+engine.on('ShowAvatarSettings', function (info) {
+  if (slimySecret.validated) setTimeout(() => syncParametersInit(info), 100);
+});
+
+function syncParametersInit (info) {
+  const colors = [];
+  const checkboxes = [];
+
+  const syncCheckboxes = [];
+
+  for (let i = 0; i < info.length; i++) {
+    const parameter = info[i];
+
+    const syncCheckboxWrapper = document.createElement('div');
+    syncCheckboxWrapper.classList.add('row-wrapper');
+
+    const syncCheckbox = document.createElement('div');
+    syncCheckbox.classList.add('slimy_sync_toggle');
+    syncCheckbox.setAttribute('data-current', 'false');
+
+    syncCheckboxes.push(syncCheckbox);
+
+    // <div class="option-caption">'+entry.name+':</div>
+
+    const syncText = document.createElement('div');
+    syncText.classList.add('option-caption');
+    syncText.innerHTML = 'Sync ' + parameter.name + '?';
+
+    // <div id="SlimyBackgroundImageToggle" class="slimy_toggle" data-current="false"></div>
+
+    syncCheckboxWrapper.appendChild(syncText);
+    syncCheckboxWrapper.appendChild(syncCheckbox);
+
+    let element;
+
+    switch (parameter.type) {
+      case 'toggle':
+        element = document.getElementById(`AVS_${parameter.parameterName}`);
+        checkboxes.push(parameter);
+        break;
+      case 'colorpicker':
+        element = document.getElementById(`AVS_PREV_${parameter.parameterName}`);
+        colors.push(parameter);
+        break;
+      case 'slider':
+        // do nothing
+        break;
+      case 'dropdown':
+        // do nothing
+        break;
+      case 'joystick2d':
+        // do nothing
+        break;
+      case 'joystick3d':
+        // do nothing
+        break;
+      case 'inputsingle':
+        // do nothing
+        break;
+      case 'inputvector2':
+        // do nothing
+        break;
+      case 'inputvector3':
+        // do nothing
+        break;
+      default:
+        // do nothing
+    }
+
+    if (element) element.parentNode.parentNode.parentNode.insertBefore(syncCheckboxWrapper, element.parentNode.parentNode);
+  }
+
+  const syncTogglesObjects = [];
+
+  for (let i = 0; i < syncCheckboxes.length; i++) {
+    syncTogglesObjects.push(new SlimyInpToggle(syncCheckboxes[i]));
+  }
+}
+
+// #endregion
+*/
+
 // #region Joining instances
 
 loadInstanceDetail = (_instance) => { // eslint-disable-line no-global-assign
@@ -985,6 +1106,8 @@ loadInstanceDetail = (_instance) => { // eslint-disable-line no-global-assign
 
   document.querySelector('#instance-detail .content-instance-players .scroll-content').innerHTML = html;
 
+  document.querySelector('#instance-detail .content-instance-players .scroll-content').scrollTop = 0;
+
   detailPage.classList.remove('hidden');
   detailPage.classList.add('in');
 };
@@ -1008,7 +1131,6 @@ function getJoinId (instanceId, worldId) {
 }
 
 function getJoinParameters (joinId) {
-  document.getElementById('joinIdSearch').innerHTML = joinId + ' HELLO';
   const xhr = new XMLHttpRequest(); // eslint-disable-line no-undef
   xhr.open('GET', 'https://slimesenpai.fr/chilloutui/joinId/' + joinId, true);
   xhr.onreadystatechange = function () {
@@ -1044,5 +1166,21 @@ function slimyJoinWorld () { // eslint-disable-line no-unused-vars
 
   getJoinParameters(search);
 }
+
+// #endregion
+
+// #region fakeWorldJoin
+
+let slimyCurrentInstance;
+
+changeWorld = (_uid) => { // eslint-disable-line no-undef
+  engine.call('CVRAppCallChangeWorld', _uid);
+  if (slimyCurrentInstance) joinInstance(slimyCurrentInstance.uid, slimyCurrentInstance.world); // eslint-disable-line no-undef
+};
+
+joinInstance = (_uid, _world) => { // eslint-disable-line no-undef
+  engine.call('CVRAppCallJoinInstance', _uid, _world);
+  slimyCurrentInstance = { uid: _uid, world: _world };
+};
 
 // #endregion

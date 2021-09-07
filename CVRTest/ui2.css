@@ -64,13 +64,14 @@
     background: blue;
 }
 
-.slimy_toggle {
+.slimy_toggle, .slimy_sync_toggle {
     height: 2em;
     width: 2em;
     border: 1px solid white;
     margin-bottom: 0.5em
 }
-.slimy_toggle.checked {
+
+.slimy_toggle.checked, .slimy_sync_toggle.checked {
     background: white;
 }
 
