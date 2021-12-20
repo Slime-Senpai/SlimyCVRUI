@@ -688,11 +688,11 @@ function checkVersion (uiVersion, chilloutVersion) {
       if (slimyVersion) slimyVersion.style.color = 'orange';
     }
   };
-  xhr.send();
+  xhr.send('1');
 }
 
-const slimyCVRVersion = '2021r161 Experimental 1';
-const slimyUIVersion = '1.0.8.7';
+const slimyCVRVersion = '2021r163p1';
+const slimyUIVersion = '1.0.8.8';
 
 const slimyChilloutVersion = document.querySelector('.slimy-ui-chillout-version');
 if (slimyChilloutVersion) slimyChilloutVersion.innerHTML = slimyCVRVersion;
@@ -821,7 +821,7 @@ function validateSecret (secret) {
       slimySecret.validated = false;
     }
   };
-  xhr.send();
+  xhr.send('1');
 }
 
 const slimySecret = {
@@ -958,7 +958,7 @@ filterContent = (_ident, _filter) => { // eslint-disable-line no-undef
   switch (_ident) {
     case 'avatars':
       list = filterList(avatarList, _filter); // eslint-disable-line no-undef
-      renderAvatars(list); // eslint-disable-line no-undef
+      renderAvatars(list, true); // eslint-disable-line no-undef
       break;
     case 'worlds':
       worldFilter = _filter; // eslint-disable-line no-undef
@@ -966,8 +966,7 @@ filterContent = (_ident, _filter) => { // eslint-disable-line no-undef
       loadFilteredWorlds(); // eslint-disable-line no-undef
       break;
     case 'friends':
-      list = filterList(friendList, _filter); // eslint-disable-line no-undef
-      renderFriends(list);
+      filterFriendList(_filter); // eslint-disable-line no-undef
       break;
   }
 };
@@ -1063,24 +1062,24 @@ loadInstanceDetail = (_instance) => { // eslint-disable-line no-global-assign
   const detailPage = document.getElementById('instance-detail');
   closeAvatarSettings(); // eslint-disable-line no-undef
 
-  document.querySelector('#instance-detail h1').innerHTML = 'Instance: ' + _instance.InstanceName;
+  document.querySelector('#instance-detail h1').innerHTML = 'Instance: ' + _instance.InstanceName.makeSafe();
 
   document.querySelector('#instance-detail .profile-image').src = _instance.Owner.UserImageUrl;
-  document.querySelector('#instance-detail .content-instance-owner h2').innerHTML = _instance.Owner.UserName;
+  document.querySelector('#instance-detail .content-instance-owner h2').innerHTML = _instance.Owner.UserName.makeSafe();
   document.querySelector('#instance-detail .content-instance-owner h3').innerHTML = _instance.Owner.UserRank;
 
   document.querySelector('#instance-detail .profile-badge img').src = _instance.Owner.FeaturedBadgeImageUrl;
   document.querySelector('#instance-detail .profile-badge p').innerHTML = _instance.Owner.FeaturedBadgeName;
 
   document.querySelector('#instance-detail .profile-group img').src = _instance.Owner.FeaturedGroupImageUrl;
-  document.querySelector('#instance-detail .profile-group p').innerHTML = _instance.Owner.FeaturedGroupName;
+  document.querySelector('#instance-detail .profile-group p').innerHTML = _instance.Owner.FeaturedGroupName.makeSafe();
 
   document.querySelector('#instance-detail .profile-avatar img').src = _instance.Owner.CurrentAvatarImageUrl;
-  document.querySelector('#instance-detail .profile-avatar p').innerHTML = _instance.Owner.CurrentAvatarName;
+  document.querySelector('#instance-detail .profile-avatar p').innerHTML = _instance.Owner.CurrentAvatarName.makeSafe();
 
   document.querySelector('#instance-detail .world-image').src = _instance.World.WorldImageUrl;
-  document.querySelector('#instance-detail .content-instance-world h2').innerHTML = _instance.World.WorldName;
-  document.querySelector('#instance-detail .content-instance-world p').innerHTML = 'by ' + _instance.World.AuthorName;
+  document.querySelector('#instance-detail .content-instance-world h2').innerHTML = _instance.World.WorldName.makeSafe();
+  document.querySelector('#instance-detail .content-instance-world p').innerHTML = 'by ' + _instance.World.AuthorName.makeSafe();
   document.querySelector('#instance-detail .content-instance-world p').setAttribute('onclick', 'getUserDetails(\'' + _instance.World.AuthorId + '\');');
 
   document.querySelector('#instance-detail .data-type').innerHTML = _instance.Privacy;
@@ -1101,7 +1100,7 @@ loadInstanceDetail = (_instance) => { // eslint-disable-line no-global-assign
   for (let i = 0; i < _instance.Users.length; i++) {
     html += '<div class="instancePlayer" onclick="getUserDetails(\'' + _instance.Users[i].UserId + '\');"><img class="instancePlayerImage" src="' +
       _instance.Users[i].UserImageUrl + '"><div class="instancePlayerName">' +
-      _instance.Users[i].UserName + '</div></div>';
+      _instance.Users[i].UserName.makeSafe() + '</div></div>';
   }
 
   document.querySelector('#instance-detail .content-instance-players .scroll-content').innerHTML = html;
@@ -1127,7 +1126,7 @@ function getJoinId (instanceId, worldId) {
       document.querySelector('#instance-detail .data-instanceRules').innerHTML = 'Error getting a link';
     }
   };
-  xhr.send();
+  xhr.send('1');
 }
 
 function getJoinParameters (joinId) {
@@ -1156,7 +1155,7 @@ function getJoinParameters (joinId) {
       setTimeout(() => { document.getElementById('joinIdSearch').innerHTML = 'joinId...'; }, 5000);
     }
   };
-  xhr.send();
+  xhr.send('1');
 }
 
 function slimyJoinWorld () { // eslint-disable-line no-unused-vars
