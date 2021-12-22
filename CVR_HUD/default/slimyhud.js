@@ -51,9 +51,13 @@ const displaySlimyHud = (head, title, message, fadeTime) => {
 
   const isDisconnect = message.indexOf('disconnected') !== -1;
 
-  const titleName = title.split(' ')[0];
+  const titleArray = title.split(' ');
 
-  const isFriend = friendsName.some(e => e === titleName);
+  titleArray.pop();
+
+  const username = titleArray.join(' ');
+
+  const isFriend = friendsName.some(e => e === username);
 
   const log = document.createElement('div');
   log.classList.add('slimy-log');
