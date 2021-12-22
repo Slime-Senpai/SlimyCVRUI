@@ -1,0 +1,58 @@
+#slimy-logs {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    min-width: 500px;
+}
+
+body.vr #slimy-logs {
+    right: 600px;
+    top: 200px;
+}
+
+.slimy-log {
+    font-size: 30px;
+    color: white;
+    text-shadow: black 2px 2px 2px;
+    text-align: left;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.closed .slimy-log.dying {
+    opacity: 0;
+}
+
+.closed .slimy-log.dead {
+    display: none;
+}
+
+
+.slimy-log.joined {
+    color: green;
+}
+
+.slimy-log.disconnected {
+    color: red;
+}
+
+.slimy-log.friend.joined {
+    color: midnightblue;
+}
+
+.slimy-log.friend.disconnected {
+    color: blueviolet;
+}
+/*
+.authorative {
+	font-style: bold;
+    
+	color: #e43600;
+}
+.headline {
+    font-size: 60px;
+}
+.message {
+    font-size: 36px;
+}
+*/
