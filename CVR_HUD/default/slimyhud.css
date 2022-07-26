@@ -27,7 +27,6 @@ body.vr #slimy-logs {
     display: none;
 }
 
-
 .slimy-log.joined {
     color: green;
 }
@@ -43,16 +42,3 @@ body.vr #slimy-logs {
 .slimy-log.friend.disconnected {
     color: blueviolet;
 }
-/*
-.authorative {
-	font-style: bold;
-    
-	color: #e43600;
-}
-.headline {
-    font-size: 60px;
-}
-.message {
-    font-size: 36px;
-}
-*/

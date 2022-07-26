@@ -1,4 +1,4 @@
-/* globals engine */
+/* globals engine, specialPeople */
 
 // #region logs
 
@@ -51,19 +51,24 @@ const displaySlimyHud = (head, title, message, fadeTime) => {
 
   const isDisconnect = message.indexOf('disconnected') !== -1;
 
+  // ['Name', 'of', 'Person', ('joined'|'disconnected')]
   const titleArray = title.split(' ');
 
+  // ['Name', 'of', 'Person']
   titleArray.pop();
 
+  // Name of Person
   const username = titleArray.join(' ');
 
   const isFriend = friendsName.some(e => e === username);
 
   const log = document.createElement('div');
   log.classList.add('slimy-log');
-  if (isFriend) log.classList.add('friend');
+
   log.classList.add(isDisconnect ? 'disconnected' : 'joined');
+  // 'Name of Person (joined.|disconnected)'
   let text = title.trim();
+  // 'Name of Person (joined|disconnected)'
   if (text[text.length - 1] === '.') text = text.substring(0, text.length - 1);
   const date = new Date();
 
@@ -76,10 +81,30 @@ const displaySlimyHud = (head, title, message, fadeTime) => {
   let seconds = '' + date.getSeconds();
   if (seconds.length < 2) seconds = '0' + seconds;
 
+  const info = specialPeople.find((e) => e.list.some(f => f === username));
+
+  let sound = 'hudAudio';
+
+  sound += isDisconnect ? '_disconnect' : '_join';
+
+  if (info !== undefined) {
+    sound += info.title;
+
+    if (info.joinColor && !isDisconnect) {
+      log.style.color = info.joinColor;
+    } else if (info.disconnectColor && isDisconnect) {
+      log.style.color = info.disconnectColor;
+    }
+  } else if (isFriend) {
+    sound += 'friend';
+
+    log.classList.add('friend');
+  }
+
   log.innerHTML = `${hours}:${minutes}:${seconds} - ${text}`;
   logsArea.appendChild(log);
 
-  engine.call('SL1PlayAudio', (isDisconnect ? 'hudAudio_disconnect' : 'hudAudio_join') + (isFriend ? 'friend' : ''));
+  engine.call('SL1PlayAudio', sound);
 
   if (logsArea.children.length > 100) {
     logsArea.removeChild(logsArea.firstChild);

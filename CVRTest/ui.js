@@ -1,6 +1,7 @@
 var categoriesLoaded = false;
 
 var canChangeTab = true;
+var searchOpened = false;
 
 function changeTab(_id, _e){
 
@@ -51,6 +52,9 @@ function changeTab(_id, _e){
     for(var i=0; buttons[i]; i++){
         buttons[i].classList.remove('active');
     }
+    
+    document.getElementById('search-btn').classList.remove('active');
+    
     _e.classList.add('active');
 
     var content = document.querySelectorAll('.content.in');
@@ -89,6 +93,12 @@ function changeTab(_id, _e){
             break;
         case 'messages':
             engine.trigger('CVRAppActionRefreshInvites');
+            break;
+        case 'search':
+            if (!searchOpened) {
+                displayKeyboard(document.getElementById('globalSearch'));
+                searchOpened = true;
+            }
             break;
     }
 }
@@ -539,7 +549,7 @@ function RenderCategories(_categories){
         html += '<div class="filter-option data-filter-'+categories[3][i].CategoryKey+
             '" onclick="filterContent(\'avatars\', \''+
             categories[3][i].CategoryKey+'\');">'+categories[3][i].CategoryClearTextName.makeSafe()+'</div>';
-        if (categories[3][i].CategoryKey.length >= 50){
+        if (categories[3][i].CategoryKey.length >= 50 && !window.avatarCategories.some(item => item.CategoryKey == categories[3][i].CategoryKey)){
             window.avatarCategories.push(categories[3][i]);
         }
     }
@@ -560,49 +570,102 @@ function filterSearch(_category){
     var resultsUsers = document.getElementById('searchResultsUsers');
     var resultsAvatars = document.getElementById('searchResultsAvatars');
     var resultsWorlds = document.getElementById('searchResultsWorlds');
+    var resultsProps = document.getElementById('searchResultsProps');
     
     switch(_category){
         case '':
             resultsUsers.classList.remove('hidden');
             resultsAvatars.classList.remove('hidden');
             resultsWorlds.classList.remove('hidden');
+            resultsProps.classList.remove('hidden');
             break;
         case 'users':
             resultsUsers.classList.remove('hidden');
             resultsAvatars.classList.add('hidden');
             resultsWorlds.classList.add('hidden');
+            resultsProps.classList.add('hidden');
             break;
         case 'avatars':
             resultsUsers.classList.add('hidden');
             resultsAvatars.classList.remove('hidden');
             resultsWorlds.classList.add('hidden');
+            resultsProps.classList.add('hidden');
             break;
         case 'worlds':
             resultsUsers.classList.add('hidden');
             resultsAvatars.classList.add('hidden');
             resultsWorlds.classList.remove('hidden');
+            resultsProps.classList.add('hidden');
+            break;
+        case 'props':
+            resultsUsers.classList.add('hidden');
+            resultsAvatars.classList.add('hidden');
+            resultsWorlds.classList.add('hidden');
+            resultsProps.classList.remove('hidden');
             break;
     }
+
+    document.querySelector('#search .list-content').scrollTop = 0;
 }
 function loadSearch(){
     var term = document.getElementById('globalSearch').value;
-    //engine.call('CVRAppCallSubmitSearch', term);
+    console.log("Search for: "+term);
+    engine.call('CVRAppCallSubmitSearch', term);
 }
-function displaySearch(_users, _avatars, _worlds){
+
+var searchUsers = [];
+var searchAvatars = [];
+var searchWorlds = [];
+var searchProps = [];
+
+function displaySearch(_results){
     var userCount = document.querySelector('#searchResultsUsers .result-count');
+    var userCountSmall = document.querySelector('.data-filter-users .result-count');
     var userWrapper = document.querySelector('#searchResultsUsers .search-result-wrapper');
     var avatarCount = document.querySelector('#searchResultsAvatars .result-count');
+    var avatarCountSmall = document.querySelector('.data-filter-avatars .result-count');
     var avatarWrapper = document.querySelector('#searchResultsAvatars .search-result-wrapper');
     var worldCount = document.querySelector('#searchResultsWorlds .result-count');
+    var worldCountSmall = document.querySelector('.data-filter-worlds .result-count');
     var worldWrapper = document.querySelector('#searchResultsWorlds .search-result-wrapper');
-    
-    userCount.innerHTML = _users.length;
-    avatarCount.innerHTML = _avatars.length;
-    worldCount.innerHTML = _worlds.length;
+    var propCount = document.querySelector('#searchResultsProps .result-count');
+    var propCountSmall = document.querySelector('.data-filter-props .result-count');
+    var propWrapper = document.querySelector('#searchResultsProps .search-result-wrapper');
 
+    searchUsers = [];
+    searchAvatars = [];
+    searchWorlds = [];
+    searchProps = [];
+    
+    for (var i=0; _results[i]; i++){
+        switch(_results[i].ResultType){
+            case "user":
+                searchUsers.push(_results[i]);
+                break;
+            case "world":
+                searchWorlds.push(_results[i]);
+                break;
+            case "avatar":
+                searchAvatars.push(_results[i]);
+                break;
+            case "prop":
+                searchProps.push(_results[i]);
+                break;
+        }
+    }
+    
+    userCount.innerHTML = searchUsers.length;
+    userCountSmall.innerHTML = searchUsers.length;
+    avatarCount.innerHTML = searchAvatars.length;
+    avatarCountSmall.innerHTML = searchAvatars.length;
+    worldCount.innerHTML = searchWorlds.length;
+    worldCountSmall.innerHTML = searchWorlds.length;
+    propCount.innerHTML = searchProps.length;
+    propCountSmall.innerHTML = searchProps.length;
+    
     var userHtml = '';
 
-    for(var i=0; _users[i]; i++){
+    for(var i=0; searchUsers[i]; i++){
         if(i%5 === 0){
             if(i !== 0){
                 userHtml += '</div>';
@@ -613,9 +676,9 @@ function displaySearch(_users, _avatars, _worlds){
         userHtml += '<div class="content-cell friend"><div class="content-cell-formatter"></div>'+
             '<div class="content-cell-content">'+
             '<img class="content-image" src="'+
-            _users[i].ProfileImageUrl+'"><div class="content-name">'+
-            _users[i].PlayerName.makeSafe()+'</div><div class="content-btn second" '+
-            'onclick="getUserDetails(\''+_users[i].Guid+'\');">Details</div>'+
+            searchUsers[i].ResultImageUrl+'"><div class="content-name">'+
+            searchUsers[i].ResultName.makeSafe()+'</div><div class="content-btn second" '+
+            'onclick="getUserDetails(\''+searchUsers[i].ResultId+'\');">Details</div>'+
             '</div></div>';
     }
 
@@ -625,7 +688,7 @@ function displaySearch(_users, _avatars, _worlds){
 
     var avatarHtml = '';
 
-    for(var i=0; _avatars[i]; i++){
+    for(var i=0; searchAvatars[i]; i++){
         if(i%4 === 0){
             if(i !== 0){
                 avatarHtml += '</div>';
@@ -635,9 +698,9 @@ function displaySearch(_users, _avatars, _worlds){
 
         avatarHtml += '<div class="content-cell avatar"><div class="content-cell-formatter"></div>'+
             '<div class="content-cell-content"><img class="content-image" src="'+
-            _avatars[i].AvatarImageUrl+'"><div class="content-name">'+
-            _avatars[i].AvatarName.makeSafe()+'</div><div class="content-btn first" onclick="GetAvatarDetails(\''+_avatars[i].Guid+'\');">Details</div>'+
-            '<div class="content-btn second" onclick="changeAvatar(\''+_avatars[i].Guid+'\');">Change Avatar</div></div></div>';
+            searchAvatars[i].ResultImageUrl+'"><div class="content-name">'+
+            searchAvatars[i].ResultName.makeSafe()+'</div><div class="content-btn first" onclick="GetAvatarDetails(\''+searchAvatars[i].ResultId+'\');">Details</div>'+
+            '<div class="content-btn second" onclick="changeAvatar(\''+searchAvatars[i].ResultId+'\');">Change Avatar</div></div></div>';
     }
 
     avatarWrapper.innerHTML = avatarHtml;
@@ -646,7 +709,7 @@ function displaySearch(_users, _avatars, _worlds){
 
     var worldHtml = '';
 
-    for(var i=0; _worlds[i]; i++){
+    for(var i=0; searchWorlds[i]; i++){
         if(i%4 === 0){
             if(i !== 0){
                 worldHtml += '</div>';
@@ -656,13 +719,37 @@ function displaySearch(_users, _avatars, _worlds){
 
         worldHtml += '<div class="content-cell world"><div class="content-cell-formatter"></div>'+
             '<div class="content-cell-content"><img class="content-image" src="'+
-            _worlds[i].WorldImageUrl+'"><div class="content-name">'+
-            _worlds[i].WorldName.makeSafe()+'</div>'+
-            '<div  onclick="getWorldDetails(\''+_worlds[i].Guid+'\');" class="content-btn second">Details</div>'+
+            searchWorlds[i].ResultImageUrl+'"><div class="content-name">'+
+            searchWorlds[i].ResultName.makeSafe()+'</div>'+
+            '<div onclick="getWorldDetails(\''+searchWorlds[i].ResultId+'\');" class="content-btn second">Details</div>'+
             '</div></div>';
     }
 
     worldWrapper.innerHTML = worldHtml;
+
+    
+    
+    var propHtml = '';
+
+    for(var i=0; searchProps[i]; i++){
+        if(i%4 === 0){
+            if(i !== 0){
+                propHtml += '</div>';
+            }
+            propHtml += '<div class="content-row">';
+        }
+
+        propHtml += '<div class="content-cell prop"><div class="content-cell-formatter"></div>'+
+            '<div class="content-cell-content"><img class="content-image" src="'+
+            searchProps[i].ResultImageUrl+'"><div class="content-name">'+
+            searchProps[i].ResultName.makeSafe()+'</div>'+
+            '<div class="content-btn first disabled zero">Details</div>'+
+            '<div class="content-btn first" onclick="SelectProp(\''+searchProps[i].ResultId+'\', \''+searchProps[i].ResultImageUrl+'\', \''+searchProps[i].ResultName.makeParameterSafe()+'\');">Select Prop</div>'+
+            '<div onclick="SpawnProp(\''+searchProps[i].ResultId+'\');" class="content-btn second">Drop</div>'+
+            '</div></div>';
+    }
+
+    propWrapper.innerHTML = propHtml;
 }
 
 //Invites
@@ -1982,6 +2069,8 @@ function uiLoadingShow(_text){
     loadingBox.classList.add('in');
 
     document.querySelector('#loading p').innerHTML = _text.makeSafe();
+    
+    console.log("Display loading: " + _text);
 }
 
 function uiLoadingClose(){
@@ -3381,6 +3470,8 @@ function displayKeyboard(_e){
 
     keyboard.classList.remove('hidden');
     keyboard.classList.add('in');
+
+    document.getElementById('keyoard-input').focus();
 }
 
 function closeKeyboard(){
@@ -3428,6 +3519,20 @@ function sendKey(_e){
         updateKeys();
     }
 }
+
+document.getElementById('keyoard-input').addEventListener("keyup", function(e){
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        if (document.getElementById('keyboard').classList.contains('in')){
+            var input = document.getElementById('keyoard-input');
+            keyboardTarget.value = input.value;
+            closeKeyboard();
+            var submit = keyboardTarget.getAttribute('data-submit');
+            if(submit != null) {
+                eval(submit);
+            }
+        }
+    }
+});
 
 function sendFuncKey(_e){
     var input = document.getElementById('keyoard-input');
@@ -3700,3 +3805,7 @@ engine.on("SwitchCategory", function(tab){
 });
 
 engine.trigger('CVRAppActionNextSendFullFriendsList');
+
+engine.on("LoadSearchResults", function(_results){
+    displaySearch(_results);
+});
